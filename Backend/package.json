@@ -1,0 +1,11 @@
+{
+  "name": "readers-club",
+  "version": "1.0.0",
+  "description": "e-commerce project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "midhun",
+  "license": "ISC"
+}
