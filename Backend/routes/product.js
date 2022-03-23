@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {verifyToken, verifyTokenAuth, verifyTokenAndAdmin} = require('../routes/verifyToken')
+const {verifyTokenAndAdmin} = require('../routes/verifyToken')
 const Product = require('../models/Product')
 
 //Creating
@@ -13,6 +13,8 @@ router.post('/', verifyTokenAndAdmin, async (req, res) => {
         res.status(500).json(error)
     }
 })
+
+//Update product
 
 router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     try {
@@ -29,7 +31,7 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
 
 router.delete('/:id', verifyTokenAndAdmin, async(req, res) => {
     try {
-        await product.findByIdAndDelete(req.params.id)
+        await Product.findByIdAndDelete(req.params.id)
         res.status(200).json('Product deleted')
     } catch (error) {
         res.status(500).json(error)
