@@ -7,6 +7,9 @@ import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 
 import { mobile } from '../responsive' 
+import { useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { publicRequest } from '../requestMethods'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -107,31 +110,49 @@ const Amount = styled.span`
 `
 
 const Product = () => {
+
+    const location = useLocation()
+    const id = location.pathname.split('/')[2]
+    const [product, setProduct] = useState({})
+
+    useEffect(() => {
+        const getProduct = async () => {
+            try {
+                const res = await publicRequest.get('/products/find/'+id)
+                console.log(res)
+                setProduct(res.data)
+            } catch (error) {
+                console.log(error)
+            }   
+        }
+        getProduct() 
+    }, [id])
+
   return (
     <Container>
         <Announcement/>
         <Navbar/>
         <Wrapper>
             <ImageContainer>
-                <Image src='https://m.media-amazon.com/images/I/51T1muLPFWL.jpg'/>
+                <Image src={product.img}/>
             </ImageContainer>
             <InfoContainer>
-                <Title>Asdfsdf</Title>
-                <Description> sdfasfcsfffsfsf</Description>
-                <Price>INR 350</Price>
+                <Title>{product.title}</Title>
+                <Description>{product.description}</Description>
+                <Price>{product.price}</Price>
                 <FilterContainer>
-                    <Filter>
-                        <FilterTitle>Color</FilterTitle>
-                        <FilterColor color = 'black'/>
-                        <FilterColor color = 'green'/>
-                        <FilterColor color = 'yellow'/>
+                <Filter>
+                    <FilterTitle>Color</FilterTitle>
+                        {product.color.map(clr => {
+                            <FilterColor color = {clr} key={clr}/>
+                        })}
                     </Filter>
                     <Filter>
                         <FilterTitle>Size</FilterTitle>
                         <FilterSize>
-                            <FilterSizeOption>XS</FilterSizeOption>
-                            <FilterSizeOption>L</FilterSizeOption>
-                            <FilterSizeOption>XL</FilterSizeOption>
+                            {product.size.map(sizes => {
+                                <FilterSizeOption>{sizes}</FilterSizeOption>
+                            })}
                         </FilterSize>
                     </Filter>
                 </FilterContainer>

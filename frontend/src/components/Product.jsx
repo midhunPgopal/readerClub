@@ -2,6 +2,7 @@ import styled from "styled-components"
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import { Link } from "react-router-dom";
 
 const Info = styled.div`
     opacity: 0;
@@ -57,9 +58,9 @@ const Icon = styled.div`
     margin: 10px;
     transition: all 0.1s ease;
     cursor: pointer;
+    text-decoration: none;
 
     &:hover{
-        background-color: white;
         transform: scale(1.2);
     }
 `
@@ -74,7 +75,9 @@ const Product = ({item}) => {
                     <ShoppingCartRoundedIcon />
                 </Icon>
                 <Icon>
-                    <SearchRoundedIcon />
+                    <Link to={`/product/${item._id}`}>
+                        <SearchRoundedIcon />
+                    </Link>
                 </Icon>
                 <Icon>
                     <FavoriteRoundedIcon />
