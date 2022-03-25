@@ -6,6 +6,7 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import AddIcon from '@mui/icons-material/Add'
 
 import { mobile } from '../responsive' 
+import { useSelector } from 'react-redux'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -131,6 +132,7 @@ const Button = styled.button`
 `
 
 const Cart = () => {
+    const cart = useSelector(state => state.cart)
   return (
     <Container>
         <Announcement/>
@@ -147,51 +149,34 @@ const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
-                    <Product>
+                    {cart.product?.map(product => (
+                        <Product>
                         <ProductDetails>
-                            <Image src='https://cdn.lifehack.org/wp-content/uploads/2015/03/Hobbit_book.jpg'/>
+                            <Image src={product.img}/>
                             <Details>
-                                <ProductName><b>Product:</b>The Hobbit</ProductName>
-                                <ProductId><b>ID:</b>98951351</ProductId>
+                                <ProductName><b>Product:</b>{product.title}</ProductName>
+                                <ProductId><b>ID:</b>{product._id}</ProductId>
                                 <ProductColor color='black'/>
-                                <ProductSize><b>Size:</b>34</ProductSize>
+                                <ProductSize><b>Size:</b>{product.size}</ProductSize>
                             </Details>
                         </ProductDetails>
                         <PriceDetails>
                             <ProductAmountContainer>
                                 <RemoveIcon/>
-                                <ProductAmount>2</ProductAmount>
+                                <ProductAmount>{product.quantity}</ProductAmount>
                                 <AddIcon/>
                             </ProductAmountContainer>
-                            <ProductPrize>INR 350</ProductPrize>
+                            <ProductPrize>INR {product.price}</ProductPrize>
                         </PriceDetails>
+                        <Hr/>
                     </Product>
-                    <Hr/>
-                    <Product>
-                        <ProductDetails>
-                            <Image src='https://cdn.lifehack.org/wp-content/uploads/2015/03/Hobbit_book.jpg'/>
-                            <Details>
-                                <ProductName><b>Product:</b>The Hobbit</ProductName>
-                                <ProductId><b>ID:</b>98951351</ProductId>
-                                <ProductColor color='black'/>
-                                <ProductSize><b>Size:</b>34</ProductSize>
-                            </Details>
-                        </ProductDetails>
-                        <PriceDetails>
-                            <ProductAmountContainer>
-                                <RemoveIcon/>
-                                <ProductAmount>2</ProductAmount>
-                                <AddIcon/>
-                            </ProductAmountContainer>
-                            <ProductPrize>INR 350</ProductPrize>
-                        </PriceDetails>
-                    </Product>
+                    ))}   
                 </Info>
                 <Summary>
                     <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                     <SummaryItem>
                         <SummaryItemText>SubTotal</SummaryItemText>
-                        <SummaryItemPrice>INR 1250</SummaryItemPrice>
+                        <SummaryItemPrice>INR {cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem>
                         <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -203,7 +188,7 @@ const Cart = () => {
                     </SummaryItem>
                     <SummaryItem type='total'>
                         <SummaryItemText>Total</SummaryItemText>
-                        <SummaryItemPrice>INR 1125</SummaryItemPrice>
+                        <SummaryItemPrice>INR {cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <Button>CHECKOUT NOW</Button>
                 </Summary>

@@ -4,6 +4,9 @@ import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 import {mobile} from '../responsive'
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import {logout} from '../redux/apiCalls'
 
 const Container = styled.div`
     height: 80px;
@@ -70,6 +73,14 @@ const Logo = styled.h1`
 
 
 const Navbar = () => {
+    const quantity = useSelector(state => state.cart.quantity)
+    const user = useSelector((state) => state.user.currentUser)
+
+    const dispatch = useDispatch()
+    const handleClick = () => {
+        logout(dispatch)
+    }
+
     return (
         <div>
             <Container>
@@ -82,16 +93,29 @@ const Navbar = () => {
                         </SearchContainer>
                     </Left>
                     <Center>
+                        <Link to='/' style={{textDecoration: 'none'}}>
                         <Logo>Reader Club©</Logo>
+                        </Link>
                     </Center>
                     <Right>
+                        {user ? <>
+                        <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
+                        </>
+                        : <>
+                        <Link to='/register' style={{ textDecoration: 'none' }}>
                         <MenuItem>REGISTER</MenuItem>
+                        </Link>
+                        <Link to='/login' style={{ textDecoration: 'none' }}>      
                         <MenuItem>LOGIN</MenuItem>
+                        </Link>
+                        </> }
+                        <Link to='/cart'>
                         <MenuItem>
-                            <Badge badgeContent={4} color="secondary">
+                            <Badge badgeContent={quantity} color="secondary">
                                 <ShoppingCartOutlinedIcon />
                             </Badge>
-                        </MenuItem>
+                        </MenuItem> 
+                        </Link>
                     </Right>
                 </Wrapper>
             </Container>
