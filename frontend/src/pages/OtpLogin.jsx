@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-// import { login } from '../redux/apiCalls'
-import { Link } from 'react-router-dom'
 import { mobile } from '../responsive'
-import ErrorNotice from '../error/ErrorNotice'
-import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux'
 import { publicRequest } from '../requestMethods'
+import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginOtp } from '../redux/apiCalls'
 
 const Container = styled.div`
     width: 100vw;
@@ -22,7 +20,6 @@ const Wrapper = styled.div`
     width: 35%;
     padding: 20px;
     background-color: white;
-    display
     ${mobile({ width: '75%' })}
 `
 const Title = styled.h1`
@@ -60,12 +57,6 @@ const Button = styled.button`
         cursor: not-allowed;
     }
 `
-const Links = styled.a`
-    margin: 5px 0px;
-    font-size: 18px;
-    text-decoration: underline;
-    cursor: pointer;
-`
 const Error = styled.span`
     font-size: 18px;
     padding: 5px 10px;
@@ -77,65 +68,68 @@ const Extra = styled.div`
     cursor: pointer;
 `
 
-const Login = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [err, setErr] = useState()
+const OtpLogin = () => {
+    const [mobile, setMobile] = useState('')
+    const [number, setNumber] = useState()
+    const [otp, setOtp] = useState()
     const dispatch = useDispatch()
     const { isFetching } = useSelector(state => state.user)
+    const [err, setErr] = useState()
 
-    const handleClick = (e) => {
+    const submitNumber = async (e) => {
         e.preventDefault()
-        const login = async (dispatch, user) => {
-            dispatch(loginStart())
-            try {
-                const res = await publicRequest.post('/auth/login', user)
-                alert('Login succesful')
-                dispatch(loginSuccess(res.data))
-            } catch (error) {
-                error.response.data.msg && setErr(error.response.data.msg)
-                dispatch(loginFailure())
-            }
+        try {
+            const response = await publicRequest.post('/auth/otplogin', { mobile })
+            setNumber(response.data.mobile)
+            setErr()
+        } catch (error) {
+            error.response.data.msg && setErr(error.response.data.msg)
         }
-        login(dispatch, { username, password })
+    }
+    const submitOtp = async (e) => {
+        e.preventDefault()
+        
+        loginOtp(dispatch, { number, otp })
     }
 
     return (
         <Container>
             <Wrapper>
-                <Extra>
-                    <Link to='/otplogin' style={{ textDecoration: 'none' }}>
-                        OTP Login
+            <Extra>
+                    <Link to='/login' style={{ textDecoration: 'none' }}>
+                        Password Login
                     </Link>
                     <Link to='/' style={{ textDecoration: 'none' }}>
                         Home
                     </Link>
                 </Extra>
-                <Title>Login to your Account</Title>
+                <Title>Registered mobile number</Title>
                 <Form>
                     <Input
-                        placeholder='User name'
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <Input
-                        placeholder='Password'
-                        type='password'
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder='Mobile'
+                        type='number'
+                        onChange={(e) => setMobile(e.target.value)}
                     />
                     <Bottom>
-                        <Button onClick={handleClick} disabled={isFetching} >LOGIN</Button>
-                        <Error>
-                        {err && <ErrorNotice message={err}/>}
-                        </Error>
-                        <Links>Forgot password?</Links>
-                        <Link to='/register'>
-                            <Links>Create new Account</Links>
-                        </Link>
+                        <Button onClick={submitNumber}>ENTER</Button>
+                        {err && <Error>{err}</Error>}
                     </Bottom>
+                    {number &&
+                        <Form>
+                            <Input
+                                placeholder='OTP'
+                                type='number'
+                                onChange={(e) => setOtp(e.target.value)}
+                            />
+                            <Bottom>
+                                <Button onClick={submitOtp} disabled={isFetching}>SUBMIT</Button>
+                            </Bottom>
+                        </Form>
+                    }
                 </Form>
             </Wrapper>
         </Container>
     )
 }
 
-export default Login
+export default OtpLogin

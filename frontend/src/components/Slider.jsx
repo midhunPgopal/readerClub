@@ -70,9 +70,15 @@ const Title = styled.h1`
 
 const Desc = styled.p`
     margin: 50px 0px;
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 500;
     letter-spacing: 3px;
+`
+const Offer = styled.p`
+    margin: 50px 0px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
 `
 
 const Button = styled.button`
@@ -108,6 +114,7 @@ const Slider = () => {
                     <InfoContainer>
                         <Title>{item.title}</Title>
                         <Desc>{item.desc}</Desc>
+                        <Offer>{item.offer}</Offer>
                         <Button>BUY NOW</Button>
                     </InfoContainer>
                 </Slide>

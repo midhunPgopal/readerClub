@@ -1,50 +1,53 @@
 export const sliderItems = [
     {
         id: 1,
-        img: 'https://wallpapercave.com/wp/wp2036897.jpg',
+        img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Books_HD_%288314929977%29.jpg/1200px-Books_HD_%288314929977%29.jpg?20170402064200',
         title: 'Summer Sale',
-        desc: 'sfiudsafnaasdnfk',
-        bg:'rgba(103, 176, 235, 0.425)'
+        desc: 'Summer is here. Grab some books and find some shade',
+        offer: 'Upto 20% on all books. Till june 1st',
+        bg: 'rgba(224, 236, 117, 0.425)'
     },
     {
         id: 2,
         img: 'https://wallpapercave.com/wp/wp2036898.jpg',
-        title: 'Summer Sale',
-        desc: 'sfadsf dsafads',
+        title: 'Easter Sale',
+        desc: 'Festival is here. Gift some knowledge to your dear ones',
+        offer: 'Upto 35% on selected books, Only in April',
         bg: 'rgba(90, 223, 183, 0.425)'
     },
     {
-        id: 2,
-        img: 'https://wallpapercave.com/wp/wp2036901.jpg',
-        title: 'Summer Sale',
-        desc: 'sfadsf dsafads',
-        bg: 'rgba(224, 236, 117, 0.425)'
+        id: 3,
+        img: 'https://wallpapercave.com/wp/wp2036897.jpg',
+        title: 'Flash Sale',
+        desc: 'Rare opportunity. Dont waste it.',
+        offer: 'Flat 15% on selected books. Ends soon.',
+        bg:'#ec613ef3'
     }
 ]
 
 export const categories = [
     {
         id:1,
-        img:'https://www.penguin.co.uk/content/dam/prh/books/283/283239/9780141361345.jpg.transform/PRHDesktopWide_small/image.jpg',
-        title:'Alice in Wonderland',
+        img:'https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=327&q=80',
+        title:'Drama',
         cat: 'drama'
     },
     {
         id:2,
-        img:'https://m.media-amazon.com/images/I/51T1muLPFWL.jpg',
-        title:'Attack on Titan',
+        img:'https://images.unsplash.com/photo-1515462277126-2dd0c162007a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80',
+        title:'Fantasy',
         cat: 'fantasy'
     },
     {
         id:3,
-        img:'https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F6%2F2018%2F03%2F91xl8vzglyl-2000.jpg',
-        title:'A brief history of time',
+        img:'https://images.unsplash.com/photo-1529753253655-470be9a42781?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+        title:'Thriller',
         cat: 'thriller'
     },
     {
         id:4,
-        img:'https://cdn.lifehack.org/wp-content/uploads/2015/03/Hobbit_book.jpg',
-        title:'The Hobbit',
+        img:'https://images.unsplash.com/photo-1506213463051-7694f7a4b9e7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80',
+        title:'Romance',
         cat: 'romance'
     }
 ]

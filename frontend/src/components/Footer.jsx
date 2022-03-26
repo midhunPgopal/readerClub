@@ -80,7 +80,7 @@ const Footer = () => {
     <Container>
         <Left>
             <Logo>Reader Club©</Logo>
-            <Description>sfdasf</Description>
+            <Description>Best online portal for the ones who loves to read</Description>
             <SocialContainer>
                 <SocialIcon color='3B5999'>
                     <FacebookRoundedIcon/>
