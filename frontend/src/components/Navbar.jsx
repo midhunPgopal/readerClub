@@ -6,7 +6,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { mobile } from '../responsive'
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { logout } from '../redux/apiCalls'
+import { logOut } from '../redux/userRedux'
 
 const Container = styled.div`
     height: 80px;
@@ -80,10 +80,13 @@ const Logo = styled.h1`
 const Navbar = () => {
     const quantity = useSelector(state => state.cart.quantity)
     const user = useSelector((state) => state.user.currentUser)
-    //console.log(user);
 
     const dispatch = useDispatch()
     const handleClick = () => {
+        const logout = async (dispatch) => {
+            alert('User logged out')
+            dispatch(logOut())
+        }
         logout(dispatch)
     }
 

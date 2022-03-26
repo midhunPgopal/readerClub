@@ -4,7 +4,7 @@ import { mobile } from '../responsive'
 import { publicRequest } from '../requestMethods'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginOtp } from '../redux/apiCalls'
+import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux'
 
 const Container = styled.div`
     width: 100vw;
@@ -88,7 +88,16 @@ const OtpLogin = () => {
     }
     const submitOtp = async (e) => {
         e.preventDefault()
-        
+        const loginOtp = async (dispatch, user) => {
+            dispatch(loginStart())
+            try {
+                const res = await publicRequest.post('/auth/otpverify', user)
+                alert('Login succesful')
+                dispatch(loginSuccess(res.data))
+            } catch (error) {
+                dispatch(loginFailure())
+            }
+        }       
         loginOtp(dispatch, { number, otp })
     }
 
