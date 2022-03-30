@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { publicRequest } from '../requestMethods'
 import { mobile } from '../responsive'
 import ErrorNotice from '../error/ErrorNotice'
+import { useForm } from 'react-hook-form'
 
 const Container = styled.div`
     width: 100vw;
@@ -61,8 +62,7 @@ const Button = styled.button`
 `
 const Error = styled.span`
     font-size: 14px;
-    margin: 10px 0px;
-    padding: 5px 10px;
+    padding: 5px;
     color: #f16969;
 `
 const Links = styled.a`
@@ -74,24 +74,23 @@ const Links = styled.a`
 
 const Register = () => {
 
-    const [name, setName] = useState('')
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [mobile, setMobile] = useState('')
-    const [password, setPassword] = useState('')
-    const [cpassword, setCpassword] = useState('')
-    const [err, setErr] = useState()
-
     const navigate = useNavigate()
-    const submit = async (e) => {
-        e.preventDefault()
+    const [errUser, setErrUser] = useState()
+    const [errUsername, setErrUsername] = useState()
+    const [errPassword, setErrPassword] = useState()
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    const onSubmit = async (data) => {
+        setErrUser()
+        setErrPassword()
+        setErrUsername()
         try {
-            const newUser = { name, username, email, mobile, password, cpassword }
-            await publicRequest.post('/auth/register', newUser)
+            await publicRequest.post('/auth/register', data)
             alert('successful')
             navigate('/login')
         } catch (error) {
-            error.response.data.msg && setErr(error.response.data.msg)
+            error.response.data.user && setErrUser(error.response.data.user)
+            error.response.data.username && setErrUsername(error.response.data.username)
+            error.response.data.password && setErrPassword(error.response.data.password)
         }
     }
 
@@ -99,43 +98,53 @@ const Register = () => {
         <Container>
             <Wrapper>
                 <Title>Create an Account</Title>
-                <Form>
-                    <Input
-                        placeholder='Name'
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <Input
-                        placeholder='User name'
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <Input
-                        placeholder='Email'
-                        type='email'
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <Input
-                        placeholder='Mobile'
-                        type='number'
-                        onChange={(e) => setMobile(e.target.value)}
-                    />
-                    <Input
-                        placeholder='Password'
-                        type='password'
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <Input
-                        placeholder='Confirm Password'
-                        type='password'
-                        onChange={(e) => setCpassword(e.target.value)}
-                    />
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Input id="name" type='text' placeholder='Name' {...register('name', { required: true, maxLength: 30, minLength: 3 })} />
+                    <Error>
+                        {errors.name && errors.name.type === "required" && <span>This is required</span>}
+                        {errors.name && errors.name.type === "maxLength" && <span>Max length exceeded</span>}
+                        {errors.name && errors.name.type === "minLength" && <span>Min length of 3 required</span>}
+                    </Error>
+                    <Input id="username" placeholder='Username' {...register('username', { required: true, maxLength: 30, minLength: 3 })} />
+                    <Error>
+                        {errors.username && errors.username.type === "required" && <span>This is required</span>}
+                        {errors.username && errors.username.type === "maxLength" && <span>Max length exceeded</span>}
+                        {errors.username && errors.username.type === "minLength" && <span>Min length of 3 required</span>}
+                        {errUsername && <ErrorNotice message={errUsername} />}
+                    </Error>
+                    <Input id="email" placeholder='Email' {...register('email', {
+                        required: true,
+                        pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    })} />
+                    <Error>
+                        {errors.email && errors.email.type === "required" && <span>This is required</span>}
+                        {errors.email && errors.email.type === "pattern" && <span>Invalid email</span>}
+                        {errUser && <ErrorNotice message={errUser} />}
+                    </Error>
+                    <Input id="mobile" type='number' placeholder='Mobile number' {...register('mobile', { required: true, maxLength: 10, minLength: 10 })} />
+                    <Error>
+                        {errors.mobile && errors.mobile.type === "required" && <span>This is required</span>}
+                        {errors.mobile && errors.mobile.type === "maxLength" && <span>Max length exceeded</span>}
+                        {errors.mobile && errors.mobile.type === "minLength" && <span>Min length of 10 required</span>}
+                    </Error>
+                    <Input id="password" type='password' placeholder='Password' {...register('password', { required: true, maxLength: 10, minLength: 6 })} />
+                    <Error>
+                        {errors.password && errors.password.type === "required" && <span>This is required</span>}
+                        {errors.password && errors.password.type === "maxLength" && <span>Max length exceeded</span>}
+                        {errors.password && errors.password.type === "minLength" && <span>Min length of 6 required</span>}
+                    </Error>
+                    <Input id="cpassword" type='text' placeholder='Confirm password' {...register('cpassword', { required: true, maxLength: 10, minLength: 6 })} />
+                    <Error>
+                        {errors.password && errors.password.type === "required" && <span>This is required</span>}
+                        {errors.password && errors.password.type === "maxLength" && <span>Max length exceeded</span>}
+                        {errors.password && errors.password.type === "minLength" && <span>Min length of 6 required</span>}
+                        {errPassword && <ErrorNotice message={errPassword} />}
+                    </Error>
                     <Agreement>By creating an account, I consent to the processing
                         of my personal data in accordance with the <b>PRIVACY POLICY</b>
                     </Agreement>
                     <Bottom>
-                        <Button onClick={submit}>CREATE</Button>
-                        <Error>
-                            {err && <ErrorNotice message={err} />}
-                        </Error>
+                        <Button type='submit'>CREATE</Button>
                         <Link to='/login'>
                             <Links>Already have an account</Links>
                         </Link>

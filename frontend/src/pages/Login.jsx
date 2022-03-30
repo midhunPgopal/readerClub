@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
-// import { login } from '../redux/apiCalls'
 import { Link } from 'react-router-dom'
 import { mobile } from '../responsive'
 import ErrorNotice from '../error/ErrorNotice'
 import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux'
 import { publicRequest } from '../requestMethods'
+import { useForm } from 'react-hook-form'
 
 const Container = styled.div`
     width: 100vw;
@@ -68,7 +68,7 @@ const Links = styled.a`
 `
 const Error = styled.span`
     font-size: 18px;
-    padding: 5px 10px;
+    padding: 5px;
     color: #f16969;
 `
 const Extra = styled.div`
@@ -78,26 +78,28 @@ const Extra = styled.div`
 `
 
 const Login = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [err, setErr] = useState()
+    const [errUser, setErrUser] = useState()
+    const [errPassword, setErrPassword] = useState()
     const dispatch = useDispatch()
     const { isFetching } = useSelector(state => state.user)
+    const { register, handleSubmit, formState: { errors } } = useForm()
 
-    const handleClick = (e) => {
-        e.preventDefault()
-        const login = async (dispatch, user) => {
+    const onSubmit = (data) => {
+        setErrUser()
+        setErrPassword()
+        const login = async (dispatch) => {
             dispatch(loginStart())
             try {
-                const res = await publicRequest.post('/auth/login', user)
+                const res = await publicRequest.post('/auth/login', data)
                 alert('Login succesful')
                 dispatch(loginSuccess(res.data))
             } catch (error) {
-                error.response.data.msg && setErr(error.response.data.msg)
+                error.response.data.user && setErrUser(error.response.data.user)
+                error.response.data.password && setErrPassword(error.response.data.password)
                 dispatch(loginFailure())
             }
         }
-        login(dispatch, { username, password })
+        login(dispatch, { data })
     }
 
     return (
@@ -112,21 +114,19 @@ const Login = () => {
                     </Link>
                 </Extra>
                 <Title>Login to your Account</Title>
-                <Form>
-                    <Input
-                        placeholder='User name'
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <Input
-                        placeholder='Password'
-                        type='password'
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Input id="username" placeholder='Username' {...register('username', { required: true })} />
+                    <Error>
+                        {errors.username && errors.username.type === "required" && <span>This is required</span>}
+                        {errUser && <ErrorNotice message={errUser} />}
+                    </Error>
+                    <Input id="password" type='password' placeholder='Password' {...register('password', { required: true })} />
+                    <Error>
+                        {errors.password && errors.password.type === "required" && <span>This is required</span>}
+                        {errPassword && <ErrorNotice message={errPassword} />}
+                    </Error>
                     <Bottom>
-                        <Button onClick={handleClick} disabled={isFetching} >LOGIN</Button>
-                        <Error>
-                        {err && <ErrorNotice message={err}/>}
-                        </Error>
+                        <Button type='submit' disabled={isFetching} >LOGIN</Button>
                         <Links>Forgot password?</Links>
                         <Link to='/register'>
                             <Links>Create new Account</Links>

@@ -2,10 +2,13 @@ const router = require('express').Router()
 const User = require('../models/User')
 const CryptoJS = require('crypto-js')
 const jwt = require('jsonwebtoken')
+const dotenv = require('dotenv')
 
-const serviceSID = 'VA674a5cb041f704dc5cb323e17f4ca26a'
-const accountSId = 'ACab518c4ccc6928c55583f8d2f5ca1543'
-const authToken = '2cdff94e273663d6dce2c781ff88c2dc'
+dotenv.config() 
+
+const serviceSID = process.env.serviceSID
+const accountSId = process.env.accountSID
+const authToken = process.env.authToken
 
 const client = require('twilio')(accountSId, authToken)
 
@@ -13,27 +16,16 @@ const client = require('twilio')(accountSId, authToken)
 
 router.post('/register', async (req, res) => {
     let { name, username, email, mobile, password, cpassword } = req.body
-    const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
-    const valid = emailRegex.test(email)
     //validation
-    if (!name || !username || !email || !mobile || !password || !cpassword) {
-        return res.status(400).json({ msg: 'Input fields are empty' })
-    }
-    if (!valid) {
-        return res.status(400).json({ msg: 'Email not valid' })
-    }
-    if (password.length < 3) {
-        return res.status(400).json({ msg: 'Password weak' })
-    }
     if (password !== cpassword) {
-        return res.status(400).json({ msg: 'Password doesnt match' })
+        return res.status(400).json({ password: 'Password doesnt match' })
     }
-    if (mobile.length < 10 || mobile.length > 10) {
-        return res.status(400).json({ msg: 'Mobile number should be 10 digits' })
-    }
-    const existingUser = await User.findOne({ email: email })
+    const existingUsername = await User.findOne({username }) 
+    if (existingUsername) {
+        return res.status(400).json({ username: 'Username already exists' })
+    }const existingUser = await User.findOne({ email: email })
     if (existingUser) {
-        return res.status(400).json({ msg: 'User already exists' })
+        return res.status(400).json({ user: 'User already exists' })
     }
     const newUser = new User({
         name,
@@ -53,14 +45,10 @@ router.post('/register', async (req, res) => {
 //for login
 
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body
     try {
-        if (!username) {
-            return res.status(400).json({ msg: 'Input fields are empty' })
-        }
         const user = await User.findOne({ username: req.body.username })
         if (!user) {
-            return res.status(400).json({ msg: 'User not found' })
+            return res.status(400).json({ user: 'User not found' })
         }
         const hashedPassword = CryptoJS.AES.decrypt(
             user.password,
@@ -68,7 +56,7 @@ router.post('/login', async (req, res) => {
         )
         const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8)
         if (originalPassword !== req.body.password) {
-            return res.status(400).json({ msg: 'Password incorrect' })
+            return res.status(400).json({ password: 'Password incorrect' })
         }
         const accessToken = jwt.sign({
             id: user._id,
@@ -82,11 +70,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/otplogin', async (req, res) => {
     try {
-        const { mobile } = req.body
-        if (mobile.length > 10 || mobile.length < 10) {
-            res.status(401).json({ msg: 'Mobile number should be 10 digits' })
-        }
-        const user = await User.findOne({ mobile })
+        const user = await User.findOne({ mobile: req.body.mobile })
         !user && res.status(401).json({ msg: 'User doesnt found' })
         client.verify.services(serviceSID)
             .verifications.create({
@@ -95,20 +79,20 @@ router.post('/otplogin', async (req, res) => {
             })
         res.status(200).json(user)
     } catch (error) {
-        console.log(error);
+        console.log(error)
     }
 })
 
 router.post('/otpverify', async (req, res) => {
-    const { number, otp } = req.body
-    const user = await User.findOne({ mobile: number })
+    const { mobile, otp } = req.body
+    const user = await User.findOne({ mobile })
     const accessToken = jwt.sign({
         id: user._id,
         isAdmin: user.isAdmin
     }, process.env.JWT_SECRET, { expiresIn: '1d' })
     client.verify.services(serviceSID)
         .verificationChecks.create({
-            to: `+91${number}`,
+            to: `+91${mobile}`,
             code: otp
         }).then(resp => {
             res.status(200).json({ user, accessToken })

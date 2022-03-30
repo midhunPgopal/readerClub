@@ -141,10 +141,7 @@ const Product = () => {
         }
     }
     const handleClick = () => {
-        console.log(quantity)
-        console.log(size)
-        console.log(color)
-        dispatch(addProduct({...product, quantity, color, size }))
+        dispatch(addProduct({product, quantity, color, size }))
     }
 
   return (

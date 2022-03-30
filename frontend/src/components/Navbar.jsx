@@ -108,7 +108,7 @@ const Navbar = () => {
                     </Center>
                     <Right>
                         {user ? <>
-                            <Title>Welcome {user.name}</Title>
+                            <Title >Welcome <b style={{textTransform: 'uppercase', color: 'teal'}}>{user.user.name}</b></Title>
                             <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
                         </>
                             : <>

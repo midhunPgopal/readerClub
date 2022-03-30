@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { mobile } from '../responsive'
 import { publicRequest } from '../requestMethods'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux'
+import { useForm } from 'react-hook-form'
+import ErrorNotice from '../error/ErrorNotice'
 
 const Container = styled.div`
     width: 100vw;
@@ -44,16 +46,16 @@ const Bottom = styled.div`
     flex-direction: column;
 `
 const Button = styled.button`
-    width: 30%;
+    width: 20%;
     border: none;
-    padding: 10px 5px;
+    padding: 5px;
     background-color: teal;
     color: white;
     cursor: pointer;
     margin-bottom: 10px;
-
+    
     &:disabled {
-        color: green;
+        color: grey;
         cursor: not-allowed;
     }
 `
@@ -67,44 +69,76 @@ const Extra = styled.div`
     justify-content: space-between;
     cursor: pointer;
 `
+const Timer = styled.h1`
+    color: green;
+    font-size: 20px;
+    align-iems: center;
+`
 
 const OtpLogin = () => {
-    const [mobile, setMobile] = useState('')
     const [number, setNumber] = useState()
-    const [otp, setOtp] = useState()
     const dispatch = useDispatch()
     const { isFetching } = useSelector(state => state.user)
     const [err, setErr] = useState()
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    const [minutes, setMinutes] = useState(0)
+    const [seconds, setSeconds] = useState(60)
 
-    const submitNumber = async (e) => {
-        e.preventDefault()
+    const onSubmit = async (data) => {
         try {
-            const response = await publicRequest.post('/auth/otplogin', { mobile })
-            setNumber(response.data.mobile)
             setErr()
+            const response = await publicRequest.post('/auth/otplogin', data)
+            setNumber(response.data.mobile)
         } catch (error) {
             error.response.data.msg && setErr(error.response.data.msg)
         }
     }
-    const submitOtp = async (e) => {
-        e.preventDefault()
-        const loginOtp = async (dispatch, user) => {
+    const onSubmitOtp = async (data) => {
+        const loginOtp = async (dispatch, data) => {
             dispatch(loginStart())
             try {
-                const res = await publicRequest.post('/auth/otpverify', user)
+                const res = await publicRequest.post('/auth/otpverify', data)
                 alert('Login succesful')
                 dispatch(loginSuccess(res.data))
             } catch (error) {
                 dispatch(loginFailure())
             }
-        }       
-        loginOtp(dispatch, { number, otp })
+        }
+        loginOtp(dispatch, data)
     }
+    const resendOTP = async () => {
+        try {
+            setErr()
+            const response = await publicRequest.post('/auth/otplogin', { mobile: number })
+            setNumber(response.data.mobile)
+            setSeconds(60)
+        } catch (error) {
+            error.response.data.msg && setErr(error.response.data.msg)
+        }
+    }
+    useEffect(() => {
+        let myInterval = setInterval(() => {
+            if (seconds > 0) {
+                setSeconds(seconds - 1)
+            }
+            if (seconds === 0) {
+                if (minutes === 0) {
+                    clearInterval(myInterval)
+                } else {
+                    setMinutes(minutes - 1);
+                    setSeconds(59)
+                }
+            }
+        }, 1000)
+        return () => {
+            clearInterval(myInterval);
+        }
+    })
 
     return (
         <Container>
             <Wrapper>
-            <Extra>
+                <Extra>
                     <Link to='/login' style={{ textDecoration: 'none' }}>
                         Password Login
                     </Link>
@@ -112,28 +146,48 @@ const OtpLogin = () => {
                         Home
                     </Link>
                 </Extra>
-                <Title>Registered mobile number</Title>
-                <Form>
-                    <Input
-                        placeholder='Mobile'
-                        type='number'
-                        onChange={(e) => setMobile(e.target.value)}
-                    />
-                    <Bottom>
-                        <Button onClick={submitNumber}>ENTER</Button>
-                        {err && <Error>{err}</Error>}
-                    </Bottom>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Title>Registered mobile number</Title>
+                    <Input id="mobile" placeholder='Registered mobile number' {...register('mobile', { required: true, maxLength: 10, minLength: 10 })} />
+                    <Error>
+                        {errors.mobile && errors.mobile.type === "required" && <span>This is required</span>}
+                        {errors.mobile && errors.mobile.type === "maxLength" && <span>Mobile number shoould be 10 digits</span>}
+                        {errors.mobile && errors.mobile.type === "minLength" && <span>Mobile number shoould be 10 digits</span>}
+                        {err && <ErrorNotice message={err} />}
+                    </Error>
+                    {!number &&
+                        <Bottom>
+                            <Button type='submit'>ENTER</Button>
+                        </Bottom>
+                    }
                     {number &&
-                        <Form>
-                            <Input
-                                placeholder='OTP'
-                                type='number'
-                                onChange={(e) => setOtp(e.target.value)}
-                            />
+                        <>
+                            <Form onSubmit={handleSubmit(onSubmitOtp)}>
+                                <Title>Enter OTP</Title>
+                                <Input id="otp" type='number' placeholder='OTP' {...register('otp', { required: true, maxLength: 4, minLength: 4 })} />
+                                <Error>
+                                    {errors.otp && errors.otp.type === "required" && <span>This is required</span>}
+                                    {errors.otp && errors.otp.type === "maxLength" && <span>Max length exceeded</span>}
+                                    {errors.otp && errors.otp.type === "minLength" && <span>Min length of 3 required</span>}
+                                    {err && <ErrorNotice message={err} />}
+                                </Error>
+                                <Bottom>
+                                    <Button type='submit' disabled={isFetching}>SUBMIT</Button>
+                                </Bottom>
+                            </Form>
                             <Bottom>
-                                <Button onClick={submitOtp} disabled={isFetching}>SUBMIT</Button>
+                            <Timer>
+                                {minutes === 0 && seconds === 0
+                                    ? <>{minutes}:{seconds}</>
+                                    : <>{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</>
+                                }
+                            </Timer>
+                            {seconds > 0 ?
+                                <Button onClick={resendOTP} disabled>Resend OTP</Button> :
+                                <Button onClick={resendOTP} >Resend OTP</Button>
+                            }
                             </Bottom>
-                        </Form>
+                        </>
                     }
                 </Form>
             </Wrapper>
