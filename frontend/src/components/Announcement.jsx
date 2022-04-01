@@ -14,7 +14,7 @@ const Container = styled.div`
 const Announcement = () => {
   return (
     <Container>
-        Free shipping on orders above 199 INR *
+        Free shipping on orders above 699 INR *
     </Container>
   )
 }

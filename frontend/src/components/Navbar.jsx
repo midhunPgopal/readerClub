@@ -2,11 +2,15 @@ import styled from 'styled-components'
 import Badge from '@mui/material/Badge';
 import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-
 import { mobile } from '../responsive'
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logOut } from '../redux/userRedux'
+import {removeProduct} from '../redux/cartRedux'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { confirm } from "react-confirm-box"
+
 
 const Container = styled.div`
     height: 80px;
@@ -76,18 +80,33 @@ const Logo = styled.h1`
     ${mobile({ fontSize: '20px' })}
 `
 
-
+toast.configure()
 const Navbar = () => {
-    const quantity = useSelector(state => state.cart.quantity)
     const user = useSelector((state) => state.user.currentUser)
 
+    const notify = () => {
+        toast('Come back soon', {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
     const dispatch = useDispatch()
-    const handleClick = () => {
-        const logout = async (dispatch) => {
-            alert('User logged out')
+    const handleClick = async () => {
+        const logout = (dispatch) => {
+            dispatch(removeProduct())
             dispatch(logOut())
+            notify()
         }
-        logout(dispatch)
+        const result = await confirm("Are you sure?");
+        if (result) {
+            logout(dispatch)
+        }
     }
 
     return (
@@ -108,8 +127,15 @@ const Navbar = () => {
                     </Center>
                     <Right>
                         {user ? <>
-                            <Title >Welcome <b style={{textTransform: 'uppercase', color: 'teal'}}>{user.user.name}</b></Title>
+                            <Title >Welcome <b style={{ textTransform: 'uppercase', color: 'teal' }}>{user.user.name}</b></Title>
                             <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
+                            <Link to='/cart'>
+                                <MenuItem>
+                                    <Badge color="secondary">
+                                        <ShoppingCartOutlinedIcon />
+                                    </Badge>
+                                </MenuItem>
+                            </Link>
                         </>
                             : <>
                                 <Link to='/register' style={{ textDecoration: 'none' }}>
@@ -118,14 +144,14 @@ const Navbar = () => {
                                 <Link to='/login' style={{ textDecoration: 'none' }}>
                                     <MenuItem>LOGIN</MenuItem>
                                 </Link>
+                                <Link to='/cart'>
+                                    <MenuItem>
+                                        <Badge  color="secondary">
+                                            <ShoppingCartOutlinedIcon />
+                                        </Badge>
+                                    </MenuItem>
+                                </Link>
                             </>}
-                        <Link to='/cart'>
-                            <MenuItem>
-                                <Badge badgeContent={quantity} color="secondary">
-                                    <ShoppingCartOutlinedIcon />
-                                </Badge>
-                            </MenuItem>
-                        </Link>
                     </Right>
                 </Wrapper>
             </Container>

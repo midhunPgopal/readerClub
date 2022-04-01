@@ -7,6 +7,8 @@ import ErrorNotice from '../error/ErrorNotice'
 import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux'
 import { publicRequest } from '../requestMethods'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
     width: 100vw;
@@ -76,13 +78,23 @@ const Extra = styled.div`
     justify-content: space-between;
     cursor: pointer;
 `
-
+toast.configure()
 const Login = () => {
     const [errUser, setErrUser] = useState()
     const [errPassword, setErrPassword] = useState()
     const dispatch = useDispatch()
     const { isFetching } = useSelector(state => state.user)
     const { register, handleSubmit, formState: { errors } } = useForm()
+
+    const notify = () => toast.success('Now you can order', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    })
 
     const onSubmit = (data) => {
         setErrUser()
@@ -91,7 +103,7 @@ const Login = () => {
             dispatch(loginStart())
             try {
                 const res = await publicRequest.post('/auth/login', data)
-                alert('Login succesful')
+                notify()
                 dispatch(loginSuccess(res.data))
             } catch (error) {
                 error.response.data.user && setErrUser(error.response.data.user)
@@ -126,7 +138,7 @@ const Login = () => {
                         {errPassword && <ErrorNotice message={errPassword} />}
                     </Error>
                     <Bottom>
-                        <Button type='submit' disabled={isFetching} >LOGIN</Button>
+                        <Button type='submit' disabled={isFetching}>LOGIN</Button>
                         <Links>Forgot password?</Links>
                         <Link to='/register'>
                             <Links>Create new Account</Links>

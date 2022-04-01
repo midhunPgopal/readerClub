@@ -9,7 +9,7 @@ import Slider from '../components/Slider'
 
 const Home = () => {
   return (
-    <div>
+    <>
         <Announcement/>
         <Navbar/>
         <Slider/>
@@ -17,7 +17,7 @@ const Home = () => {
         <Products/>
         <Newsletter/>
         <Footer/>
-    </div>
+    </>
   )
 }
 

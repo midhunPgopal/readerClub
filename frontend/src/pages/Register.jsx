@@ -5,6 +5,8 @@ import { publicRequest } from '../requestMethods'
 import { mobile } from '../responsive'
 import ErrorNotice from '../error/ErrorNotice'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
     width: 100vw;
@@ -71,7 +73,7 @@ const Links = styled.a`
     text-decoration: underline;
     cursor: pointer;
 `
-
+toast.configure()
 const Register = () => {
 
     const navigate = useNavigate()
@@ -79,13 +81,24 @@ const Register = () => {
     const [errUsername, setErrUsername] = useState()
     const [errPassword, setErrPassword] = useState()
     const { register, handleSubmit, formState: { errors } } = useForm()
+
+    const notify = () => toast.success('Your details have been stored', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    })
+
     const onSubmit = async (data) => {
         setErrUser()
         setErrPassword()
         setErrUsername()
         try {
             await publicRequest.post('/auth/register', data)
-            alert('successful')
+            notify()
             navigate('/login')
         } catch (error) {
             error.response.data.user && setErrUser(error.response.data.user)

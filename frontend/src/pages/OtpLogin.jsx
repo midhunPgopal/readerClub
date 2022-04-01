@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux'
 import { useForm } from 'react-hook-form'
 import ErrorNotice from '../error/ErrorNotice'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
     width: 100vw;
@@ -53,7 +55,7 @@ const Button = styled.button`
     color: white;
     cursor: pointer;
     margin-bottom: 10px;
-    
+
     &:disabled {
         color: grey;
         cursor: not-allowed;
@@ -74,7 +76,7 @@ const Timer = styled.h1`
     font-size: 20px;
     align-iems: center;
 `
-
+toast.configure()
 const OtpLogin = () => {
     const [number, setNumber] = useState()
     const dispatch = useDispatch()
@@ -83,6 +85,16 @@ const OtpLogin = () => {
     const { register, handleSubmit, formState: { errors } } = useForm()
     const [minutes, setMinutes] = useState(0)
     const [seconds, setSeconds] = useState(60)
+
+    const notify = () => toast.success('Now you can order', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    })
 
     const onSubmit = async (data) => {
         try {
@@ -98,7 +110,7 @@ const OtpLogin = () => {
             dispatch(loginStart())
             try {
                 const res = await publicRequest.post('/auth/otpverify', data)
-                alert('Login succesful')
+                notify()
                 dispatch(loginSuccess(res.data))
             } catch (error) {
                 dispatch(loginFailure())
@@ -160,6 +172,7 @@ const OtpLogin = () => {
                             <Button type='submit'>ENTER</Button>
                         </Bottom>
                     }
+                    </Form>
                     {number &&
                         <>
                             <Form onSubmit={handleSubmit(onSubmitOtp)}>
@@ -189,7 +202,6 @@ const OtpLogin = () => {
                             </Bottom>
                         </>
                     }
-                </Form>
             </Wrapper>
         </Container>
     )

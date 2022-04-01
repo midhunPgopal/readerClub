@@ -29,9 +29,9 @@ router.put('/:id', verifyTokenAuth, async (req, res) => {
 
 //Delete cart
 
-router.delete('/:id', verifyTokenAuth, async(req, res) => {
+router.delete('/:id', verifyToken, async(req, res) => {
     try {
-        await Cart.findByIdAndDelete(req.params.id)
+        await Cart.deleteMany({userId: req.params.id})
         res.status(200).json('Cart deleted')
     } catch (error) {
         res.status(500).json(error)
@@ -40,12 +40,12 @@ router.delete('/:id', verifyTokenAuth, async(req, res) => {
 
 //Get cart
 
-router.get('/find/:id', verifyTokenAuth, async (req, res) => {
+router.get('/find/:id', verifyToken, async (req, res) => {
     try {
-        const cart = await Cart.findOne({userId: req.params.userId})
-        res.status(200).json(cart)
+        const cart = await Cart.find({userId: req.params.id})
+        res.status(200).json({cart})
     } catch (error) {
-        res.status(500).json(error)
+        console.log(error);
     }
 })
 
