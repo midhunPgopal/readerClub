@@ -7,12 +7,13 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg'
 import EmailIcon from '@mui/icons-material/Email'
 
+import { Link } from 'react-router-dom';
 import { mobile } from "../responsive"
 
 const Container = styled.div`
     display: flex;
     background-color: #91cfad;
-    ${mobile({ flexDirection: 'column'})}
+    ${mobile({ flexDirection: 'column' })}
 `
 const Left = styled.div`
     flex: 1;
@@ -45,7 +46,7 @@ const SocialIcon = styled.div`
 const Center = styled.div`
     flex: 1;
     padding: 10px;
-    ${mobile({ display: 'none'})}
+    ${mobile({ display: 'none' })}
 `
 const Title = styled.h3`
     margin-bottom: 30px;
@@ -76,53 +77,53 @@ const Payment = styled.img`
 `
 
 const Footer = () => {
-  return (
-    <Container>
-        <Left>
-            <Logo>Reader Club©</Logo>
-            <Description>Best online portal for the ones who loves to read</Description>
-            <SocialContainer>
-                <SocialIcon color='3B5999'>
-                    <FacebookRoundedIcon/>
-                </SocialIcon>
-                <SocialIcon color='E4405F'>
-                    <InstagramIcon/>
-                </SocialIcon>
-                <SocialIcon color='55ACEE'>
-                    <TwitterIcon/>
-                </SocialIcon>
-                <SocialIcon color='E60023'>
-                    <PinterestIcon/>
-                </SocialIcon>
-            </SocialContainer>
-        </Left>
-        <Center>
-            <Title>Useful Links</Title>
-            <List>
-                <ListItem>Home</ListItem>
-                <ListItem>Cart</ListItem>
-                <ListItem>My Account</ListItem>
-                <ListItem>Order Tracking</ListItem>
-                <ListItem>Wishlist</ListItem>
-                <ListItem>Categories</ListItem>
-                <ListItem>Terms and Conditions</ListItem>
-            </List>
-        </Center>
-        <Right>
-            <Title>Contact</Title>
-            <ContactItem>
-                <LocationOnIcon style={{marginRight:'10px'}}/>Crossroads, Kochi
-            </ContactItem>
-            <ContactItem>
-                <PermPhoneMsgIcon style={{marginRight:'10px'}}/>+91 9876543210
-            </ContactItem>
-            <ContactItem>
-                <EmailIcon style={{marginRight:'10px'}}/>readerclub@club.co.in
-            </ContactItem>
-            <Payment src='https://i.ibb.co/Qfvn4z6/payment.png'/>
-        </Right>
-    </Container>
-  )
+    return (
+        <Container>
+            <Left>
+                <Logo>Reader Club©</Logo>
+                <Description>Best online portal for the ones who loves to read</Description>
+                <SocialContainer>
+                    <SocialIcon color='3B5999'>
+                        <FacebookRoundedIcon />
+                    </SocialIcon>
+                    <SocialIcon color='E4405F'>
+                        <InstagramIcon />
+                    </SocialIcon>
+                    <SocialIcon color='55ACEE'>
+                        <TwitterIcon />
+                    </SocialIcon>
+                    <SocialIcon color='E60023'>
+                        <PinterestIcon />
+                    </SocialIcon>
+                </SocialContainer>
+            </Left>
+            <Center>
+                <Title>Useful Links</Title>
+                <List>
+                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Home</Link></ListItem>
+                    <ListItem><Link to='/cart' style={{ textDecoration: 'none' }}>Cart</Link></ListItem>
+                    <ListItem><Link to='/orders' style={{ textDecoration: 'none' }}>Order tracking</Link></ListItem>
+                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>My Account</Link></ListItem>
+                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Wishlist</Link></ListItem>
+                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Categories</Link></ListItem>
+                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Terms and Conditions</Link></ListItem>
+                </List>
+            </Center>
+            <Right>
+                <Title>Contact</Title>
+                <ContactItem>
+                    <LocationOnIcon style={{ marginRight: '10px' }} />Crossroads, Kochi
+                </ContactItem>
+                <ContactItem>
+                    <PermPhoneMsgIcon style={{ marginRight: '10px' }} />+91 9876543210
+                </ContactItem>
+                <ContactItem>
+                    <EmailIcon style={{ marginRight: '10px' }} />readerclub@club.co.in
+                </ContactItem>
+                <Payment src='https://i.ibb.co/Qfvn4z6/payment.png' />
+            </Right>
+        </Container>
+    )
 }
 
 export default Footer

@@ -1,9 +1,10 @@
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import Announcement from '../components/Announcement'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-import RemoveIcon from '@mui/icons-material/Remove'
-import AddIcon from '@mui/icons-material/Add'
+// import RemoveIcon from '@mui/icons-material/Remove'
+// import AddIcon from '@mui/icons-material/Add'
 
 import { mobile } from '../responsive'
 import { useSelector } from 'react-redux'
@@ -183,7 +184,7 @@ const Cart = () => {
             setResData(response.data.cart)
         }
         getData()
-    }, [userId])
+    }, [header, userId])
     useEffect(() => {
         let total = resData?.reduce((acc, data) => acc + data.total, 0)
         setSubTotal(total)
@@ -212,12 +213,10 @@ const Cart = () => {
             <Wrapper>
                 <Title>Your CART</Title>
                 <Top>
-                    <TopButton>Continue Shopping</TopButton>
                     <TopTexts>
-                        <TopText>Shopping Bag(2)</TopText>
                         <TopText>Your Wishlist</TopText>
                     </TopTexts>
-                    <TopButton type='filled'>CheckOut now</TopButton>
+                    <TopButton><Link to='/' style={{ textDecoration: 'none' }}>Continue Shopping</Link></TopButton>
                 </Top>
                 <Bottom>
                     <Info>

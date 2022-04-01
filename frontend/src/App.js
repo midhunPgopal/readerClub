@@ -5,9 +5,10 @@ import OtpLogin from './pages/OtpLogin'
 import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
+import Payment from "./pages/Payment";
+import Orders from "./pages/Orders";
 import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
 import {useSelector} from 'react-redux'
-import Payment from "./pages/Payment";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/otplogin" element={ user ? <Navigate to='/'/> : <OtpLogin/>}/>
         <Route path="/register" element={ user ? <Navigate to='/'/> : <Register/>}/>
         <Route path="/cart" element={user ? <Cart/> : <Navigate to='/'/>}/>
+        <Route path="/orders" element={user ? <Orders/> : <Navigate to='/'/>}/>
         <Route path='/payment' element= {<Payment/>}/>
       </Routes>
     </BrowserRouter>
