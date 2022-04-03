@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 import Announcement from '../components/Announcement'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-// import RemoveIcon from '@mui/icons-material/Remove'
-// import AddIcon from '@mui/icons-material/Add'
+import RemoveIcon from '@mui/icons-material/Remove'
+import AddIcon from '@mui/icons-material/Add'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { mobile } from '../responsive'
 import { useSelector } from 'react-redux'
@@ -13,6 +14,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { confirm } from "react-confirm-box"
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -77,6 +79,7 @@ const ProductId = styled.span``
 const ProductSize = styled.span``
 const PriceDetails = styled.div`
     flex: 1;
+    margin: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -85,7 +88,6 @@ const PriceDetails = styled.div`
 const ProductAmountContainer = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
     ${mobile({ marginBottom: '5px' })}
 `
 const ProductAmount = styled.div`
@@ -169,22 +171,19 @@ const Cart = () => {
     const header = user.currentUser.accessToken
 
     const notify = () => toast.success('Order succesful', {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
+    const notifyDelete = () => toast.success('Item deleted', {
+        position: "top-center", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
+    })
+    const getData = async () => {
+        const response = await axios.get(`http://localhost:3001/api/cart/find/` + userId, { headers: { header } })
+        setResData(response.data.cart)
+    }
 
     useEffect(() => {
-        const getData = async () => {
-            const response = await axios.get(`http://localhost:3001/api/cart/find/` + userId, { headers: { header } })
-            setResData(response.data.cart)
-        }
         getData()
-    }, [header, userId])
+    }, [header])
     useEffect(() => {
         let total = resData?.reduce((acc, data) => acc + data.total, 0)
         setSubTotal(total)
@@ -200,10 +199,18 @@ const Cart = () => {
         const total = grandTotal
         const products = resData
         const payload = { userId, products, total, address, payment }
-        await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header } })
-        await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header } })
+        await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header }})
+        await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header }})
         notify()
         navigate('/payment')
+    }
+    const handleDelete = async (id) => {
+        const result = await confirm("Are you sure about this?");
+        if (result) {
+            await axios.delete('http://localhost:3001/api/cart/find/' + id , { headers: { header }})
+            notifyDelete()
+            getData()
+        }
     }
 
     return (
@@ -235,11 +242,12 @@ const Cart = () => {
                                     </ProductDetails>
                                     <PriceDetails>
                                         <ProductAmountContainer>
-                                            {/* <RemoveIcon /> */}
-                                            <ProductAmount>Quantity : {data.quantity}</ProductAmount>
-                                            {/* <AddIcon /> */}
+                                            <RemoveIcon style={{cursor: 'pointer'}}/>
+                                            <ProductAmount>{data.quantity}</ProductAmount>
+                                            <AddIcon style={{cursor: 'pointer'}}/>
                                         </ProductAmountContainer>
-                                        <ProductPrize>INR {data.total}</ProductPrize>
+                                        <DeleteForeverIcon style={{cursor: 'pointer'}} onClick={() => handleDelete(data._id)}/>
+                                        <ProductPrize>₹ {data.total}</ProductPrize>
                                     </PriceDetails>
                                 </Product>
                                 <Hr />
@@ -247,7 +255,7 @@ const Cart = () => {
                         ))}
                     </Info>
                     <Box>
-                        <Title>Create an Account</Title>
+                        <Title>Delivery Address</Title>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <Input id="name" type='text' placeholder='Name' {...register('name', { required: true, maxLength: 15, minLength: 3 })} />
                             <Error>
@@ -292,19 +300,19 @@ const Cart = () => {
                                 <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                                 <SummaryItem>
                                     <SummaryItemText>SubTotal</SummaryItemText>
-                                    <SummaryItemPrice>INR {subTotal}</SummaryItemPrice>
+                                    <SummaryItemPrice>₹ {subTotal}</SummaryItemPrice>
                                 </SummaryItem>
                                 <SummaryItem>
                                     <SummaryItemText>Estimated Shipping</SummaryItemText>
-                                    <SummaryItemPrice>INR 125</SummaryItemPrice>
+                                    <SummaryItemPrice>₹ 125</SummaryItemPrice>
                                 </SummaryItem>
                                 <SummaryItem>
                                     <SummaryItemText>Coupon Discount</SummaryItemText>
-                                    <SummaryItemPrice>INR 125</SummaryItemPrice>
+                                    <SummaryItemPrice>₹ 125</SummaryItemPrice>
                                 </SummaryItem>
                                 <SummaryItem type='total'>
                                     <SummaryItemText>Total</SummaryItemText>
-                                    <SummaryItemPrice>INR {grandTotal}</SummaryItemPrice>
+                                    <SummaryItemPrice>₹ {grandTotal}</SummaryItemPrice>
                                 </SummaryItem>
                                 <Button type='submit'>CHECKOUT NOW</Button>
                             </Summary>

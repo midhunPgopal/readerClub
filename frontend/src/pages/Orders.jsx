@@ -91,7 +91,7 @@ const Orders = () => {
                                 <Td >{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
                                 <Td>{data.address.name}</Td>
                                 <Td>{data.products.length}</Td>
-                                <Td>{data.total}</Td>
+                                <Td>₹{data.total}</Td>
                                 <Td>{data.payment}</Td>
                                 <Td>{data.status}</Td>
                             </Tr>

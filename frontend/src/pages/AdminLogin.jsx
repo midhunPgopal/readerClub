@@ -4,11 +4,11 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { mobile } from '../responsive'
 import ErrorNotice from '../error/ErrorNotice'
-import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux'
-import { publicRequest } from '../requestMethods'
+import { loginStart, loginSuccess, loginFailure } from '../redux/adminRedux'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios'
 
 const Container = styled.div`
     width: 100vw;
@@ -79,14 +79,14 @@ const Extra = styled.div`
     cursor: pointer;
 `
 toast.configure()
-const Login = () => {
-    const [errUser, setErrUser] = useState()
+const AdminLogin = () => {
+    const [errAdmin, setErrAdmin] = useState()
     const [errPassword, setErrPassword] = useState()
     const dispatch = useDispatch()
-    const { isFetching } = useSelector(state => state.user)
+    const { isFetching } = useSelector(state => state.admin)
     const { register, handleSubmit, formState: { errors } } = useForm()
 
-    const notify = () => toast.success('Now you can order', {
+    const notify = () => toast.success('Admin Logged in', {
         position: "top-right",
         autoClose: 1000,
         hideProgressBar: false,
@@ -97,16 +97,16 @@ const Login = () => {
     })
 
     const onSubmit = (data) => {
-        setErrUser()
+        setErrAdmin()
         setErrPassword()
         const login = async (dispatch) => {
             dispatch(loginStart())
             try {
-                const res = await publicRequest.post('/auth/login', data)
+                const res = await axios.post('http://localhost:3001/api/admin/auth/login', data)
                 notify()
                 dispatch(loginSuccess(res.data))
             } catch (error) {
-                error.response.data.user && setErrUser(error.response.data.user)
+                error.response.data.admin && setErrAdmin(error.response.data.admin)
                 error.response.data.password && setErrPassword(error.response.data.password)
                 dispatch(loginFailure())
             }
@@ -118,19 +118,16 @@ const Login = () => {
         <Container>
             <Wrapper>
                 <Extra>
-                    <Link to='/otplogin' style={{ textDecoration: 'none' }}>
-                        OTP Login
-                    </Link>
                     <Link to='/' style={{ textDecoration: 'none' }}>
                         Home
                     </Link>
                 </Extra>
-                <Title>Login to your Account</Title>
+                <Title>Login as Admin</Title>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Input id="username" placeholder='Username' {...register('username', { required: true })} />
                     <Error>
                         {errors.username && errors.username.type === "required" && <span>This is required</span>}
-                        {errUser && <ErrorNotice message={errUser} />}
+                        {errAdmin && <ErrorNotice message={errAdmin} />}
                     </Error>
                     <Input id="password" type='password' placeholder='Password' {...register('password', { required: true })} />
                     <Error>
@@ -139,8 +136,8 @@ const Login = () => {
                     </Error>
                     <Bottom>
                         <Button type='submit' disabled={isFetching}>LOGIN</Button>
-                        <Link to='/register'>
-                            <Links>Create new Account</Links>
+                        <Link to='/login'>
+                            <Links>Login as User</Links>
                         </Link>
                     </Bottom>
                 </Form>
@@ -149,4 +146,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default AdminLogin

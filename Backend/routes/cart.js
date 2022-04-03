@@ -38,6 +38,17 @@ router.delete('/:id', verifyToken, async(req, res) => {
     }
 })
 
+//delete one cart entry
+
+router.delete('/find/:id', verifyToken, async(req, res) => {
+    try {
+        await Cart.findByIdAndDelete({_id: req.params.id})
+        res.status(200).json('Cart deleted')
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 //Get cart
 
 router.get('/find/:id', verifyToken, async (req, res) => {

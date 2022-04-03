@@ -7,12 +7,16 @@ import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
 import Payment from "./pages/Payment";
 import Orders from "./pages/Orders";
+import AdminHome from "./pages/AdminHome";
+import AdminLogin from "./pages/AdminLogin";
+import EditProduct from "./pages/EditProduct";
 import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
 import {useSelector} from 'react-redux'
 
 function App() {
 
-  const user = useSelector((state) => state.user.currentUser);
+  const user = useSelector((state) => state.user.currentUser)
+  const admin = useSelector(state => state.admin.currentAdmin)
 
   return (
     <BrowserRouter>
@@ -26,6 +30,12 @@ function App() {
         <Route path="/cart" element={user ? <Cart/> : <Navigate to='/'/>}/>
         <Route path="/orders" element={user ? <Orders/> : <Navigate to='/'/>}/>
         <Route path='/payment' element= {<Payment/>}/>
+
+        {/* Admin routes */}
+
+        <Route exact path="/admin" element={admin ? <AdminHome/> : <Navigate to='/adminlogin'/>}/>
+        <Route path="/adminlogin" element={ admin ? <Navigate to='/admin'/> : <AdminLogin/>}/>
+        <Route path="/editproduct/:id" element={admin ? <EditProduct/> : <Navigate to='/adminlogin'/>}/>
       </Routes>
     </BrowserRouter>
   );

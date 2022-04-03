@@ -10,19 +10,37 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    author: {
+        type: String,
+        requied: true
+    },
+    publisher: {
+        type: String,
+        requierd: true
+    },
+    publishedAt:{
+        type: Date,
+        required: true
+    },
     img: {
         type: String,
         required: true
     },
     categories: {
-        type: Array
+        type: Array,
+        required: true
     },
-    chapter: {
-        type: Array
+    chapters: {
+        type: Array,
+        required: true
     },
     price: {
         type: Number,
         required: true
+    },
+    offers: {
+        type: Array,
+        default: null
     },
     inStock: {
         type: Boolean,

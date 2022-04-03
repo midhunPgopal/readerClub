@@ -5,7 +5,11 @@ const Product = require('../models/Product')
 //Creating
 
 router.post('/', verifyTokenAndAdmin, async (req, res) => {
-    const newProduct = new Product(req.body)
+    let {title, description, author, publisher, publishedAt, img, category, chapter, price, offer } = req.body
+    const chapters = chapter.split(',')
+    const categories = category.split(',')
+    const offers = offer.split(',')
+    const newProduct = new Product({title, description, author, publisher, publishedAt, img, categories, chapters, price, offers })
     try {
         const savedProduct = await newProduct.save()
         res.status(200).json(savedProduct)
@@ -17,9 +21,14 @@ router.post('/', verifyTokenAndAdmin, async (req, res) => {
 //Update product
 
 router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
+    let {title, description, author, publisher, publishedAt, img, category, chapter, price, offer } = req.body
+    const chapters = chapter.split(',')
+    const categories = category.split(',')
+    const offers = offer.split(',')
+    const newProduct = {title, description, author, publisher, publishedAt, img, categories, chapters, price, offers }
     try {
         const updateProduct = await Product.findByIdAndUpdate(req.params.id, {
-            $set: req.body
+            $set: newProduct
         }, {new: true})
         res.status(200).json(updateProduct)
     } catch (error) {

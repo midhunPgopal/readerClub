@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
 import { addProduct } from '../redux/cartRedux'
 import axios from 'axios'
+import dateFormat from 'dateformat'
 
 
 const Container = styled.div``
@@ -169,13 +170,15 @@ const Product = () => {
                 <InfoContainer>
                     <Title>{product.title}</Title>
                     <Description>{product.description}</Description>
-                    <Price>{product.price}</Price>
+                    <Description>Author : <b>{product.author}</b></Description>
+                    <Description>Published by <b>{product.publisher}</b> on {dateFormat(product.publishedAt, "mmmm dS, yyyy")}</Description>
+                    <Price>₹ {product.price}</Price>
                     <FilterContainer>
                         <Filter>
                             <FilterTitle>Chapter</FilterTitle>
                             <FilterSize onClick={(e) => setChapter(e.target.value)}>
-                                {product.chapter?.map(chapters => (
-                                    <FilterSizeOption>{chapters}</FilterSizeOption>
+                                {product.chapters?.map(chapter => (
+                                    <FilterSizeOption>{chapter}</FilterSizeOption>
                                 ))}
                             </FilterSize>
                         </Filter>
