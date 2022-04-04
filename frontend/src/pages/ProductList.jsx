@@ -14,6 +14,7 @@ const Container = styled.div`
 `
 const Title = styled.h1`
     margin: 20px;
+    text-transform: capitalize;
 `
 const FilterContainer = styled.div`
     display: flex;

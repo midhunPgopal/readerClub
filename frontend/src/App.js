@@ -10,8 +10,11 @@ import Orders from "./pages/Orders";
 import AdminHome from "./pages/AdminHome";
 import AdminLogin from "./pages/AdminLogin";
 import EditProduct from "./pages/EditProduct";
+import AdminCategory from "./pages/AdminCategory";
 import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
 import {useSelector} from 'react-redux'
+import AdminProduct from "./pages/AdminProduct";
+import EditCategory from "./pages/EditCategory";
 
 function App() {
 
@@ -21,21 +24,24 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={<Home/>}/>
-        <Route path="/products/:category" element={<ProductList/>}/>
-        <Route path="/product/:id" element={ user ? <Product/> : <Navigate to='/'/>}/>
+        <Route path="/register" element={ user ? <Navigate to='/'/> : <Register/>}/>
         <Route path="/login" element={ user ? <Navigate to='/'/> : <Login/>}/>
         <Route path="/otplogin" element={ user ? <Navigate to='/'/> : <OtpLogin/>}/>
-        <Route path="/register" element={ user ? <Navigate to='/'/> : <Register/>}/>
-        <Route path="/cart" element={user ? <Cart/> : <Navigate to='/'/>}/>
-        <Route path="/orders" element={user ? <Orders/> : <Navigate to='/'/>}/>
-        <Route path='/payment' element= {<Payment/>}/>
+        <Route exact path="/" element={user ? <Home/>  : <Navigate to='/login'/>}/>
+        <Route path="/products/:category" element={user ? <ProductList/> : <Navigate to='/login'/>}/>
+        <Route path="/product/:id" element={ user ? <Product/> : <Navigate to='/login'/>}/>
+        <Route path="/cart" element={user ? <Cart/> : <Navigate to='/login'/>}/>
+        <Route path="/orders" element={user ? <Orders/> : <Navigate to='/login'/>}/>
+        <Route path='/payment' element= {user ? <Payment/> : <Navigate to='/login'/>}/>
 
         {/* Admin routes */}
 
         <Route exact path="/admin" element={admin ? <AdminHome/> : <Navigate to='/adminlogin'/>}/>
         <Route path="/adminlogin" element={ admin ? <Navigate to='/admin'/> : <AdminLogin/>}/>
         <Route path="/editproduct/:id" element={admin ? <EditProduct/> : <Navigate to='/adminlogin'/>}/>
+        <Route path="/viewproduct/:id" element={admin ? <AdminProduct/> : <Navigate to='/adminlogin'/>}/>
+        <Route path="/admincategory" element={admin ? <AdminCategory/> : <Navigate to='/adminlogin'/>}/>
+        <Route path="/editcategory/:id" element={admin ? <EditCategory/> : <Navigate to='/adminlogin'/>}/>
       </Routes>
     </BrowserRouter>
   );

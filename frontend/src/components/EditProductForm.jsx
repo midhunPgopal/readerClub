@@ -41,11 +41,12 @@ const ButtonSubmit = styled.button`
 `
 toast.configure()
 const EditProductForm = ({preloadedData}) => {
-    const notify = () => {
-        toast('Produt details updated', {
-            position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
-        });
-    }
+    
+  const notify = () => {
+    toast('Produt details updated', {
+      position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
+    });
+  }
   const navigate = useNavigate()
   const location = useLocation()
   const id = location.pathname.split('/')[2]

@@ -11,6 +11,7 @@ import { confirm } from "react-confirm-box"
 
 const Container = styled.div`
     height: 80px;
+    width: 100%;
     ${mobile({ height: '50px' })}
 `
 
@@ -84,14 +85,8 @@ const Navbar = () => {
 
     const notify = () => {
         toast('Admin Logged out', {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+            position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
+        })
     }
 
     const dispatch = useDispatch()
@@ -100,7 +95,7 @@ const Navbar = () => {
             dispatch(logOut())
             notify()
         }
-        const result = await confirm("Are you sure?");
+        const result = await confirm("Are you sure?")
         if (result) {
             logout(dispatch)
         }

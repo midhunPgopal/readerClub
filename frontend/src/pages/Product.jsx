@@ -9,7 +9,6 @@ import RemoveIcon from '@mui/icons-material/Remove'
 import { mobile } from '../responsive'
 import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { publicRequest } from '../requestMethods'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
 import { addProduct } from '../redux/cartRedux'
@@ -122,19 +121,13 @@ const Product = () => {
     const header = user.accessToken
 
     const notify = () => toast.success('Item added', {
-        position: "top-center",
-        autoClose: 500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
 
     useEffect(() => {
         const getProduct = async () => {
             try {
-                const res = await publicRequest.get('/products/find/' + id)
+                const res = await axios.get('http://localhost:3001/api/products/find/' + id)
                 setProduct(res.data)
                 setPrice(res.data.price)
             } catch (error) {
@@ -156,7 +149,7 @@ const Product = () => {
         const data = { userId, product, quantity, chapter, total }
         await axios.post('http://localhost:3001/api/cart/', data, {headers : {header}})
         dispatch(addProduct(product, quantity))
-        notify()
+        notify() 
     }
 
     return (
@@ -171,6 +164,7 @@ const Product = () => {
                     <Title>{product.title}</Title>
                     <Description>{product.description}</Description>
                     <Description>Author : <b>{product.author}</b></Description>
+                    <Description>Category : <b>{product.categories?.map(category => category+' ,')}</b></Description>
                     <Description>Published by <b>{product.publisher}</b> on {dateFormat(product.publishedAt, "mmmm dS, yyyy")}</Description>
                     <Price>₹ {product.price}</Price>
                     <FilterContainer>

@@ -102,8 +102,7 @@ const Footer = () => {
                 <List>
                     <ListItem><Link to='/admin' style={{ textDecoration: 'none' }}>User Management</Link></ListItem>
                     <ListItem><Link to='/admin' style={{ textDecoration: 'none' }}>Order Management</Link></ListItem>
-                    <ListItem><Link to='/admin' style={{ textDecoration: 'none' }}>Category Management</Link></ListItem>
-                    <ListItem><Link to='/admin' style={{ textDecoration: 'none' }}>Product Management</Link></ListItem>
+                    <ListItem><Link to='/admincategory' style={{ textDecoration: 'none' }}>Category Management</Link></ListItem>
                     <ListItem><Link to='/admin' style={{ textDecoration: 'none' }}>Banner Management</Link></ListItem>
                     <ListItem><Link to='/admin' style={{ textDecoration: 'none' }}>Announcement Management</Link></ListItem>
                 </List>

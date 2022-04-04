@@ -7,6 +7,10 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import 'react-toastify/dist/ReactToastify.css';
+import { confirm } from "react-confirm-box"
 
 const Container = styled.div`
   margin: 30px;
@@ -70,15 +74,20 @@ const Wrapper = styled.div`
 `
 const TopButton = styled.div`
   flex: 1;
+  display: flex;
+  justify-content: space-around;
 `
 const Button = styled.button`
   width: 10%;
   border: none;
-  padding: 10px 5px;
-  background-color: #732990fe;
+  background-color: teal;
   color: white;
   cursor: pointer;
   margin-bottom: 50px;
+
+  &:hover {
+    background-color: #26e090fe;
+  }
 `
 const Product = styled.div`
 display: flex;
@@ -96,15 +105,19 @@ text-align: center;
 color: #4b1f4cfe;
 `
 const AddProduct = styled.div`
-margin: 0px;
+  margin: 0px;
+`
+const AddCategory = styled.div`
+  margin: 0px;
 `
 const InputContainer = styled.div`
-flex: 1;
+  flex: 1;
 `
 const ButtonContainer = styled.div`
 flex: 1;
 margin: 20px;
 display: flex;
+justify-content: flex-start;
 `
 const ButtonSubmit = styled.button`
   width: 10%;
@@ -122,21 +135,20 @@ const ButtonClose = styled.button`
   cursor: pointer;
 `
 const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    ${mobile({ flexDirection: 'column' })}
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
 `
 const Input = styled.input`
-    width: 300px;
-    margin: 10px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+  width: 300px;
+  margin: 10px;
+  padding: 10px;
+  ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
 `
 const Error = styled.span`
-    font-size: 14px;
-    padding: 5px;
-    color: #f16969;
+  font-size: 14px;
+  padding: 5px;
+  color: #f16969;
 `
 toast.configure()
 const AdminProduct = () => {
@@ -145,6 +157,7 @@ const AdminProduct = () => {
 
   const [product, setProduct] = useState()
   const [flag, setFlag] = useState(false)
+  const [check, setCheck] = useState(false)
 
   const admin = useSelector(state => state.admin)
   const header = admin.currentAdmin.accessToken
@@ -161,26 +174,48 @@ const AdminProduct = () => {
   const getFlag = () => {
     setFlag(true)
   }
+  const getCheck = () => {
+    setCheck(true)
+  }
 
   const notify = () => toast.success('Product added', {
     position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
   })
+  const notifyDelete = () => toast.success('Product deleted', {
+    position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
+  })
+  const notifyCategory = () => toast.success('Category deleted', {
+    position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
+  })
 
-  const onSubmit = async (data) => {
+  const addProduct = async (data) => {
     await axios.post('http://localhost:3001/api/products/', data, { headers: { header } })
     notify()
     setFlag(false)
-    return false
+  }
+  const deleteProduct = async (id) => {
+    const result = await confirm("Are you sure?")
+    if (result) {
+      await axios.delete('http://localhost:3001/api/products/' + id, { headers: { header } })
+      getProducts()
+      notifyDelete()
+    }
+  }
+  const addCategory = async (data) => {
+    await axios.post('http://localhost:3001/api/categories/', data, { headers: { header } })
+    notifyCategory()
+    setCheck(false)
   }
 
   return (
     <Container>
       <TopButton>
         <Button onClick={getFlag}>Add Product</Button>
+        <Button onClick={getCheck}>Add Category</Button>
       </TopButton>
       <AddProduct>
         {flag &&
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={handleSubmit(addProduct)}>
             <InputContainer>
               <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
               <Error>
@@ -227,20 +262,48 @@ const AdminProduct = () => {
           </Form>
         }
       </AddProduct>
+      <AddCategory>
+        {check &&
+          <Form onSubmit={handleSubmit(addCategory)}>
+            <InputContainer>
+              <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+              <Error>
+                {errors.category && errors.category.type === "required" && <span>This is required</span>}
+              </Error>
+              <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
+              <Error>
+                {errors.img && errors.img.type === "required" && <span>This is required</span>}
+              </Error>
+            </InputContainer>
+            <ButtonContainer>
+              <ButtonSubmit type='submit' >Add Category</ButtonSubmit>
+              <ButtonClose onClick={() => setCheck(false)}>Close</ButtonClose>
+            </ButtonContainer>
+          </Form>
+        }
+      </AddCategory>
       <Product>
         {product?.map(data => (
-        <Wrapper>
+          <Wrapper>
             <Circle />
             <Image src={data.img}></Image>
             <Title>{data.title}</Title>
             <Info>
               <Icon>
+                <Link to={`/viewproduct/${data._id}`} >
+                  <RemoveRedEyeOutlinedIcon />
+                </Link>
+              </Icon>
+              <Icon>
                 <Link to={`/editproduct/${data._id}`} >
                   <EditIcon />
                 </Link>
               </Icon>
+              <Icon>
+                <DeleteForeverOutlinedIcon onClick={() => deleteProduct(data._id)} />
+              </Icon>
             </Info>
-        </Wrapper>
+          </Wrapper>
         ))}
       </Product>
     </Container>
