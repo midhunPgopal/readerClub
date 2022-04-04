@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import Announcement from '../components/Announcement'
@@ -42,13 +43,15 @@ const ProductList = () => {
     const cat = location.pathname.split('/')[2]
     const [filters, setFilters] = useState({})
     const [sort, setSort] = useState('newest')
+    const [categories, setCategories] = useState()
 
-    const handleFilters = (e) => {
-        const value = e.target.value
-        setFilters({
-            ...filters,[e.target.name]: value
-        })
-    }
+    useEffect(() => {
+        const getCategories = async () => {
+            const res = await axios.get('http://localhost:3001/api/categories')
+            setCategories(res.data)
+        }
+        getCategories()
+    }, [])
 
   return (
     <Container>
@@ -58,11 +61,12 @@ const ProductList = () => {
         <FilterContainer>
             <Filter>
                 <FilterText>Filter Products</FilterText>
-                <Select name='chapter' onClick={handleFilters}>
-                    <Option disabled >Chapters</Option>
-                    <Option>1</Option>
-                    <Option>2</Option>
-                    <Option>3</Option>
+                <Select  onChange={e => setFilters(e.target.value)}>
+                    <Option disabled >Categories</Option>
+                    <Option >{undefined}</Option>
+                    {categories?.map(item => (
+                        <Option>{item.category}</Option>
+                    ))}
                 </Select>
             </Filter>
             <Filter>

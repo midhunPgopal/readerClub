@@ -28,6 +28,7 @@ function App() {
         <Route path="/login" element={ user ? <Navigate to='/'/> : <Login/>}/>
         <Route path="/otplogin" element={ user ? <Navigate to='/'/> : <OtpLogin/>}/>
         <Route exact path="/" element={user ? <Home/>  : <Navigate to='/login'/>}/>
+        <Route path="/products" element={user ? <ProductList/> : <Navigate to='/login'/>}/>
         <Route path="/products/:category" element={user ? <ProductList/> : <Navigate to='/login'/>}/>
         <Route path="/product/:id" element={ user ? <Product/> : <Navigate to='/login'/>}/>
         <Route path="/cart" element={user ? <Cart/> : <Navigate to='/login'/>}/>

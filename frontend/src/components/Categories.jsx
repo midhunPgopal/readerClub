@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import {categories} from '../data'
 import CategoryItems from "./CategoryItems"
 import { mobile } from "../responsive"
 import { useEffect, useState } from "react"
