@@ -4,7 +4,7 @@ const CryptoJS = require('crypto-js')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 
-dotenv.config() 
+dotenv.config()
 
 const serviceSID = process.env.serviceSID
 const accountSId = process.env.accountSID
@@ -20,10 +20,10 @@ router.post('/register', async (req, res) => {
     if (password !== cpassword) {
         return res.status(400).json({ password: 'Password doesnt match' })
     }
-    const existingUsername = await User.findOne({username }) 
+    const existingUsername = await User.findOne({ username })
     if (existingUsername) {
         return res.status(400).json({ username: 'Username already exists' })
-    }const existingUser = await User.findOne({ email: email })
+    } const existingUser = await User.findOne({ email: email })
     if (existingUser) {
         return res.status(400).json({ user: 'User already exists' })
     }
@@ -95,7 +95,12 @@ router.post('/otpverify', async (req, res) => {
             to: `+91${mobile}`,
             code: otp
         }).then(resp => {
-            res.status(200).json({ user, accessToken })
+            if (res.status === 'approved') {
+                res.status(200).json({ user, accessToken })
+            }
+            else {
+                res.status(401).json({msg:'Token not validated'})
+            }
         }).catch(err => console.log(err))
 })
 

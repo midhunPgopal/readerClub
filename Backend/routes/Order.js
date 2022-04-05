@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {verifyToken, verifyTokenAuth, verifyTokenAndAdmin} = require('./verifyToken')
+const {verifyToken, verifyTokenAndAdmin} = require('./verifyToken')
 const Order = require('../models/Order')
 
 //Creating
@@ -19,13 +19,27 @@ router.post('/', verifyToken, async (req, res) => {
 router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     try {
         const updateOrder = await Order.findByIdAndUpdate(req.params.id, {
-            $set: req.body
-        }, {new: true})
+            $set:{ 'deliveryAddress': req.body.deliveryAddress , 'status' : req.body.status }
+        }) 
         res.status(200).json(updateOrder)
     } catch (error) {
         res.status(500).json(error)
     }
 })
+
+//cancel cart
+
+router.put('/cancel/:id', async (req, res) => {
+    try {
+        const updateOrder = await Order.findByIdAndUpdate(req.params.id, {
+            $set: {'status':'Cancelled'}
+        })
+        res.status(200).json(updateOrder)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 
 //Delete oder
 
@@ -38,22 +52,32 @@ router.delete('/:id', verifyTokenAndAdmin, async(req, res) => {
     }
 })
 
-//Get order
+//Get single order for Admin
 
-router.get('/find/:id', verifyToken, async (req, res) => {
+router.get('/find/:id', verifyTokenAndAdmin, async (req, res) => {
+    try {
+        const orders = await Order.find({_id: req.params.id})
+        res.status(200).json(orders)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+//Get single order for User
+
+router.get('/findusercart/:id', verifyToken, async (req, res) => {
     try {
         const orders = await Order.find({userId: req.params.id})
-        res.status(200).json({orders})
+        res.status(200).json(orders)
     } catch (error) {
         res.status(500).json(error)
     }
 })
 
-//Get all
+//Get all 
 
-router.get('/', verifyTokenAndAdmin , async (req, res) => {
+router.get('/' , verifyTokenAndAdmin, async (req, res) => {
     try {
-        const orders = await Cart.find()
+        const orders = await Order.find()
         res.status(200).json(orders)
     } catch (error) {
         res.status(500).json(error)
