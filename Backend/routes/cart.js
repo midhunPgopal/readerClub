@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {verifyToken, verifyTokenAuth, verifyTokenAndAdmin} = require('../routes/verifyToken')
+const {verifyToken, verifyTokenAndAdmin} = require('../routes/verifyToken')
 const Cart = require('../models/Cart')
 
 //Creating
@@ -16,11 +16,11 @@ router.post('/', verifyToken, async (req, res) => {
 
 //Update cart
 
-router.put('/:id', verifyTokenAuth, async (req, res) => {
+router.put('/quantity/:id', verifyToken, async (req, res) => {
     try {
-        const updateCart = await Cart.findByIdAndUpdate(req.params.id, {
-            $set: req.body
-        }, {new: true})
+        const updateCart = await Cart.findByIdAndUpdate({_id: req.params.id}, {
+            $set: {'quantity': req.body.productQuantity, 'total': req.body.total}
+        })
         res.status(200).json(updateCart)
     } catch (error) {
         res.status(500).json(error)

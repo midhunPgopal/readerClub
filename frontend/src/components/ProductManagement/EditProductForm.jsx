@@ -8,10 +8,7 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    ${mobile({ flexDirection: 'column' })}
+  margin-left: 50px;
 `
 const Input = styled.input`
     width: 300px;
@@ -25,12 +22,11 @@ const Error = styled.span`
     color: #f16969;
 `
 const InputContainer = styled.div`
-flex: 1;
+  display: flex;
+  flex-direction: column;
 `
 const ButtonContainer = styled.div`
-flex: 1;
-margin: 20px;
-display: flex;
+  margin: 20px;
 `
 const ButtonSubmit = styled.button`
   width: 10%;
@@ -38,6 +34,10 @@ const ButtonSubmit = styled.button`
   background-color: #dc3d92fe;
   color: white;
   cursor: pointer;
+`
+const Label = styled.label`
+    font-weight: bolder;
+    color: #1517165b;
 `
 toast.configure()
 const EditProductForm = ({preloadedData}) => {
@@ -66,42 +66,52 @@ const EditProductForm = ({preloadedData}) => {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
             <InputContainer>
+            <Label>Title</Label>
               <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
               <Error>
                 {errors.title && errors.title.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Description</Label>
               <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
               <Error>
                 {errors.description && errors.description.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Author Name</Label>
               <Input id="author" type='text' placeholder='Author' {...register('author', { required: true })} />
               <Error>
                 {errors.author && errors.author.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Publisher</Label>
               <Input id="publisher" type='text' placeholder='Publisher' {...register('publisher', { required: true })} />
               <Error>
                 {errors.publisher && errors.publisher.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Published on</Label>
               <Input id="publishedAt" type='date' placeholder='Published on' {...register('publishedAt', { required: true })} />
               <Error>
                 {errors.publishedAt && errors.publishedAt.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Image source link</Label>
               <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
               <Error>
                 {errors.img && errors.img.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Categories</Label>
               <Input id="category" type='text' placeholder='Separate the categories by a coma' {...register('category', { required: true })} />
               <Error>
                 {errors.category && errors.category.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Chapters</Label>
               <Input id="chapter" type='text' placeholder='Separate the chapters by a coma' {...register('chapter', { required: true })} />
               <Error>
                 {errors.chapter && errors.chapter.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Product price</Label>
               <Input id="price" type='number' placeholder='Selling Price' {...register('price', { required: true })} />
               <Error>
                 {errors.price && errors.price.type === "required" && <span>This is required</span>}
               </Error>
+              <Label>Offers</Label>
               <Input id="offer" type='text' placeholder='Offers' {...register('offer', { required: false })} />
             </InputContainer>
             <ButtonContainer>

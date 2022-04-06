@@ -2,28 +2,14 @@ const router = require('express').Router()
 const {verifyToken, verifyTokenAuth, verifyTokenAndAdmin} = require('../routes/verifyToken')
 const User = require('../models/User')
 
-//update
+//update userdetails
 
 router.put('/:id', verifyTokenAuth, async (req, res) => {
-    if(req.body.password) {
-        req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SECRET).toString()
-    }
     try {
-        const updateUser = await User.findByIdAndUpdate(req.params.id, {
-            $set: req.body
-        }, {new: true})
+        const updateUser = await User.findByIdAndUpdate({_id: req.params.id}, {
+            $set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
+        })
         res.status(200).json(updateUser)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-
-//Delete user
-
-router.delete('/:id', verifyTokenAuth, async(req, res) => {
-    try {
-        await User.findByIdAndDelete(req.params.id)
-        res.status(200).json('User deleted')
     } catch (error) {
         res.status(500).json(error)
     }
@@ -44,9 +30,8 @@ router.get('/find/:id', verifyToken, async (req, res) => {
 //Get all user
 
 router.get('/', verifyTokenAndAdmin, async (req, res) => {
-    const query = req.query.new
     try {
-        const users = query ? await User.find().sort({_id:-1}).limit(5) : await User.find()
+        const users = await User.find()
         res.status(200).json(users)
     } catch (error) {
         res.status(500).json(error)

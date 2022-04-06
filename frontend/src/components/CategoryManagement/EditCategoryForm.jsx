@@ -8,10 +8,7 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    ${mobile({ flexDirection: 'column' })}
+    margin-left: 50px;
 `
 const Input = styled.input`
     width: 300px;
@@ -25,12 +22,11 @@ const Error = styled.span`
     color: #f16969;
 `
 const InputContainer = styled.div`
-flex: 1;
+    display: flex;
+    flex-direction: column;
 `
 const ButtonContainer = styled.div`
-flex: 1;
-margin: 20px;
-display: flex;
+    margin: 20px;
 `
 const ButtonSubmit = styled.button`
   width: 10%;
@@ -38,6 +34,10 @@ const ButtonSubmit = styled.button`
   background-color: #dc3d92fe;
   color: white;
   cursor: pointer;
+`
+const Label = styled.label`
+    font-weight: bolder;
+    color: #1517165b;
 `
 toast.configure()
 const EditCategoryForm = ({ preloadedData }) => {
@@ -66,10 +66,12 @@ const EditCategoryForm = ({ preloadedData }) => {
     return (
         <Form onSubmit={handleSubmit(updateCategory)}>
             <InputContainer>
+                <Label>Category Name</Label>
                 <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
                 <Error>
                     {errors.category && errors.category.type === "required" && <span>This is required</span>}
                 </Error>
+                <Label>Image source link</Label>
                 <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
                 <Error>
                     {errors.img && errors.img.type === "required" && <span>This is required</span>}

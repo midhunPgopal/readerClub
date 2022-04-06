@@ -48,11 +48,11 @@ const Products = ({ cat, filters, sort }) => {
       }
     }
     getproducts()
-  }, [])
+  }, [cat]) 
 
   useEffect(() => {
     setFilteredProducts(products)
-  }, [products, cat, filters])
+  }, [products, cat])
 
   useEffect(() => {
     const getFilteredProducts = async () => {
@@ -77,10 +77,7 @@ const Products = ({ cat, filters, sort }) => {
   return (
     <Main>
       <Container>
-        {cat ? filteredProducts.map(item => (
-          <Product item={item} key={item.id} />
-        )) : 
-        products.map(item => (
+        {filteredProducts.map(item => (
           <Product item={item} key={item.id} />
         ))}
       </Container>

@@ -1,14 +1,11 @@
 import styled from 'styled-components'
-import Announcement from '../../components/User/Announcement'
 import AdminFooter from '../../components/Admin/AdminFooter'
-import AdminNavbar from '../../components/Admin/AdminNavbar'
-
+import AdminNavbar from '../../components/Admin/AdminNavbar' 
 import { mobile } from '../../responsive'
 import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import dateFormat from 'dateformat'
-import Newsletter from '../../components/User/Newsletter'
 
 
 const Container = styled.div``
@@ -87,7 +84,6 @@ const AdminProduct = () => {
 
     return (
         <Container>
-            <Announcement />
             <AdminNavbar />
             <Wrapper>
                 <ImageContainer>
@@ -129,7 +125,6 @@ const AdminProduct = () => {
                     </FilterContainer>
                 </InfoContainer>
             </Wrapper>
-            <Newsletter />
             <AdminFooter />
         </Container>
     )

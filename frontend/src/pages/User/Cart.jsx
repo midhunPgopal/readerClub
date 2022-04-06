@@ -111,13 +111,11 @@ const Box = styled.div`
     border: 0.5px solid lightgray;
     border-radius: 10px;
     padding: 20px;
-    height: 140vh;
 `
 const Summary = styled.div`
     border: 0.5px solid lightgray;
     border-radius: 10px;
     padding: 20px;
-    height: 65vh;
 `
 const SummaryTitle = styled.h1`
     font-weight: 220;
@@ -165,12 +163,15 @@ const Cart = () => {
     const [resData, setResData] = useState()
     const [subTotal, setSubTotal] = useState()
     const [grandTotal, setGrandTotal] = useState()
+    const [productQuantity, setProductQuantity] = useState()
+    const [cartId, setCartId] = useState()
+    const [productPrice, setProductPrice] = useState()
 
     const user = useSelector(state => state.user)
     const userId = user.currentUser.user._id
     const header = user.currentUser.accessToken
 
-    const notify = () => toast.success('Order succesful', {
+    const notify = () => toast('Lets finish this order', {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
     const notifyDelete = () => toast.success('Item deleted', {
@@ -180,37 +181,71 @@ const Cart = () => {
         const response = await axios.get(`http://localhost:3001/api/cart/find/` + userId, { headers: { header } })
         setResData(response.data.cart)
     }
-
-    useEffect(() => {
-        getData()
-    }, [header])
-    useEffect(() => {
-        let total = resData?.reduce((acc, data) => acc + data.total, 0)
-        setSubTotal(total)
-    }, [resData])
-    useEffect(() => {
-        setGrandTotal(subTotal)
-    }, [subTotal])
-
-    const onSubmit = async (data) => {
-        let {name, email, mobile, address, pincode, payment} = data
-        const deliveryAddress = {name, email, mobile, address, pincode}
-        const total = grandTotal
-        const products = resData
-        const payload = { userId, products, total, deliveryAddress, payment }
-        await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header }})
-        await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header }})
-        notify()
-        navigate('/payment')
+    const removePreOrders = async () => {
+        await axios.delete('http://localhost:3001/api/preorder/' + userId, { headers: { header } })
     }
+    // const onSubmit = async (data) => {
+    //     let { name, email, mobile, address, pincode, payment } = data
+    //     const deliveryAddress = { name, email, mobile, address, pincode }
+    //     const total = grandTotal
+    //     const products = resData
+    //     const payload = { userId, products, total, deliveryAddress, payment }
+    //     await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header } })
+    //     await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header } })
+    //     notify()
+    //     navigate('/payment')
+    // }
     const handleDelete = async (id) => {
         const result = await confirm("Are you sure about this?");
         if (result) {
-            await axios.delete('http://localhost:3001/api/cart/find/' + id , { headers: { header }})
+            await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header } })
             notifyDelete()
             getData()
         }
     }
+    const updateCart = async () => {
+        const total = productQuantity * productPrice
+        try {
+            await axios.put('http://localhost:3001/api/cart/quantity/' + cartId, { productQuantity, total }, { headers: { header } })
+            getData()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleQuantity = async (id, quantity, price, value) => {
+        setCartId(id)
+        setProductPrice(price)
+        if (value === 'dec' && quantity > 1) {
+            setProductQuantity(quantity - 1)
+        } else if (value === 'dec' && quantity === 1) {
+            const result = await confirm("Do you want to remove it?");
+            if (result) {
+                await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header } })
+                notifyDelete()
+                getData()
+            }
+        } else if (value === 'inc') {
+            setProductQuantity(quantity + 1)
+        }
+    }
+    const preOrder = async () => {
+        await axios.post('http://localhost:3001/api/preorder', {userId, grandTotal}, { headers: { header } })
+        navigate('/checkout')
+        notify()
+    }
+    
+    useEffect(() => {
+        removePreOrders()
+        updateCart() 
+        getData()
+    }, [header, productQuantity])
+    useEffect(() => {
+        let total = resData?.reduce((acc, data) => acc + data.total, 0)
+        setSubTotal(total)
+    }, [resData, productQuantity])
+    useEffect(() => {
+        setGrandTotal(subTotal)
+    }, [subTotal])
 
     return (
         <Container>
@@ -222,14 +257,14 @@ const Cart = () => {
                     <TopTexts>
                         <TopText>Your Wishlist</TopText>
                     </TopTexts>
-                    <TopButton><Link to='/' style={{ textDecoration: 'none' }}>Continue Shopping</Link></TopButton>
+                    <TopButton><Link to='/products' style={{ textDecoration: 'none' }}>Continue Shopping</Link></TopButton>
                 </Top>
                 <Bottom>
                     <Info>
                         <Hr />
                         {resData?.map(data => (
                             <>
-                                <Product>
+                                <Product key={data._id}>
                                     <ProductDetails>
                                         <Image src={data.product.img} />
                                         <Details>
@@ -241,11 +276,20 @@ const Cart = () => {
                                     </ProductDetails>
                                     <PriceDetails>
                                         <ProductAmountContainer>
-                                            <RemoveIcon style={{cursor: 'pointer'}}/>
+                                            <RemoveIcon
+                                                style={{ cursor: 'pointer', color: 'rgb(103, 88, 219)' }}
+                                                onClick={() => handleQuantity(data._id, data.quantity, data.product.price, 'dec')}
+                                            />
                                             <ProductAmount>{data.quantity}</ProductAmount>
-                                            <AddIcon style={{cursor: 'pointer'}}/>
+                                            <AddIcon
+                                                style={{ cursor: 'pointer', color: 'rgba(18, 231, 36, 0.981)' }}
+                                                onClick={() => handleQuantity(data._id, data.quantity, data.product.price, 'inc')}
+                                            />
                                         </ProductAmountContainer>
-                                        <DeleteForeverIcon style={{cursor: 'pointer'}} onClick={() => handleDelete(data._id)}/>
+                                        <DeleteForeverIcon
+                                            style={{ cursor: 'pointer', color: 'red' }}
+                                            onClick={() => handleDelete(data._id)}
+                                        />
                                         <ProductPrize>₹ {data.total}</ProductPrize>
                                     </PriceDetails>
                                 </Product>
@@ -254,68 +298,22 @@ const Cart = () => {
                         ))}
                     </Info>
                     <Box>
-                        <Title>Delivery Address</Title>
-                        <Form onSubmit={handleSubmit(onSubmit)}>
-                            <Input id="name" type='text' placeholder='Name' {...register('name', { required: true, maxLength: 15, minLength: 3 })} />
-                            <Error>
-                                {errors.name && errors.name.type === "required" && <span>This is required</span>}
-                                {errors.name && errors.name.type === "maxLength" && <span>Max length exceeded</span>}
-                                {errors.name && errors.name.type === "minLength" && <span>Min length of 3 required</span>}
-                            </Error>
-                            <Input id="email" placeholder='Email' {...register('email', {
-                                required: true,
-                                pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                            })} />
-                            <Error>
-                                {errors.email && errors.email.type === "required" && <span>This is required</span>}
-                                {errors.email && errors.email.type === "pattern" && <span>Invalid email</span>}
-                            </Error>
-                            <Input id="mobile" type='number' placeholder='Mobile number' {...register('mobile', { required: true, maxLength: 10, minLength: 10 })} />
-                            <Error>
-                                {errors.mobile && errors.mobile.type === "required" && <span>This is required</span>}
-                                {errors.mobile && errors.mobile.type === "maxLength" && <span>Mobile number should be 10 digits</span>}
-                                {errors.mobile && errors.mobile.type === "minLength" && <span>Mobile number should be 10 digits</span>}
-                            </Error>
-                            <Input id="address" type='text' placeholder='Full address' {...register('address', { required: true })} />
-                            <Error>
-                                {errors.address && errors.address.type === "required" && <span>This is required</span>}
-                            </Error>
-                            <Input id="pincode" type='number' placeholder='Pincode' {...register('pincode', { required: true, maxLength: 6, minLength: 6 })} />
-                            <Error>
-                                {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
-                                {errors.pincode && errors.pincode.type === "maxLength" && <span>Pincode should be 6 digits</span>}
-                                {errors.pincode && errors.pincode.type === "minLength" && <span>Pincode should be 6 digits</span>}
-                            </Error>
-                            <select {...register("payment", {required: true})}>
-                                <option value="">Select</option>
-                                <option value="cash on delivery">Cash on delivery</option>
-                                <option value="internet banking">Internet Banking</option>
-                                <option value="card">Credit/Debit card</option>
-                            </select>
-                            <Error>
-                                {errors.payment && errors.payment.type === "required" && <span>This is required</span>}
-                            </Error>
-                            <Summary>
-                                <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-                                <SummaryItem>
-                                    <SummaryItemText>SubTotal</SummaryItemText>
-                                    <SummaryItemPrice>₹ {subTotal}</SummaryItemPrice>
-                                </SummaryItem>
-                                <SummaryItem>
-                                    <SummaryItemText>Estimated Shipping</SummaryItemText>
-                                    <SummaryItemPrice>₹ 125</SummaryItemPrice>
-                                </SummaryItem>
-                                <SummaryItem>
-                                    <SummaryItemText>Coupon Discount</SummaryItemText>
-                                    <SummaryItemPrice>₹ 125</SummaryItemPrice>
-                                </SummaryItem>
-                                <SummaryItem type='total'>
-                                    <SummaryItemText>Total</SummaryItemText>
-                                    <SummaryItemPrice>₹ {grandTotal}</SummaryItemPrice>
-                                </SummaryItem>
-                                <Button type='submit'>CHECKOUT NOW</Button>
-                            </Summary>
-                        </Form>
+                        <Summary>
+                            <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+                            <SummaryItem>
+                                <SummaryItemText>SubTotal</SummaryItemText>
+                                <SummaryItemPrice>₹ {subTotal}</SummaryItemPrice>
+                            </SummaryItem>
+                            <SummaryItem>
+                                <SummaryItemText>Estimated Shipping</SummaryItemText>
+                                <SummaryItemPrice>₹ 125</SummaryItemPrice>
+                            </SummaryItem>
+                            <SummaryItem type='total'>
+                                <SummaryItemText>Total</SummaryItemText>
+                                <SummaryItemPrice>₹ {grandTotal + 125}</SummaryItemPrice>
+                            </SummaryItem>
+                        </Summary>
+                        <Button onClick={preOrder}>Proceed to Checkout</Button>
                     </Box>
                 </Bottom>
             </Wrapper>

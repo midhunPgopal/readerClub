@@ -1,16 +1,16 @@
 import React from 'react'
 import AdminNavbar from '../../components/Admin/AdminNavbar'
 import AdminFooter from '../../components/Admin/AdminFooter'
-import AdminProduct from '../../components/ProductManagement/AdminProduct'
+import UsersAdmin from '../../components/UserManagement/UsersAdmin'
 
-const AdminHome = () => {
+const AdminUser = () => {
   return (
     <>
     <AdminNavbar/>
-    <AdminProduct/>
+    <UsersAdmin/>
     <AdminFooter/>
     </>
   )
 }
 
-export default AdminHome
+export default AdminUser

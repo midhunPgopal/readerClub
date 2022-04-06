@@ -1,15 +1,17 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import EditCategoryForm from '../../components/CategoryManagement/EditCategoryForm'
 import AdminNavbar from '../../components/Admin/AdminNavbar'
 import AdminFooter from '../../components/Admin/AdminFooter'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
+import EditUserForm from '../../components/UserManagement/EditUserForm'
 
 const Container = styled.div`
   background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
-    url('https://mcdn.wallpapersafari.com/medium/96/49/1qkOeG.jpg') center;
-  background-size: cover;
+        url('https://mcdn.wallpapersafari.com/medium/96/49/1qkOeG.jpg') center;
+    background-size: cover;
+
 `
 const Title = styled.h1`
   margin: 50px 0px 0px 50px;
@@ -22,31 +24,32 @@ const FormContainer = styled.div`
   padding: 10px;
 `
 
-const EditCategory = () => {
+const EditUser = () => {
 
   const location = useLocation()
   const id = location.pathname.split('/')[2]
+  
+  const admin = useSelector(state => state.admin)
+  const header = admin.currentAdmin.accessToken
 
-  const [category, setCategory] = useState()
+  const [user, setUser] = useState()
 
-  const getCategory = async () => {
-    const res = await axios.get('http://localhost:3001/api/categories/find/' + id)
-    let {category, img} = res.data
-    const data = {category, img}
-    setCategory(data)
-  }
+  const getOrder = async () => {
+    const res = await axios.get('http://localhost:3001/api/users/find/' + id, {headers: {header}})
+    setUser(res.data)
+}
 
-  useEffect(() => {
-    getCategory()
+useEffect(() => {
+    getOrder()
   }, [id])
 
   return (
     <> 
       <AdminNavbar />
       <Container>
-        <Title>Update Category</Title>
+        <Title>Update UserDetails</Title>
         <FormContainer>
-          {category ? <EditCategoryForm preloadedData={category} /> : <h1 style={{ textAlign: 'center' }}>Loading..</h1>}
+          {user ? <EditUserForm preloadedData={user} /> : <h1 style={{ textAlign: 'center' }}>Loading..</h1>}
         </FormContainer>
       </Container>
       <AdminFooter />
@@ -54,4 +57,4 @@ const EditCategory = () => {
   )
 }
 
-export default EditCategory
+export default EditUser

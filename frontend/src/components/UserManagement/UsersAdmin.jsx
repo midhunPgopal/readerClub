@@ -17,7 +17,7 @@ const Title = styled.h1`
 `
 const Table = styled.table`
     padding: 20px;
-    margin: 20px 0px 20px 0px;
+    margin: 20px 0px 20px;
     width: 100%;
 `
 const Td = styled.td`
@@ -35,7 +35,7 @@ const Thead = styled.thead`
 `
 const Tr = styled.tr`
    &:hover {
-       background-color: #ccf6d678;
+       background-color: #c8edd2fe;
    }
 `
 const Tbody = styled.tbody`
@@ -50,7 +50,21 @@ const Hr = styled.div`
 const Button = styled.button`
     padding: 5px;
     border: none;
-    background-color: #8bf1a5fe;
+   background-color: #8bf1a5fe;
+   color: white;
+   text-align: center;
+   cursor: pointer;
+   border-radius: 20px;
+   box-shadow: 2px 4px lightgrey;
+
+   &:hover {
+    background-color: #00ff40fe;
+   }
+`
+const ButtonBlock = styled.button`
+    padding: 5px;
+    border: none;
+    background-color: rgb(249, 121, 121);
     color: white;
     text-align: center;
     cursor: pointer;
@@ -58,30 +72,30 @@ const Button = styled.button`
     box-shadow: 2px 4px lightgrey;
 
     &:hover {
-        background-color: #00ff40fe;
+        background-color: rgb(246, 0, 0);
     }
 `
 
-const OrdersAdmin = () => {
+const UsersAdmin = () => {
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
 
-    const [orders, setOrders] = useState()
+    const [users, setUsers] = useState()
 
-    const getOrders = async () => {
-        const res = await axios.get('http://localhost:3001/api/orders/', { headers: { header } })
-        setOrders(res.data)
+    const getUsers = async () => {
+        const res = await axios.get('http://localhost:3001/api/users', { headers: { header } })
+        setUsers(res.data)
     }
 
     useEffect(() => {
-        getOrders()
+        getUsers()
     }, [])
 
     return (
         <Container>
             <Wrapper>
-                <Title>Your Orders</Title>
+                <Title>All users</Title>
                 <Hr />
                 <Table>
                     <Thead >
@@ -89,28 +103,26 @@ const OrdersAdmin = () => {
                             <Th scope="col">Created Date</Th>
                             <Th scope="col">Last Update</Th>
                             <Th scope="col">Name</Th>
-                            <Th scope="col">Shipping To</Th>
-                            <Th scope="col">Quantity</Th>
-                            <Th scope="col">Price</Th>
-                            <Th scope='col'>Payment</Th>
-                            <Th scope='col'>Status</Th>
+                            <Th scope="col">Email</Th>
+                            <Th scope="col">Mobile</Th>
+                            <Th scope="col">Admin Status</Th>
+                            <Th scope='col'></Th>
                             <Th scope='col'></Th>
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {orders?.map(data => (
+                        {users?.map(data => (
                             <Tr key={data._id}>
                                 <Td >{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
                                 <Td >{dateFormat(data.updatedAt, "mmmm dS, yyyy")}</Td>
-                                <Td>{data.deliveryAddress.name}</Td>
-                                <Td>{data.deliveryAddress.address} , {data.deliveryAddress.pincode}</Td>
-                                <Td>{data.products.length}</Td>
-                                <Td>₹{data.total}</Td>
-                                <Td>{data.payment}</Td>
-                                <Td >{data.status}</Td>
+                                <Td>{data.name}</Td>
+                                <Td>{data.email}</Td>
+                                <Td>{data.mobile}</Td>
+                                {data.isAdmin === true ? <Td>True</Td> : <Td>False</Td> }
+                                <Td><ButtonBlock>Block</ButtonBlock></Td>
                                 <Td>
-                                    <Link to={`/editorder/${data._id}`} style={{textDecoration: 'none'}}>
-                                        <Button>Update</Button>
+                                    <Link to={`/edituser/${data._id}`} style={{ textDecoration: 'none' }}>
+                                        <Button>Modify</Button>
                                     </Link>
                                 </Td>
                             </Tr>
@@ -122,4 +134,4 @@ const OrdersAdmin = () => {
     )
 }
 
-export default OrdersAdmin
+export default UsersAdmin

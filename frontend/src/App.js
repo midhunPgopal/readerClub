@@ -1,22 +1,25 @@
-import Cart from "./pages/User/Cart";
-import Home from "./pages/User/Home";
 import Login from "./pages/Auth/Login";
 import OtpLogin from './pages/Auth/OtpLogin'
-import Product from "./pages/User/Product";
-import ProductList from "./pages/User/ProductList";
 import Register from "./pages/Auth/Register";
-import Payment from "./pages/User/Payment";
+import Cart from "./pages/User/Cart";
+import Home from "./pages/User/Home";
+import Product from "./pages/User/Product";
+import Success from "./pages/User/Success";
 import Orders from "./pages/User/Orders";
+import ProductList from "./pages/User/ProductList";
+import Checkout from './pages/User/Checkout'
 import AdminHome from "./pages/Admin/AdminHome";
+import AdminProduct from "./pages/Admin/AdminProduct";
 import AdminLogin from "./pages/AdminAuth/AdminLogin";
 import EditProduct from "./pages/ProductManagement/EditProduct";
 import AdminCategory from "./pages/categoryManagement/AdminCategory";
-import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
-import {useSelector} from 'react-redux'
-import AdminProduct from "./pages/ProductManagement/AdminProduct";
 import EditCategory from "./pages/categoryManagement/EditCategory";
 import AdminOrder from "./pages/OrderManagement/AdminOrder";
 import EditOrder from './pages/OrderManagement/EditOrder'
+import AdminUser from "./pages/UserManagement/AdminUser";
+import EditUser from './pages/UserManagement/EditUser'
+import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
+import {useSelector} from 'react-redux'
 
 function App() {
 
@@ -34,8 +37,9 @@ function App() {
         <Route path="/products/:category" element={user ? <ProductList/> : <Navigate to='/login'/>}/>
         <Route path="/product/:id" element={ user ? <Product/> : <Navigate to='/login'/>}/>
         <Route path="/cart" element={user ? <Cart/> : <Navigate to='/login'/>}/>
+        <Route path="/checkout" element={user ? <Checkout/> : <Navigate to='/login'/>}/>
         <Route path="/orders" element={user ? <Orders/> : <Navigate to='/login'/>}/>
-        <Route path='/payment' element= {user ? <Payment/> : <Navigate to='/login'/>}/>
+        <Route path='/success' element= {user ? <Success/> : <Navigate to='/login'/>}/>
 
         {/* Admin routes */}
 
@@ -47,6 +51,8 @@ function App() {
         <Route path="/editcategory/:id" element={admin ? <EditCategory/> : <Navigate to='/adminlogin'/>}/>
         <Route path="/adminorder" element={admin ? <AdminOrder/> : <Navigate to='/adminlogin'/>}/>
         <Route path="/editorder/:id" element={admin ? <EditOrder/> : <Navigate to='/adminlogin'/>}/>
+        <Route path="/adminuser" element={admin ? <AdminUser/> : <Navigate to='/adminlogin'/>}/>
+        <Route path="/edituser/:id" element={admin ? <EditUser/> : <Navigate to='/adminlogin'/>}/>
       </Routes>
     </BrowserRouter>
   );

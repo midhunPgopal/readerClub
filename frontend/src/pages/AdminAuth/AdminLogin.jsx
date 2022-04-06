@@ -78,6 +78,10 @@ const Extra = styled.div`
     justify-content: space-between;
     cursor: pointer;
 `
+const Label = styled.label`
+    font-weight: bolder;
+    color: #1517165b;
+`
 toast.configure()
 const AdminLogin = () => {
     const [errAdmin, setErrAdmin] = useState()
@@ -124,11 +128,13 @@ const AdminLogin = () => {
                 </Extra>
                 <Title>Login as Admin</Title>
                 <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Label>Admin username</Label>
                     <Input id="username" placeholder='Username' {...register('username', { required: true })} />
                     <Error>
                         {errors.username && errors.username.type === "required" && <span>This is required</span>}
                         {errAdmin && <ErrorNotice message={errAdmin} />}
                     </Error>
+                    <Label>Admin Password</Label>
                     <Input id="password" type='password' placeholder='Password' {...register('password', { required: true })} />
                     <Error>
                         {errors.password && errors.password.type === "required" && <span>This is required</span>}

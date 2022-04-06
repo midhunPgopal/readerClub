@@ -5,7 +5,7 @@ import Navbar from '../../components/User/Navbar'
 import Newsletter from '../../components/User/Newsletter'
 import PaymentForm from '../../components/User/PaymentForm'
 
-const Payment = () => {
+const Success = () => {
     return (
         <>
             <Announcement />
@@ -17,4 +17,4 @@ const Payment = () => {
     )
 }
 
-export default Payment
+export default Success

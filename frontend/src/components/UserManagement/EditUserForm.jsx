@@ -47,10 +47,10 @@ const Label = styled.label`
     color: #1517165b;
 `
 toast.configure()
-const EditOrderForm = ({ preloadedData }) => {
+const EditUserForm = ({ preloadedData }) => {
 
     const notify = () => {
-        toast('Order updated', {
+        toast('User updated', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
@@ -65,10 +65,7 @@ const EditOrderForm = ({ preloadedData }) => {
     })
 
     const updateOrder = async (data) => {
-        let { name, mobile, email, pincode, address, status } = data
-        const deliveryAddress = { name, mobile, email, pincode, address }
-        const payload = { deliveryAddress, status }
-        await axios.put('http://localhost:3001/api/orders/' + id, payload, { headers: { header } })
+        await axios.put('http://localhost:3001/api/users/' + id, data, { headers: { header } })
         notify()
         navigate('/adminorder')
     }
@@ -99,29 +96,6 @@ const EditOrderForm = ({ preloadedData }) => {
                     {errors.mobile && errors.mobile.type === "maxLength" && <span>Mobile number should be 10 digits</span>}
                     {errors.mobile && errors.mobile.type === "minLength" && <span>Mobile number should be 10 digits</span>}
                 </Error>
-                <Label>Shipping Address</Label>
-                <Input id="address" type='text' placeholder='Full address' {...register('address', { required: true })} />
-                <Error>
-                    {errors.address && errors.address.type === "required" && <span>This is required</span>}
-                </Error>
-                <Label>Shipping Pincode</Label>
-                <Input id="pincode" type='number' placeholder='Pincode' {...register('pincode', { required: true, maxLength: 6, minLength: 6 })} />
-                <Error>
-                    {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
-                    {errors.pincode && errors.pincode.type === "maxLength" && <span>Pincode should be 6 digits</span>}
-                    {errors.pincode && errors.pincode.type === "minLength" && <span>Pincode should be 6 digits</span>}
-                </Error>
-                <Label>Order Status</Label>
-                <Select {...register("status", { required: true })}>
-                    <option value={preloadedData.status}>{preloadedData.status}</option>
-                    <option value="Order placed">Order placed</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
-                </Select>
-                <Error>
-                    {errors.payment && errors.payment.type === "required" && <span>This is required</span>}
-                </Error>
             </InputContainer>
             <ButtonContainer>
                 <ButtonSubmit>Update</ButtonSubmit>
@@ -130,4 +104,4 @@ const EditOrderForm = ({ preloadedData }) => {
     )
 }
 
-export default EditOrderForm
+export default EditUserForm

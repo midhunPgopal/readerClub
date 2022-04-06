@@ -8,10 +8,14 @@ import { useSelector } from 'react-redux'
 import EditOrderForm from '../../components/OrderManagement/EditOrderForm'
 
 const Container = styled.div`
-  margin: 70px;
-  padding: 10px;
+  background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
+        url('https://mcdn.wallpapersafari.com/medium/96/49/1qkOeG.jpg') center;
+    background-size: cover;
+
 `
 const Title = styled.h1`
+  margin: 50px 0px 0px 50px;
+  text-align: left;
   font-weight: 600;
   color: #30163efe;
 `
