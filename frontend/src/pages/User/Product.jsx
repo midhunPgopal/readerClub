@@ -109,35 +109,21 @@ toast.configure()
 const Product = () => {
 
     const dispatch = useDispatch()
-
     const location = useLocation()
+
+    const user = useSelector((state) => state.user.currentUser)
+    const userId = user.user._id
+    const header = user.accessToken
     const id = location.pathname.split('/')[2]
+
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(1)
     const [chapter, setChapter] = useState('')
     const [price, setPrice] = useState()
 
-    const user = useSelector((state) => state.user.currentUser)
-    const userId = user.user._id
-    const header = user.accessToken
-
     const notify = () => toast.success('Item added', {
         position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
-
-    useEffect(() => {
-        const getProduct = async () => {
-            try {
-                const res = await axios.get('http://localhost:3001/api/products/find/' + id, {headers: { userId } })
-                setProduct(res.data)
-                setPrice(res.data.price)
-            } catch (error) {
-                console.log(error)
-                error.response.data.status && dispatch(logOut())
-            }
-        }
-        getProduct()
-    }, [id])
 
     const handleQuantity = (type) => {
         if (type === 'dec') {
@@ -148,15 +134,30 @@ const Product = () => {
     }
     const handleClick = async () => {
         try {
-            const total = price*quantity
+            const total = price * quantity
             const data = { userId, product, quantity, chapter, total }
-            await axios.post('http://localhost:3001/api/cart/', data, {headers : { header, userId } })
-            notify() 
+            await axios.post('http://localhost:3001/api/cart/', data, { headers: { header, userId } })
+            notify()
         } catch (error) {
             console.log(error)
             error.response.data.status && dispatch(logOut())
         }
     }
+
+    const getProduct = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/api/products/find/' + id, { headers: { userId } })
+            setProduct(res.data)
+            setPrice(res.data.price)
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
+        }
+    }
+
+    useEffect(() => {
+        getProduct()
+    }, [id])
 
     return (
         <Container>
@@ -170,7 +171,7 @@ const Product = () => {
                     <Title>{product.title}</Title>
                     <Description>{product.description}</Description>
                     <Description>Author : <b>{product.author}</b></Description>
-                    <Description>Category : <b>{product.categories?.map(category => category+' ,')}</b></Description>
+                    <Description>Category : <b>{product.categories?.map(category => category + ' ,')}</b></Description>
                     <Description>Published by <b>{product.publisher}</b> on {dateFormat(product.publishedAt, "mmmm dS, yyyy")}</Description>
                     <Price>₹ {product.price}</Price>
                     <FilterContainer>

@@ -8,6 +8,8 @@ import Success from "./pages/User/Success";
 import Orders from "./pages/User/Orders";
 import ProductList from "./pages/User/ProductList";
 import Checkout from './pages/User/Checkout'
+import Wishlist from './pages/User/Wishlist'
+
 import AdminHome from "./pages/Admin/AdminHome";
 import AdminProduct from "./pages/Admin/AdminProduct";
 import AdminLogin from "./pages/AdminAuth/AdminLogin";
@@ -18,6 +20,7 @@ import AdminOrder from "./pages/OrderManagement/AdminOrder";
 import EditOrder from './pages/OrderManagement/EditOrder'
 import AdminUser from "./pages/UserManagement/AdminUser";
 import EditUser from './pages/UserManagement/EditUser'
+
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 
@@ -40,6 +43,7 @@ function App() {
         <Route path="/checkout" element={user ? <Checkout /> : <Navigate to='/login' />} />
         <Route path="/orders" element={user ? <Orders /> : <Navigate to='/login' />} />
         <Route path='/success' element={user ? <Success /> : <Navigate to='/login' />} />
+        <Route path='/wishlist' element={user ? <Wishlist /> : <Navigate to='/login' />} />
 
         {/* Admin routes */}
 

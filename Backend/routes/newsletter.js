@@ -9,8 +9,8 @@ router.post('/', async (req, res) => {
     }
     const newEmail = new Newsletter({email})
     try {
-        const savedEmail = await newEmail.save()
-        res.status(200).json({savedEmail})
+        await newEmail.save()
+        res.status(200).json({msg: 'Email id added'})
     } catch (error) {
         res.status(500).json(error)
     }

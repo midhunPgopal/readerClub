@@ -38,6 +38,7 @@ const Select = styled.select`
 const Option = styled.option``
 
 const ProductList = () => {
+
     const location = useLocation()
     const cat = location.pathname.split('/')[2]
 
@@ -45,15 +46,16 @@ const ProductList = () => {
     const [sort, setSort] = useState('newest')
     const [categories, setCategories] = useState()
 
-    useEffect(() => {
-        const getCategories = async () => {
-            try {
-                const res = await axios.get('http://localhost:3001/api/categories')
-                setCategories(res.data)
-            } catch (error) {
-                console.log(error)
-            }
+    const getCategories = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/api/categories')
+            setCategories(res.data)
+        } catch (error) {
+            console.log(error)
         }
+    }
+    
+    useEffect(() => {
         getCategories()
     }, [])
 

@@ -81,6 +81,9 @@ const Logo = styled.h1`
 
 toast.configure()
 const Navbar = () => {
+
+    const dispatch = useDispatch()
+
     const user = useSelector((state) => state.user.currentUser)
 
     const notify = () => {
@@ -89,7 +92,6 @@ const Navbar = () => {
         });
     }
 
-    const dispatch = useDispatch()
     const handleClick = async () => {
         const logout = (dispatch) => {
             dispatch(logOut())
@@ -118,32 +120,15 @@ const Navbar = () => {
                         </Link>
                     </Center>
                     <Right>
-                        {user ? <>
-                            <Title >Welcome <b style={{ textTransform: 'uppercase', color: 'teal' }}>{user.user.name}</b></Title>
-                            <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
-                            <Link to='/cart'>
-                                <MenuItem>
-                                    <Badge color="secondary">
-                                        <ShoppingCartOutlinedIcon />
-                                    </Badge>
-                                </MenuItem>
-                            </Link>
-                        </>
-                            : <>
-                                <Link to='/register' style={{ textDecoration: 'none' }}>
-                                    <MenuItem>REGISTER</MenuItem>
-                                </Link>
-                                <Link to='/login' style={{ textDecoration: 'none' }}>
-                                    <MenuItem>LOGIN</MenuItem>
-                                </Link>
-                                <Link to='/cart'>
-                                    <MenuItem>
-                                        <Badge  color="secondary">
-                                            <ShoppingCartOutlinedIcon />
-                                        </Badge>
-                                    </MenuItem>
-                                </Link>
-                            </>}
+                        <Title >Welcome <b style={{ textTransform: 'uppercase', color: 'teal' }}>{user.user.name}</b></Title>
+                        <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
+                        <Link to='/cart'>
+                            <MenuItem>
+                                <Badge color="secondary">
+                                    <ShoppingCartOutlinedIcon />
+                                </Badge>
+                            </MenuItem>
+                        </Link>
                     </Right>
                 </Wrapper>
             </Container>

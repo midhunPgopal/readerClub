@@ -23,7 +23,7 @@ router.post('/', verifyToken, async (req, res) => {
 router.delete('/:id', verifyToken, async (req, res) => {
     try {
         await PreOrder.deleteMany({UserId: req.params.id})
-        res.status(200).json({msg:'deleted'})
+        res.status(200).json({msg:'Pre-order deleted'})
     } catch (error) {
         res.status(500).json(error)
     }

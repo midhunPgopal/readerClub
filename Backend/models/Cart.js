@@ -11,11 +11,13 @@ const CartSchema = new mongoose.Schema({
     },
     chapter: {
         type: String,
-        default: 1
+        default: 1,
+        required: true
     },
     quantity: {
         type: Number,
-        default: 1
+        default: 1,
+        required: true
     },
     total: {
         type: Number,

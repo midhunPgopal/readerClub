@@ -28,23 +28,23 @@ const EditUser = () => {
 
   const location = useLocation()
   const id = location.pathname.split('/')[2]
-  
+
   const admin = useSelector(state => state.admin)
   const header = admin.currentAdmin.accessToken
 
   const [user, setUser] = useState()
 
   const getOrder = async () => {
-    const res = await axios.get('http://localhost:3001/api/users/find/' + id, {headers: {header}})
+    const res = await axios.get('http://localhost:3001/api/users/find/' + id, { headers: { header } })
     setUser(res.data)
-}
+  }
 
-useEffect(() => {
+  useEffect(() => {
     getOrder()
   }, [id])
 
   return (
-    <> 
+    <>
       <AdminNavbar />
       <Container>
         <Title>Update UserDetails</Title>

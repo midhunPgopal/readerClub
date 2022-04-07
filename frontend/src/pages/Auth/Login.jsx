@@ -84,11 +84,14 @@ const Label = styled.label`
 `
 toast.configure()
 const Login = () => {
+    const dispatch = useDispatch()
+
+    const { isFetching } = useSelector(state => state.user)
+
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    
     const [errUser, setErrUser] = useState()
     const [errPassword, setErrPassword] = useState()
-    const dispatch = useDispatch()
-    const { isFetching } = useSelector(state => state.user)
-    const { register, handleSubmit, formState: { errors } } = useForm()
 
     const notify = () => toast.success('Now you can order', {
         position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,

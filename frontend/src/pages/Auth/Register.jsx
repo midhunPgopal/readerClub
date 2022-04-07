@@ -81,19 +81,15 @@ toast.configure()
 const Register = () => {
 
     const navigate = useNavigate()
+    
+    const { register, handleSubmit, formState: { errors } } = useForm()
+
     const [errUser, setErrUser] = useState()
     const [errUsername, setErrUsername] = useState()
     const [errPassword, setErrPassword] = useState()
-    const { register, handleSubmit, formState: { errors } } = useForm()
 
     const notify = () => toast.success('Your details have been stored', {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
 
     const onSubmit = async (data) => {

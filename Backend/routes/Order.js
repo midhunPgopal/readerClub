@@ -8,8 +8,8 @@ const verifyStatus = require('./verifyStatus')
 router.post('/', verifyToken, verifyStatus, async (req, res) => {
     const newOrder = new Order(req.body)
     try {
-        const savedOrder = await newOrder.save()
-        res.status(200).json(savedOrder)
+        await newOrder.save()
+        res.status(200).json({msg: 'Order created'})
     } catch (error) {
         res.status(500).json(error)
     }
@@ -19,10 +19,10 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
 
 router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     try {
-        const updateOrder = await Order.findByIdAndUpdate(req.params.id, {
+        await Order.findByIdAndUpdate(req.params.id, {
             $set:{ 'deliveryAddress': req.body.deliveryAddress , 'status' : req.body.status }
         }) 
-        res.status(200).json(updateOrder)
+        res.status(200).json({msg: 'Order updated'})
     } catch (error) {
         res.status(500).json(error)
     }
@@ -32,10 +32,10 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
 
 router.put('/cancel/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
-        const updateOrder = await Order.findByIdAndUpdate(req.params.id, {
+        await Order.findByIdAndUpdate(req.params.id, {
             $set: {'status':'Cancelled'}
         })
-        res.status(200).json(updateOrder)
+        res.status(200).json({msg: 'Order cancelled'})
     } catch (error) {
         res.status(500).json(error)
     }

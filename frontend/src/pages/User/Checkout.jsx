@@ -104,19 +104,21 @@ const RadioLabel = styled.p`
 
 toast.configure()
 const Cart = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm()
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const [price, setPrice] = useState()
+    const { register, handleSubmit, formState: { errors } } = useForm()
 
     const user = useSelector(state => state.user)
     const userId = user.currentUser.user._id
-    const header = user.currentUser.accessToken 
+    const header = user.currentUser.accessToken
+
+    const [price, setPrice] = useState()
 
     const notify = () => toast.success('Order succesful', {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
+
     const getData = async () => {
         try {
             const response = await axios.get(`http://localhost:3001/api/preorder/` + userId, { headers: { header, userId } })
@@ -127,11 +129,6 @@ const Cart = () => {
             error.response.data.status && dispatch(logOut())
         }
     }
-
-    useEffect(() => {
-        getData()
-    }, [header])
-
     const onSubmit = async (data) => {
         let { name, email, mobile, address, pincode, payment } = data
         const deliveryAddress = { name, email, mobile, address, pincode }
@@ -139,7 +136,7 @@ const Cart = () => {
         const products = total
         const payload = { userId, products, total, deliveryAddress, payment }
         try {
-            if(payment === 'Cash on delivery'){
+            if (payment === 'Cash on delivery') {
                 await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
                 await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header } })
                 notify()
@@ -150,6 +147,10 @@ const Cart = () => {
             error.response.data.status && dispatch(logOut())
         }
     }
+
+    useEffect(() => {
+        getData()
+    }, [header])
 
     return (
         <Container>
@@ -195,8 +196,8 @@ const Cart = () => {
                                 {errors.pincode && errors.pincode.type === "minLength" && <span>Pincode should be 6 digits</span>}
                             </Error>
                             <Label>Payment method</Label>
-                            <RadioLabel><Input type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")}/>Cash on Delivery</RadioLabel>
-                            <RadioLabel><Input type="radio" value="Online Payment" id="Online Payment" {...register("payment")}/>Online Payment</RadioLabel>
+                            <RadioLabel><Input type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} />Cash on Delivery</RadioLabel>
+                            <RadioLabel><Input type="radio" value="Online Payment" id="Online Payment" {...register("payment")} />Online Payment</RadioLabel>
                         </InputContainer>
                         <Summary>
                             <SummaryTitle><b>Final Payment</b></SummaryTitle>

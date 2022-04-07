@@ -88,25 +88,43 @@ const Product = ({ item }) => {
     const user = useSelector((state) => state.user.currentUser)
     const userId = user.user._id
     const header = user.accessToken
+    
     const quantity = 1
     const chapter = 1
-
-    const notify = () => toast.success('Item added', {
-        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
-    })
     const total = item.price
 
-    const addCart = async (product) => {
+    const notifyCart = () => toast.success('Item added to cart', {
+        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
+    })
+    const notifyWishlist = () => toast.success('Item added to wishlist', {
+        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
+    })
+    const notify = () => toast.error('Product already added', {
+        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
+    })
+    
+
+    const addToCart = async (product) => {
         const data = { userId, product, quantity, chapter, total }
-        console.log(data)
         try {
             await axios.post('http://localhost:3001/api/cart/', data, { headers: { header, userId } })
-            notify()
+            notifyCart()
         } catch (error) {
             console.log(error)
             error.response.data.status && dispatch(logOut())
         }
-
+    }
+    const addToWishlist = async (product) => {
+        const productId = product._id
+        const payload = { userId, productId, product }
+        try {
+            await axios.post('http://localhost:3001/api/wishlist/', payload, { headers: { header, userId } })
+            notifyWishlist()
+        } catch (error) {
+            console.log(error.response)
+            error.response.data.msg && notify()
+            error.response.data.status && dispatch(logOut())
+        }
     }
 
     return (
@@ -118,7 +136,7 @@ const Product = ({ item }) => {
             </Card>
             <Info>
                 <Icon>
-                    <ShoppingCartRoundedIcon onClick={() => addCart(item)}/>
+                    <ShoppingCartRoundedIcon onClick={() => addToCart(item)}/>
                 </Icon>
                 <Icon>
                     <Link to={`/product/${item._id}`}>
@@ -126,7 +144,7 @@ const Product = ({ item }) => {
                     </Link>
                 </Icon>
                 <Icon>
-                    <FavoriteRoundedIcon />
+                    <FavoriteRoundedIcon onClick={() => addToWishlist(item)}/>
                 </Icon>
             </Info>
         </Container>

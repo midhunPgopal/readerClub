@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Announcement from '../../components/User/Announcement'
 import Footer from '../../components/User/Footer'
 import Navbar from '../../components/User/Navbar'
@@ -12,7 +12,6 @@ import { logOut } from '../../redux/userRedux'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
 import { confirm } from "react-confirm-box"
 
 const Container = styled.div``
@@ -36,14 +35,6 @@ const TopButton = styled.button`
     border: ${props => props.type === 'filled' && 'none'};
     background-color: ${props => props.type === 'filled' ? 'black' : 'transperant'};
     color: ${props => props.type === 'filled' && 'white'};
-`
-const TopTexts = styled.div`
-    ${mobile({ display: 'none' })}
-`
-const TopText = styled.span`
-    text-decoration: underline;
-    cursor: pointer;
-    margin: 0px 10px;
 `
 const Bottom = styled.div`
     display: flex;
@@ -142,31 +133,31 @@ const Cart = () => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-
+    
+    const user = useSelector(state => state.user)
+    const userId = user.currentUser.user._id
+    const header = user.currentUser.accessToken
+    
     const [resData, setResData] = useState()
     const [subTotal, setSubTotal] = useState()
     const [grandTotal, setGrandTotal] = useState()
     const [productQuantity, setProductQuantity] = useState()
     const [cartId, setCartId] = useState()
     const [productPrice, setProductPrice] = useState()
-    
-    const user = useSelector(state => state.user)
-    const userId = user.currentUser.user._id
-    const header = user.currentUser.accessToken 
 
     const notify = () => toast('Lets finish this order', {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
-    const notifyDelete = () => toast.success('Item deleted', {
+    const notifyDelete = () => toast.success('Item removed from your cart', {
         position: "top-center", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
+    
     const getData = async () => {
         try {
             const response = await axios.get(`http://localhost:3001/api/cart/find/` + userId, { headers: { header, userId } })
             setResData(response.data.cart)
         } catch (error) {
             console.log(error)
-            console.log(error.response.data.status)
             error.response.data.status && dispatch(logOut())
         }
     }
@@ -222,14 +213,14 @@ const Cart = () => {
         }
     }
     const preOrder = async () => {
-        await axios.post('http://localhost:3001/api/preorder', {userId, grandTotal}, { headers: { header } })
+        await axios.post('http://localhost:3001/api/preorder', { userId, grandTotal }, { headers: { header } })
         navigate('/checkout')
         notify()
     }
-    
+
     useEffect(() => {
         removePreOrders()
-        updateCart() 
+        updateCart()
         getData()
     }, [header, productQuantity])
     useEffect(() => {
@@ -247,9 +238,7 @@ const Cart = () => {
             <Wrapper>
                 <Title>Your CART</Title>
                 <Top>
-                    <TopTexts>
-                        <TopText>Your Wishlist</TopText>
-                    </TopTexts>
+                    <TopButton><Link to='/wishlist' style={{ textDecoration: 'none' }}>Your Wishlist</Link></TopButton>
                     <TopButton><Link to='/products' style={{ textDecoration: 'none' }}>Continue Shopping</Link></TopButton>
                 </Top>
                 <Bottom>

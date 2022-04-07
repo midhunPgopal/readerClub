@@ -25,7 +25,7 @@ const FormContainer = styled.div`
 const EditCategory = () => {
 
   const location = useLocation()
-  const id = location.pathname.split('/')[2]
+  const id = location.pathname.split('/')[2] 
 
   const [category, setCategory] = useState()
 

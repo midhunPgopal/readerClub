@@ -87,11 +87,11 @@ const ButtonDelete = styled.button`
 toast.configure()
 const CategoryAdmin = () => {
 
-    const [categories, setCategories] = useState()
-
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
-
+    
+    const [categories, setCategories] = useState()
+    
     const notifyDelete = () => toast.success('Product deleted', {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
@@ -100,11 +100,7 @@ const CategoryAdmin = () => {
         const res = await axios.get('http://localhost:3001/api/categories')
         setCategories(res.data)
     }
-
-    useEffect(() => {
-        getCategories()
-    }, [])
-
+    
     const deleteCat = async (id) => {
         const result = await confirm('Are you sure?')
         if (result) {
@@ -113,6 +109,10 @@ const CategoryAdmin = () => {
             getCategories()
         }
     }
+
+    useEffect(() => {
+        getCategories()
+    }, [])
 
     return (
         <Container>

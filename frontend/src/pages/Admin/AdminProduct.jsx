@@ -67,7 +67,9 @@ const FilterSizeOption = styled.option``
 const AdminProduct = () => {
 
     const location = useLocation()
+
     const id = location.pathname.split('/')[2]
+    
     const [product, setProduct] = useState({})
 
     useEffect(() => {

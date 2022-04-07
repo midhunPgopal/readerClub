@@ -6,10 +6,10 @@ const User = require('../models/User')
 
 router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     try {
-        const updateUser = await User.findByIdAndUpdate({_id: req.params.id}, {
+        await User.findByIdAndUpdate({_id: req.params.id}, {
             $set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
         })
-        res.status(200).json(updateUser)
+        res.status(200).json({msg:'User updated'})
     } catch (error) {
         res.status(500).json(error)
     }

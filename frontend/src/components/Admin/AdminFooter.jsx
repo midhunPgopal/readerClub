@@ -6,7 +6,6 @@ import PinterestIcon from '@mui/icons-material/Pinterest'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg'
 import EmailIcon from '@mui/icons-material/Email'
-
 import { Link } from 'react-router-dom';
 import { mobile } from "../../responsive"
 

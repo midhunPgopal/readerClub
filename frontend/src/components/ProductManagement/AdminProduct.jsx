@@ -153,31 +153,15 @@ const Error = styled.span`
 toast.configure()
 const AdminProduct = () => {
 
+  const admin = useSelector(state => state.admin)
+  const header = admin.currentAdmin.accessToken
+  
   const { register, handleSubmit, formState: { errors } } = useForm()
-
+  
   const [product, setProduct] = useState()
   const [flag, setFlag] = useState(false)
   const [check, setCheck] = useState(false)
-
-  const admin = useSelector(state => state.admin)
-  const header = admin.currentAdmin.accessToken
-
-  const getProducts = async () => {
-    const res = await axios.get('http://localhost:3001/api/products/')
-    setProduct(res.data)
-  }
-
-  useEffect(() => {
-    getProducts()
-  }, [flag])
-
-  const getFlag = () => {
-    setFlag(true)
-  }
-  const getCheck = () => {
-    setCheck(true)
-  }
-
+  
   const notify = () => toast.success('Product added', {
     position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
   })
@@ -188,6 +172,16 @@ const AdminProduct = () => {
     position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
   })
 
+  const getProducts = async () => {
+    const res = await axios.get('http://localhost:3001/api/products/')
+    setProduct(res.data)
+  }
+  const getFlag = () => {
+    setFlag(true)
+  }
+  const getCheck = () => {
+    setCheck(true)
+  }
   const addProduct = async (data) => {
     await axios.post('http://localhost:3001/api/products/', data, { headers: { header } })
     notify()
@@ -207,6 +201,10 @@ const AdminProduct = () => {
     setCheck(false)
   }
 
+  useEffect(() => {
+    getProducts()
+  }, [flag])
+  
   return (
     <Container>
       <TopButton>

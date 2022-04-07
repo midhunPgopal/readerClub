@@ -15,8 +15,8 @@ router.get('/', verifyToken, verifyStatus, async (req, res) => {
 router.post('/', verifyTokenAndAdmin, async (req, res) => {
     const newBanner = new Banner(req.body)
     try {
-        const savedBanner = await newBanner.save()
-        res.status(200).json(savedBanner)
+        await newBanner.save()
+        res.status(200).json({msg: 'Banner created'})
     } catch (error) {
         res.status(500).json(error)
     }

@@ -67,13 +67,7 @@ const Newsletter = () => {
     const[err, setErr] = useState()
 
     const notify = () => toast.success('Subscribed', {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        position: "top-center", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
 
     const onSubmit = async (data) => {
@@ -85,6 +79,7 @@ const Newsletter = () => {
             error.response.data.msg && setErr(error.response.data.msg)
         }
     }
+    
     return (
         <Container>
             <Title>NewsLetter</Title>

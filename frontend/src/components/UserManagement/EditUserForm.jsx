@@ -49,20 +49,22 @@ const Label = styled.label`
 toast.configure()
 const EditUserForm = ({ preloadedData }) => {
 
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const admin = useSelector(state => state.admin)
+    const header = admin.currentAdmin.accessToken
+    const id = location.pathname.split('/')[2]
+    
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        defaultValues: preloadedData
+    })
+    
     const notify = () => {
         toast('User updated', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
-    const navigate = useNavigate()
-    const location = useLocation()
-    const id = location.pathname.split('/')[2]
-    const admin = useSelector(state => state.admin)
-    const header = admin.currentAdmin.accessToken
-
-    const { register, handleSubmit, formState: { errors } } = useForm({
-        defaultValues: preloadedData
-    })
 
     const updateOrder = async (data) => {
         await axios.put('http://localhost:3001/api/users/' + id, data, { headers: { header } })

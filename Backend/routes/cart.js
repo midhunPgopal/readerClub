@@ -8,8 +8,8 @@ const verifyStatus = require('./verifyStatus')
 router.post('/', verifyToken, verifyStatus, async (req, res) => {
     const newCart = new Cart(req.body)
     try {
-        const savedCart = await newCart.save()
-        res.status(200).json(savedCart)
+        await newCart.save()
+        res.status(200).json({msg:'Cart saved'})
     } catch (error) {
         res.status(500).json(error)
     }
@@ -19,21 +19,10 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
 
 router.put('/quantity/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
-        const updateCart = await Cart.findByIdAndUpdate({_id: req.params.id}, {
+        await Cart.findByIdAndUpdate({_id: req.params.id}, {
             $set: {'quantity': req.body.productQuantity, 'total': req.body.total}
         })
-        res.status(200).json(updateCart)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-
-//Delete cart
-
-router.delete('/:id', verifyToken, verifyStatus, async(req, res) => {
-    try {
-        await Cart.deleteMany({userId: req.params.id})
-        res.status(200).json('Cart deleted')
+        res.status(200).json({msg: 'Cart updated'})
     } catch (error) {
         res.status(500).json(error)
     }

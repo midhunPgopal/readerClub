@@ -81,6 +81,8 @@ const Logo = styled.h1`
 
 toast.configure()
 const Navbar = () => {
+
+    const dispatch = useDispatch()
     const admin = useSelector((state) => state.admin.currentAdmin)
 
     const notify = () => {
@@ -89,7 +91,6 @@ const Navbar = () => {
         })
     }
 
-    const dispatch = useDispatch()
     const handleClick = async () => {
         const logout = (dispatch) => {
             dispatch(logOut())

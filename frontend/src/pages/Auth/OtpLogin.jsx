@@ -82,23 +82,21 @@ const Label = styled.label`
 `
 toast.configure()
 const OtpLogin = () => {
-    const [number, setNumber] = useState()
+    
     const dispatch = useDispatch()
+    
     const { isFetching } = useSelector(state => state.user)
+    
+    const { register, handleSubmit, formState: { errors } } = useForm()
+    
+    const [number, setNumber] = useState()
     const [err, setErr] = useState()
     const [errOtp, setErrOtp] = useState()
-    const { register, handleSubmit, formState: { errors } } = useForm()
     const [minutes, setMinutes] = useState(0)
     const [seconds, setSeconds] = useState(60)
 
     const notify = () => toast.success('Now you can order', {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+        position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
 
     const onSubmit = async (data) => {
@@ -134,6 +132,7 @@ const OtpLogin = () => {
             error.response.data.msg && setErr(error.response.data.msg)
         }
     }
+
     useEffect(() => {
         let myInterval = setInterval(() => {
             if (seconds > 0) {

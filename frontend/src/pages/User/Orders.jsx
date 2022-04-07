@@ -70,18 +70,18 @@ toast.configure()
 const Orders = () => {
 
     const dispatch = useDispatch()
-    
+
+    const user = useSelector(state => state.user)
+    const userId = user.currentUser.user._id
+    const header = user.currentUser.accessToken
+
     const [orders, setOrders] = useState()
-    
+
     const notify = () => {
         toast.error('Order Cancelled', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
-
-    const user = useSelector(state => state.user)
-    const userId = user.currentUser.user._id
-    const header = user.currentUser.accessToken  
 
     const getOrders = async () => {
         try {
@@ -92,11 +92,6 @@ const Orders = () => {
             error.response.data.status && dispatch(logOut())
         }
     }
-
-    useEffect(() => {
-        getOrders()
-    }, [user])
-
     const cancelOrder = async (id) => {
         try {
             const result = await confirm('Do you want to cancel ?')
@@ -107,9 +102,13 @@ const Orders = () => {
             }
         } catch (error) {
             console.log(error)
-            error.response.data.status && dispatch(logOut())            
+            error.response.data.status && dispatch(logOut())
         }
     }
+
+    useEffect(() => {
+        getOrders()
+    }, [user])
 
     return (
         <Container>
@@ -139,9 +138,9 @@ const Orders = () => {
                                 <Td>₹{data.total}</Td>
                                 <Td>{data.payment}</Td>
                                 {data.status === 'Cancelled' ?
-                                <Td style={{ color: 'red' }}>{data.status}</Td> : <>
-                                    <Td >{data.status}</Td>
-                                    <Td><Button onClick={() => cancelOrder(data._id)}>Cancel</Button></Td>
+                                    <Td style={{ color: 'red' }}>{data.status}</Td> : <>
+                                        <Td >{data.status}</Td>
+                                        <Td><Button onClick={() => cancelOrder(data._id)}>Cancel</Button></Td>
                                     </>
                                 }
                             </Tr>

@@ -11,6 +11,8 @@ const newsletterRoute = require('./routes/newsletter')
 const adminAuthRoute = require('./routes/adminAuth')
 const categoryRoute = require('./routes/category')
 const preOrderRoute = require('./routes/preOrder')
+const wishlistRoute = require('./routes/wishlist')
+
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
@@ -33,5 +35,6 @@ app.use('/api/newsletter', newsletterRoute)
 app.use('/api/admin/auth', adminAuthRoute)
 app.use('/api/categories', categoryRoute)
 app.use('/api/preorder', preOrderRoute)
+app.use('/api/wishlist', wishlistRoute)
 
 app.listen(process.env.PORT || 5000, () => console.log(`Server running on ${process.env.PORT}`))
