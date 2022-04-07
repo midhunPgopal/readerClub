@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import Announcement from '../../components/User/Announcement'
 import Footer from '../../components/User/Footer'
@@ -9,6 +9,7 @@ import { mobile } from '../../responsive'
 import dateFormat from 'dateformat'
 import { confirm } from 'react-confirm-box'
 import { toast } from 'react-toastify'
+import { logOut } from '../../redux/userRedux'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -68,22 +69,28 @@ const Button = styled.div`
 toast.configure()
 const Orders = () => {
 
+    const dispatch = useDispatch()
+    
+    const [orders, setOrders] = useState()
+    
     const notify = () => {
         toast.error('Order Cancelled', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
 
-    const [orders, setOrders] = useState()
-
     const user = useSelector(state => state.user)
     const userId = user.currentUser.user._id
-    const header = user.currentUser.accessToken
+    const header = user.currentUser.accessToken  
 
     const getOrders = async () => {
-        const res = await axios.get('http://localhost:3001/api/orders/findusercart/' + userId, { headers: { header } })
-        console.log(res);
-        setOrders(res.data)
+        try {
+            const res = await axios.get('http://localhost:3001/api/orders/findusercart/' + userId, { headers: { header, userId } })
+            setOrders(res.data)
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
+        }
     }
 
     useEffect(() => {
@@ -91,11 +98,16 @@ const Orders = () => {
     }, [user])
 
     const cancelOrder = async (id) => {
-        const result = await confirm('Do you want to cancel ?')
-        if (result) {
-            await axios.put('http://localhost:3001/api/orders/cancel/' + id)
-            notify()
-            getOrders()
+        try {
+            const result = await confirm('Do you want to cancel ?')
+            if (result) {
+                await axios.put('http://localhost:3001/api/orders/cancel/' + id, { headers: { header, userId } })
+                notify()
+                getOrders()
+            }
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())            
         }
     }
 

@@ -1,10 +1,11 @@
 const router = require('express').Router()
 const {verifyToken, verifyTokenAndAdmin} = require('./verifyToken')
 const Order = require('../models/Order')
+const verifyStatus = require('./verifyStatus')
 
 //Creating
 
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, verifyStatus, async (req, res) => {
     const newOrder = new Order(req.body)
     try {
         const savedOrder = await newOrder.save()
@@ -29,7 +30,7 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
 
 //cancel cart
 
-router.put('/cancel/:id', async (req, res) => {
+router.put('/cancel/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
         const updateOrder = await Order.findByIdAndUpdate(req.params.id, {
             $set: {'status':'Cancelled'}
@@ -64,7 +65,7 @@ router.get('/find/:id', verifyTokenAndAdmin, async (req, res) => {
 })
 //Get single order for User
 
-router.get('/findusercart/:id', verifyToken, async (req, res) => {
+router.get('/findusercart/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
         const orders = await Order.find({userId: req.params.id})
         res.status(200).json(orders)
@@ -75,7 +76,7 @@ router.get('/findusercart/:id', verifyToken, async (req, res) => {
 
 //Get all 
 
-router.get('/' , verifyTokenAndAdmin, async (req, res) => {
+router.get('/', verifyTokenAndAdmin, async (req, res) => {
     try {
         const orders = await Order.find()
         res.status(200).json(orders)

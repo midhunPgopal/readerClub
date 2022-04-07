@@ -11,9 +11,9 @@ import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
-import { addProduct } from '../../redux/cartRedux'
 import axios from 'axios'
 import dateFormat from 'dateformat'
+import { logOut } from '../../redux/userRedux'
 
 
 const Container = styled.div``
@@ -108,13 +108,14 @@ const Amount = styled.span`
 toast.configure()
 const Product = () => {
 
+    const dispatch = useDispatch()
+
     const location = useLocation()
     const id = location.pathname.split('/')[2]
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(1)
     const [chapter, setChapter] = useState('')
     const [price, setPrice] = useState()
-    const dispatch = useDispatch()
 
     const user = useSelector((state) => state.user.currentUser)
     const userId = user.user._id
@@ -127,11 +128,12 @@ const Product = () => {
     useEffect(() => {
         const getProduct = async () => {
             try {
-                const res = await axios.get('http://localhost:3001/api/products/find/' + id)
+                const res = await axios.get('http://localhost:3001/api/products/find/' + id, {headers: { userId } })
                 setProduct(res.data)
                 setPrice(res.data.price)
             } catch (error) {
                 console.log(error)
+                error.response.data.status && dispatch(logOut())
             }
         }
         getProduct()
@@ -145,11 +147,15 @@ const Product = () => {
         }
     }
     const handleClick = async () => {
-        const total = price*quantity
-        const data = { userId, product, quantity, chapter, total }
-        await axios.post('http://localhost:3001/api/cart/', data, {headers : {header}})
-        dispatch(addProduct(product, quantity))
-        notify() 
+        try {
+            const total = price*quantity
+            const data = { userId, product, quantity, chapter, total }
+            await axios.post('http://localhost:3001/api/cart/', data, {headers : { header, userId } })
+            notify() 
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
+        }
     }
 
     return (

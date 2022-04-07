@@ -1,8 +1,9 @@
 const router = require('express').Router()
 const {verifyToken, verifyTokenAndAdmin} = require('./verifyToken')
 const Banner = requie('../models/Banner')
+const verifyStatus = require('./verifyStatus')
 
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', verifyToken, verifyStatus, async (req, res) => {
     try {
         const banner = await Banner.find()
         res.status(200).json(banner)

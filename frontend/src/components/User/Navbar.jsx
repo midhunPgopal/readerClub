@@ -6,7 +6,6 @@ import { mobile } from '../../responsive'
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logOut } from '../../redux/userRedux'
-import {removeProduct} from '../../redux/cartRedux'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirm } from "react-confirm-box"
@@ -93,7 +92,6 @@ const Navbar = () => {
     const dispatch = useDispatch()
     const handleClick = async () => {
         const logout = (dispatch) => {
-            dispatch(removeProduct())
             dispatch(logOut())
             notify()
         }

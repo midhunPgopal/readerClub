@@ -3,6 +3,8 @@ import Product from "./Product"
 import { useEffect, useState } from "react"
 import axios from 'axios'
 import { Link } from "react-router-dom"
+import { logOut } from "../../redux/userRedux"
+import { useDispatch, useSelector } from "react-redux"
 
 const Main = styled.div`
   display: flex;
@@ -35,16 +37,22 @@ const Button = styled.button`
 
 const Products = ({ cat, filters, sort }) => {
 
+  const dispatch = useDispatch()
+
+  const user = useSelector(state => state.user)
+  const userId = user.currentUser.user._id
+
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   useEffect(() => {
     const getproducts = async () => {
       try {
         const res = await axios.get(cat ? `http://localhost:3001/api/products?category=${cat}`
-          : `http://localhost:3001/api/products`)
+          : `http://localhost:3001/api/products`, {headers: {userId}})
         setProducts(res.data)
       } catch (error) {
-        console.log(error);
+        console.log(error)
+        error.response.data.status && dispatch(logOut())
       }
     }
     getproducts()
@@ -56,8 +64,12 @@ const Products = ({ cat, filters, sort }) => {
 
   useEffect(() => {
     const getFilteredProducts = async () => {
-      const res = await axios.get(`http://localhost:3001/api/products?category=${filters}`)
-      setFilteredProducts(res.data)
+      try {
+        const res = await axios.get(`http://localhost:3001/api/products?category=${filters}`)
+        setFilteredProducts(res.data)
+      } catch (error) {
+        console.log(error)
+      }
     }
     getFilteredProducts()
   }, [filters]);

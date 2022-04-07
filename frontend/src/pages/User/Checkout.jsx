@@ -3,18 +3,14 @@ import { Link } from 'react-router-dom'
 import Announcement from '../../components/User/Announcement'
 import Footer from '../../components/User/Footer'
 import Navbar from '../../components/User/Navbar'
-import RemoveIcon from '@mui/icons-material/Remove'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
 import { mobile } from '../../responsive'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { confirm } from "react-confirm-box"
+import { logOut } from '../../redux/userRedux'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -110,20 +106,26 @@ toast.configure()
 const Cart = () => {
     const { register, handleSubmit, formState: { errors } } = useForm()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [price, setPrice] = useState()
 
     const user = useSelector(state => state.user)
     const userId = user.currentUser.user._id
-    const header = user.currentUser.accessToken
+    const header = user.currentUser.accessToken 
 
     const notify = () => toast.success('Order succesful', {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
     const getData = async () => {
-        const response = await axios.get(`http://localhost:3001/api/preorder/` + userId, { headers: { header } })
-        let [resData] = response.data
-        setPrice(resData.grandTotal)
+        try {
+            const response = await axios.get(`http://localhost:3001/api/preorder/` + userId, { headers: { header, userId } })
+            let [resData] = response.data
+            setPrice(resData.grandTotal)
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
+        }
     }
 
     useEffect(() => {
@@ -136,11 +138,16 @@ const Cart = () => {
         const total = price
         const products = total
         const payload = { userId, products, total, deliveryAddress, payment }
-        if(payment === 'Cash on delivery'){
-            await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header } })
-            await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header } })
-            notify()
-            navigate('/success')
+        try {
+            if(payment === 'Cash on delivery'){
+                await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
+                await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header } })
+                notify()
+                navigate('/success')
+            }
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
         }
     }
 

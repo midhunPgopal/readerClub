@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const {verifyTokenAndAdmin} = require('../routes/verifyToken')
 const Product = require('../models/Product')
+const verifyStatus = require('./verifyStatus')
 
 //Creating
 
@@ -49,7 +50,7 @@ router.delete('/:id', verifyTokenAndAdmin, async(req, res) => {
 
 //Get product
 
-router.get('/find/:id', async (req, res) => {
+router.get('/find/:id', verifyStatus, async (req, res) => {
     try {
         const product = await Product.findById(req.params.id)
         res.status(200).json(product)
@@ -60,7 +61,7 @@ router.get('/find/:id', async (req, res) => {
 
 //Get all products
 
-router.get('/', async (req, res) => {
+router.get('/', verifyStatus, async (req, res) => {
     const qNew = req.query.new
     const qCategory = req.query.category
     try {

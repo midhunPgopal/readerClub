@@ -1,10 +1,11 @@
 const router = require('express').Router()
 const {verifyToken, verifyTokenAndAdmin} = require('../routes/verifyToken')
 const Cart = require('../models/Cart')
+const verifyStatus = require('./verifyStatus')
 
 //Creating
 
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, verifyStatus, async (req, res) => {
     const newCart = new Cart(req.body)
     try {
         const savedCart = await newCart.save()
@@ -16,7 +17,7 @@ router.post('/', verifyToken, async (req, res) => {
 
 //Update cart
 
-router.put('/quantity/:id', verifyToken, async (req, res) => {
+router.put('/quantity/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
         const updateCart = await Cart.findByIdAndUpdate({_id: req.params.id}, {
             $set: {'quantity': req.body.productQuantity, 'total': req.body.total}
@@ -29,7 +30,7 @@ router.put('/quantity/:id', verifyToken, async (req, res) => {
 
 //Delete cart
 
-router.delete('/:id', verifyToken, async(req, res) => {
+router.delete('/:id', verifyToken, verifyStatus, async(req, res) => {
     try {
         await Cart.deleteMany({userId: req.params.id})
         res.status(200).json('Cart deleted')
@@ -40,7 +41,7 @@ router.delete('/:id', verifyToken, async(req, res) => {
 
 //delete one cart entry
 
-router.delete('/find/:id', verifyToken, async(req, res) => {
+router.delete('/find/:id', verifyToken, verifyStatus, async(req, res) => {
     try {
         await Cart.findByIdAndDelete({_id: req.params.id})
         res.status(200).json('Cart deleted')
@@ -51,18 +52,18 @@ router.delete('/find/:id', verifyToken, async(req, res) => {
 
 //Get cart
 
-router.get('/find/:id', verifyToken, async (req, res) => {
+router.get('/find/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
         const cart = await Cart.find({userId: req.params.id})
         res.status(200).json({cart})
     } catch (error) {
-        console.log(error);
+        res.status(500).json(error)
     }
 })
 
 //Get all
 
-router.get('/', verifyTokenAndAdmin , async (req, res) => {
+router.get('/', verifyTokenAndAdmin, async (req, res) => {
     try {
         const cart = await Cart.find()
         res.status(200).json(cart)

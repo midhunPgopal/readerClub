@@ -6,13 +6,12 @@ import Navbar from '../../components/User/Navbar'
 import RemoveIcon from '@mui/icons-material/Remove'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
 import { mobile } from '../../responsive'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { logOut } from '../../redux/userRedux'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios'
-import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { confirm } from "react-confirm-box"
 
@@ -137,28 +136,12 @@ const Button = styled.button`
     font-weight: 600;
     cursor: pointer
 `
-const Form = styled.form`
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    ${mobile({ flexDirection: 'column' })}
-`
-const Input = styled.input`
-    flex: 1;
-    min-width: 40%;
-    margin: 10px 10px 0px 0px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
-`
-const Error = styled.span`
-    font-size: 14px;
-    padding: 5px;
-    color: #f16969;
-`
+
 toast.configure()
 const Cart = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm()
+
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [resData, setResData] = useState()
     const [subTotal, setSubTotal] = useState()
@@ -166,10 +149,10 @@ const Cart = () => {
     const [productQuantity, setProductQuantity] = useState()
     const [cartId, setCartId] = useState()
     const [productPrice, setProductPrice] = useState()
-
+    
     const user = useSelector(state => state.user)
     const userId = user.currentUser.user._id
-    const header = user.currentUser.accessToken
+    const header = user.currentUser.accessToken 
 
     const notify = () => toast('Lets finish this order', {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
@@ -178,54 +161,64 @@ const Cart = () => {
         position: "top-center", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
     const getData = async () => {
-        const response = await axios.get(`http://localhost:3001/api/cart/find/` + userId, { headers: { header } })
-        setResData(response.data.cart)
+        try {
+            const response = await axios.get(`http://localhost:3001/api/cart/find/` + userId, { headers: { header, userId } })
+            setResData(response.data.cart)
+        } catch (error) {
+            console.log(error)
+            console.log(error.response.data.status)
+            error.response.data.status && dispatch(logOut())
+        }
     }
     const removePreOrders = async () => {
-        await axios.delete('http://localhost:3001/api/preorder/' + userId, { headers: { header } })
+        try {
+            await axios.delete('http://localhost:3001/api/preorder/' + userId, { headers: { header } })
+        } catch (error) {
+            console.log(error)
+        }
     }
-    // const onSubmit = async (data) => {
-    //     let { name, email, mobile, address, pincode, payment } = data
-    //     const deliveryAddress = { name, email, mobile, address, pincode }
-    //     const total = grandTotal
-    //     const products = resData
-    //     const payload = { userId, products, total, deliveryAddress, payment }
-    //     await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header } })
-    //     await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header } })
-    //     notify()
-    //     navigate('/payment')
-    // }
     const handleDelete = async (id) => {
-        const result = await confirm("Are you sure about this?");
-        if (result) {
-            await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header } })
-            notifyDelete()
-            getData()
+        try {
+            const result = await confirm("Are you sure about this?");
+            if (result) {
+                await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header, userId } })
+                notifyDelete()
+                getData()
+            }
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
         }
     }
     const updateCart = async () => {
         const total = productQuantity * productPrice
         try {
-            await axios.put('http://localhost:3001/api/cart/quantity/' + cartId, { productQuantity, total }, { headers: { header } })
+            await axios.put('http://localhost:3001/api/cart/quantity/' + cartId, { productQuantity, total }, { headers: { header, userId } })
             getData()
         } catch (error) {
-            console.log(error);
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
         }
     }
     const handleQuantity = async (id, quantity, price, value) => {
-        setCartId(id)
-        setProductPrice(price)
-        if (value === 'dec' && quantity > 1) {
-            setProductQuantity(quantity - 1)
-        } else if (value === 'dec' && quantity === 1) {
-            const result = await confirm("Do you want to remove it?");
-            if (result) {
-                await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header } })
-                notifyDelete()
-                getData()
+        try {
+            setCartId(id)
+            setProductPrice(price)
+            if (value === 'dec' && quantity > 1) {
+                setProductQuantity(quantity - 1)
+            } else if (value === 'dec' && quantity === 1) {
+                const result = await confirm("Do you want to remove it?");
+                if (result) {
+                    await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header, userId } })
+                    notifyDelete()
+                    getData()
+                }
+            } else if (value === 'inc') {
+                setProductQuantity(quantity + 1)
             }
-        } else if (value === 'inc') {
-            setProductQuantity(quantity + 1)
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
         }
     }
     const preOrder = async () => {

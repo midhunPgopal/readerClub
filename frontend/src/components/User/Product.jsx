@@ -4,10 +4,9 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { Link } from "react-router-dom";
 import axios from 'axios'
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
-import { confirm } from "react-confirm-box";
+import { logOut } from "../../redux/userRedux";
 
 const Info = styled.div`
     opacity: 0;
@@ -84,38 +83,31 @@ const Icon = styled.div`
 toast.configure()
 const Product = ({ item }) => {
 
-    // const user = useSelector((state) => state.user.currentUser)
-    // const userId = user.user._id
-    // const header = user.accessToken
-    // const quantity = 1
-    // const chapter = 1
+    const dispatch = useDispatch()
 
-    // const [product, setProduct] = useState()
-    // const [total, setTotal] = useState()
+    const user = useSelector((state) => state.user.currentUser)
+    const userId = user.user._id
+    const header = user.accessToken
+    const quantity = 1
+    const chapter = 1
 
-    // const notify = () => toast.success('Item added', {
-    //     position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
-    // })
+    const notify = () => toast.success('Item added', {
+        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
+    })
+    const total = item.price
 
+    const addCart = async (product) => {
+        const data = { userId, product, quantity, chapter, total }
+        console.log(data)
+        try {
+            await axios.post('http://localhost:3001/api/cart/', data, { headers: { header, userId } })
+            notify()
+        } catch (error) {
+            console.log(error)
+            error.response.data.status && dispatch(logOut())
+        }
 
-    // const addCart = async (id) => {
-    //     const getData = async () => {
-    //         const res = await axios.get('http://localhost:3001/api/products/find/' + id)
-    //         setProduct(res.data)
-    //         setTotal(res.data.price)
-    //     }
-    //     getData()
-    //     const data = { userId, product, quantity, chapter, total }
-    //     console.log(data);
-    //     const putData = async () => {
-    //         await axios.post('http://localhost:3001/api/cart/', data, { headers: { header } })
-    //         notify()
-    //     }
-    //     const result = await confirm("Are you sure?")
-    //     if(result) {
-    //         putData()
-    //     }
-    // }
+    }
 
     return (
         <Container>
@@ -126,7 +118,7 @@ const Product = ({ item }) => {
             </Card>
             <Info>
                 <Icon>
-                    <ShoppingCartRoundedIcon />
+                    <ShoppingCartRoundedIcon onClick={() => addCart(item)}/>
                 </Icon>
                 <Icon>
                     <Link to={`/product/${item._id}`}>

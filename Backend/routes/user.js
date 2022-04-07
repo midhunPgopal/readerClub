@@ -1,10 +1,10 @@
 const router = require('express').Router()
-const {verifyToken, verifyTokenAuth, verifyTokenAndAdmin} = require('../routes/verifyToken')
+const { verifyTokenAndAdmin } = require('../routes/verifyToken')
 const User = require('../models/User')
 
 //update userdetails
 
-router.put('/:id', verifyTokenAuth, async (req, res) => {
+router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     try {
         const updateUser = await User.findByIdAndUpdate({_id: req.params.id}, {
             $set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
@@ -15,9 +15,22 @@ router.put('/:id', verifyTokenAuth, async (req, res) => {
     }
 })
 
+//update user status
+
+router.put('/status/:id',verifyTokenAndAdmin, async (req, res) => {
+    try {
+        await User.findByIdAndUpdate({_id: req.params.id}, {
+            $set: {'status': req.body.status}
+        })
+        res.status(200).json({msg:'User blocked'})
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 //Get user
 
-router.get('/find/:id', verifyToken, async (req, res) => {
+router.get('/find/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
         const {password, ...others} = user._doc

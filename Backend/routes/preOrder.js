@@ -1,8 +1,9 @@
 const router = require('express').Router()
 const {verifyToken} = require('../routes/verifyToken')
 const PreOrder = require('../models/PreOrder')
+const verifyStatus = require('../routes/verifyStatus')
 
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
         const preOrders = await PreOrder.find({UserId: req.params.id})
         res.status(200).json(preOrders)

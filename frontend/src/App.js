@@ -18,41 +18,41 @@ import AdminOrder from "./pages/OrderManagement/AdminOrder";
 import EditOrder from './pages/OrderManagement/EditOrder'
 import AdminUser from "./pages/UserManagement/AdminUser";
 import EditUser from './pages/UserManagement/EditUser'
-import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
-import {useSelector} from 'react-redux'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 
 function App() {
 
-  const user = useSelector((state) => state.user.currentUser)
   const admin = useSelector(state => state.admin.currentAdmin)
+  const user = useSelector((state) => state.user.currentUser)
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/register" element={ user ? <Navigate to='/'/> : <Register/>}/>
-        <Route path="/login" element={ user ? <Navigate to='/'/> : <Login/>}/>
-        <Route path="/otplogin" element={ user ? <Navigate to='/'/> : <OtpLogin/>}/>
-        <Route exact path="/" element={user ? <Home/>  : <Navigate to='/login'/>}/>
-        <Route path="/products" element={user ? <ProductList/> : <Navigate to='/login'/>}/>
-        <Route path="/products/:category" element={user ? <ProductList/> : <Navigate to='/login'/>}/>
-        <Route path="/product/:id" element={ user ? <Product/> : <Navigate to='/login'/>}/>
-        <Route path="/cart" element={user ? <Cart/> : <Navigate to='/login'/>}/>
-        <Route path="/checkout" element={user ? <Checkout/> : <Navigate to='/login'/>}/>
-        <Route path="/orders" element={user ? <Orders/> : <Navigate to='/login'/>}/>
-        <Route path='/success' element= {user ? <Success/> : <Navigate to='/login'/>}/>
+        <Route path="/register" element={user ? <Navigate to='/' /> : <Register />} />
+        <Route path="/login" element={user ? <Navigate to='/' /> : <Login />} />
+        <Route path="/otplogin" element={user ? <Navigate to='/' /> : <OtpLogin />} />
+        <Route exact path="/" element={user ? <Home /> : <Navigate to='/login' />} />
+        <Route path="/products" element={user ? <ProductList /> : <Navigate to='/login' />} />
+        <Route path="/products/:category" element={user ? <ProductList /> : <Navigate to='/login' />} />
+        <Route path="/product/:id" element={user ? <Product /> : <Navigate to='/login' />} />
+        <Route path="/cart" element={user ? <Cart /> : <Navigate to='/login' />} />
+        <Route path="/checkout" element={user ? <Checkout /> : <Navigate to='/login' />} />
+        <Route path="/orders" element={user ? <Orders /> : <Navigate to='/login' />} />
+        <Route path='/success' element={user ? <Success /> : <Navigate to='/login' />} />
 
         {/* Admin routes */}
 
-        <Route exact path="/admin" element={admin ? <AdminHome/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/adminlogin" element={ admin ? <Navigate to='/admin'/> : <AdminLogin/>}/>
-        <Route path="/editproduct/:id" element={admin ? <EditProduct/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/viewproduct/:id" element={admin ? <AdminProduct/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/admincategory" element={admin ? <AdminCategory/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/editcategory/:id" element={admin ? <EditCategory/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/adminorder" element={admin ? <AdminOrder/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/editorder/:id" element={admin ? <EditOrder/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/adminuser" element={admin ? <AdminUser/> : <Navigate to='/adminlogin'/>}/>
-        <Route path="/edituser/:id" element={admin ? <EditUser/> : <Navigate to='/adminlogin'/>}/>
+        <Route exact path="/admin" element={admin ? <AdminHome /> : <Navigate to='/adminlogin' />} />
+        <Route path="/adminlogin" element={admin ? <Navigate to='/admin' /> : <AdminLogin />} />
+        <Route path="/editproduct/:id" element={admin ? <EditProduct /> : <Navigate to='/adminlogin' />} />
+        <Route path="/viewproduct/:id" element={admin ? <AdminProduct /> : <Navigate to='/adminlogin' />} />
+        <Route path="/admincategory" element={admin ? <AdminCategory /> : <Navigate to='/adminlogin' />} />
+        <Route path="/editcategory/:id" element={admin ? <EditCategory /> : <Navigate to='/adminlogin' />} />
+        <Route path="/adminorder" element={admin ? <AdminOrder /> : <Navigate to='/adminlogin' />} />
+        <Route path="/editorder/:id" element={admin ? <EditOrder /> : <Navigate to='/adminlogin' />} />
+        <Route path="/adminuser" element={admin ? <AdminUser /> : <Navigate to='/adminlogin' />} />
+        <Route path="/edituser/:id" element={admin ? <EditUser /> : <Navigate to='/adminlogin' />} />
       </Routes>
     </BrowserRouter>
   );

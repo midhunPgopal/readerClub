@@ -23,7 +23,8 @@ router.post('/register', async (req, res) => {
     const existingUsername = await User.findOne({ username })
     if (existingUsername) {
         return res.status(400).json({ username: 'Username already exists' })
-    } const existingUser = await User.findOne({ email: email })
+    } 
+    const existingUser = await User.findOne({ email: email })
     if (existingUser) {
         return res.status(400).json({ user: 'User already exists' })
     }
@@ -50,6 +51,9 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(400).json({ user: 'User not found' })
         }
+        if (!user.status) {
+            return res.status(400).json({ user: 'User is Blocked' })
+        }
         const hashedPassword = CryptoJS.AES.decrypt(
             user.password,
             process.env.PASS_SECRET
@@ -71,7 +75,12 @@ router.post('/login', async (req, res) => {
 router.post('/otplogin', async (req, res) => {
     try {
         const user = await User.findOne({ mobile: req.body.mobile })
-        !user && res.status(401).json({ msg: 'User doesnt found' })
+        if (!user) {
+            return res.status(400).json({ msg: 'User not found' })
+        }
+        if (!user.status) {
+            return res.status(400).json({ msg: 'User is Blocked' })
+        }
         client.verify.services(serviceSID)
             .verifications.create({
                 to: `+91${req.body.mobile}`,

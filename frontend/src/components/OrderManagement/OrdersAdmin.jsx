@@ -66,11 +66,12 @@ const OrdersAdmin = () => {
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
+    const status = admin.currentAdmin.status
 
     const [orders, setOrders] = useState()
 
     const getOrders = async () => {
-        const res = await axios.get('http://localhost:3001/api/orders/', { headers: { header } })
+        const res = await axios.get('http://localhost:3001/api/orders/', { headers: { header, status } })
         setOrders(res.data)
     }
 

@@ -5,6 +5,8 @@ import { mobile } from '../../responsive';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import { useState } from 'react';
+import ErrorNotice from '../../error/ErrorNotice';
 
 const Container = styled.div`
     height: 60vh;
@@ -62,6 +64,8 @@ const Newsletter = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
+    const[err, setErr] = useState()
+
     const notify = () => toast.success('Subscribed', {
         position: "top-center",
         autoClose: 1000,
@@ -74,10 +78,11 @@ const Newsletter = () => {
 
     const onSubmit = async (data) => {
         try {
+            setErr()
             await axios.post('http://localhost:3001/api/newsletter', data)
             notify()
         } catch (error) {
-            console.log(error);
+            error.response.data.msg && setErr(error.response.data.msg)
         }
     }
     return (
@@ -93,6 +98,7 @@ const Newsletter = () => {
                 <Error>
                     {errors.email && errors.email.type === "required" && <span>This is required</span>}
                     {errors.email && errors.email.type === "pattern" && <span>Invalid email</span>}
+                    {err && <ErrorNotice message={err} />}
                 </Error>
                 <Button type='submit'>
                     <SendOutlinedIcon />
