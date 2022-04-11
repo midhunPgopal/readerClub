@@ -1,30 +1,21 @@
 const router = require('express').Router()
 const {verifyTokenAndAdmin} = require('./verifyToken')
-const Banner = require('../models/Banner')
+const Announcement = require('../models/Announcement')
 const verifyStatus = require('./verifyStatus')
 
 router.get('/', verifyStatus, async (req, res) => {
     try {
-        const banner = await Banner.find()
-        res.status(200).json(banner)
+        const announcement = await Announcement.find()
+        res.status(200).json(announcement)
     } catch (error) {
         console.log(error);
     }
 })
 
-router.get('/find/:id', async (req, res) => {
-    try {
-        const banner = await Banner.findById(req.params.id)
-        res.status(200).json(banner)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-
 router.post('/', verifyTokenAndAdmin, async (req, res) => {
-    const newBanner = new Banner(req.body)
+    const newAnnouncement = new Announcement(req.body)
     try {
-        await newBanner.save()
+        await newAnnouncement.save()
         res.status(200).json({msg: 'Banner created'})
     } catch (error) {
         res.status(500).json(error)
@@ -33,10 +24,10 @@ router.post('/', verifyTokenAndAdmin, async (req, res) => {
 
 router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     try {
-        await Banner.findByIdAndUpdate(req.params.id, {
+        await Announcement.findByIdAndUpdate(req.params.id, {
             $set: req.body
         }, {new: true})
-        res.status(200).json({msg: 'Banner updated'})
+        res.status(200).json({msg: 'Product updated'})
     } catch (error) {
         res.status(500).json(error)
     }

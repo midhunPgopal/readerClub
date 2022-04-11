@@ -213,20 +213,23 @@ const Cart = () => {
         }
     }
     const preOrder = async () => {
-        await axios.post('http://localhost:3001/api/preorder', { userId, grandTotal }, { headers: { header } })
+        const products = resData
+        await axios.post('http://localhost:3001/api/preorder', { userId, grandTotal, products }, { headers: { header } })
         navigate('/checkout')
         notify()
     }
 
     useEffect(() => {
         removePreOrders()
-        updateCart()
         getData()
     }, [header, productQuantity])
     useEffect(() => {
+        updateCart()
+    }, [productQuantity])
+    useEffect(() => {
         let total = resData?.reduce((acc, data) => acc + data.total, 0)
         setSubTotal(total)
-    }, [resData, productQuantity])
+    }, [resData])
     useEffect(() => {
         setGrandTotal(subTotal)
     }, [subTotal])

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import EditCategoryForm from '../../components/CategoryManagement/EditCategoryForm'
+import EditBannerForm from '../../components/BannerManagement/EditBannerForm'
 import AdminNavbar from '../../components/Admin/AdminNavbar'
 import AdminFooter from '../../components/Admin/AdminFooter'
 import styled from 'styled-components'
@@ -22,32 +22,30 @@ const FormContainer = styled.div`
   padding: 10px;
 `
 
-const EditCategory = () => {
+const EditBanner = () => {
 
   const location = useLocation()
 
-  const [category, setCategory] = useState()
+  const [banner, setBanner] = useState()
   
   const id = location.pathname.split('/')[2] 
 
-  const getCategory = async () => {
-    const res = await axios.get('http://localhost:3001/api/categories/find/' + id)
-    let {category, img} = res.data
-    const data = {category, img}
-    setCategory(data)
+  const getBanner = async () => {
+    const res = await axios.get('http://localhost:3001/api/banner/find/' + id)
+    setBanner(res.data)
   }
 
   useEffect(() => {
-    getCategory()
+    getBanner()
   }, [])
 
   return (
     <> 
       <AdminNavbar />
       <Container>
-        <Title>Update Category</Title>
+        <Title>Update Banner</Title>
         <FormContainer>
-          {category ? <EditCategoryForm preloadedData={category} /> : <h1 style={{ textAlign: 'center' }}>Loading..</h1>}
+          {banner ? <EditBannerForm preloadedData={banner} /> : <h1 style={{ textAlign: 'center' }}>Loading..</h1>}
         </FormContainer>
       </Container>
       <AdminFooter />
@@ -55,4 +53,4 @@ const EditCategory = () => {
   )
 }
 
-export default EditCategory
+export default EditBanner

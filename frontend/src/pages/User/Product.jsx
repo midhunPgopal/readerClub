@@ -112,8 +112,14 @@ const Product = () => {
     const location = useLocation()
 
     const user = useSelector((state) => state.user.currentUser)
-    const userId = user.user._id
-    const header = user.accessToken
+    let userId = null
+    let header = null
+
+    if (user) {
+        userId = user.user._id
+        header = user.accessToken
+    }
+
     const id = location.pathname.split('/')[2]
 
     const [product, setProduct] = useState({})
@@ -121,7 +127,7 @@ const Product = () => {
     const [chapter, setChapter] = useState('')
     const [price, setPrice] = useState()
 
-    const notify = () => toast.success('Item added', {
+    const notify = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
 
@@ -132,12 +138,13 @@ const Product = () => {
             setQuantity(quantity + 1)
         }
     }
-    const handleClick = async () => {
+    const handleClick = async (product) => {
         try {
             const total = price * quantity
-            const data = { userId, product, quantity, chapter, total }
-            await axios.post('http://localhost:3001/api/cart/', data, { headers: { header, userId } })
-            notify()
+            const productId = product._id
+            const data = { userId, productId, product, quantity, chapter, total }
+            const res = await axios.post('http://localhost:3001/api/cart/', data, { headers: { header, userId } })
+            notify(res.data.msg)
         } catch (error) {
             console.log(error)
             error.response.data.status && dispatch(logOut())
@@ -146,8 +153,9 @@ const Product = () => {
 
     const getProduct = async () => {
         try {
-            const res = await axios.get('http://localhost:3001/api/products/find/' + id, { headers: { userId } })
+            const res = await axios.get('http://localhost:3001/api/products/find/' + id )
             setProduct(res.data)
+            console.log(res.data);
             setPrice(res.data.price)
         } catch (error) {
             console.log(error)
@@ -157,7 +165,7 @@ const Product = () => {
 
     useEffect(() => {
         getProduct()
-    }, [id])
+    }, [])
 
     return (
         <Container>
@@ -177,21 +185,23 @@ const Product = () => {
                     <FilterContainer>
                         <Filter>
                             <FilterTitle>Chapter</FilterTitle>
-                            <FilterSize onClick={(e) => setChapter(e.target.value)}>
+                            <FilterSize onChange={(e) => setChapter(e.target.value)}>
                                 {product.chapters?.map(chapter => (
                                     <FilterSizeOption>{chapter}</FilterSizeOption>
                                 ))}
                             </FilterSize>
                         </Filter>
                     </FilterContainer>
-                    <AddContainer>
-                        <AmountContainer>
-                            <RemoveIcon onClick={() => handleQuantity('dec')} />
-                            <Amount>{quantity}</Amount>
-                            <AddIcon onClick={() => handleQuantity('inc')} />
-                        </AmountContainer>
-                        <Button onClick={() => handleClick()} >Add to Cart</Button>
-                    </AddContainer>
+                    {user &&
+                        <AddContainer>
+                            <AmountContainer>
+                                <RemoveIcon onClick={() => handleQuantity('dec')} />
+                                <Amount>{quantity}</Amount>
+                                <AddIcon onClick={() => handleQuantity('inc')} />
+                            </AmountContainer>
+                            <Button onClick={() => handleClick(product)} >Add to Cart</Button>
+                        </AddContainer>
+                    }
                 </InfoContainer>
             </Wrapper>
             <Newsletter />

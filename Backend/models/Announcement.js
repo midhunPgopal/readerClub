@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const AnnouncementSchema = mongoose.Schema({
-    title:{
+    announcement:{
         type: String,
         required: true
     }

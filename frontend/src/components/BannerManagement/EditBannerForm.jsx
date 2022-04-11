@@ -40,43 +40,63 @@ const Label = styled.label`
     color: #1517165b;
 `
 toast.configure()
-const EditCategoryForm = ({ preloadedData }) => {
-    
+const EditBannerForm = ({ preloadedData }) => {
+
     const navigate = useNavigate()
     const location = useLocation()
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
     const id = location.pathname.split('/')[2]
-    
+
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: preloadedData
     })
-    
+
     const notify = () => {
-        toast('Category updated', {
+        toast('Banner updated', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
 
-    const updateCategory = async (data) => {
-        await axios.put('http://localhost:3001/api/categories/' + id, data, { headers: { header } })
+    const updateBanner = async (data) => {
+        await axios.put('http://localhost:3001/api/banner/' + id, data, { headers: { header } })
         notify()
         navigate('/admin')
     }
 
     return (
-        <Form onSubmit={handleSubmit(updateCategory)}>
+        <Form onSubmit={handleSubmit(updateBanner)}>
             <InputContainer>
-                <Label>Category Name</Label>
-                <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+                <Label>Title</Label>
+                <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
                 <Error>
-                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                    {errors.title && errors.title.type === "required" && <span>This is required</span>}
+                </Error>
+                <Label>Description</Label>
+                <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
+                <Error>
+                    {errors.description && errors.description.type === "required" && <span>This is required</span>}
+                </Error>
+                <Label>Offer description</Label>
+                <Input id="offerDescription" type='text' placeholder='Offer description' {...register('offerDescription', { required: true })} />
+                <Error>
+                    {errors.offerDescription && errors.offerDescription.type === "required" && <span>This is required</span>}
+                </Error>
+                <Label>Offer code</Label>
+                <Input id="offerCode" type='text' placeholder='Offer code' {...register('offerCode', { required: true })} />
+                <Error>
+                    {errors.offerCode && errors.offerCode.type === "required" && <span>This is required</span>}
                 </Error>
                 <Label>Image source link</Label>
                 <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
                 <Error>
                     {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                </Error>
+                <Label>Background Colour</Label>
+                <Input id="bg" type='text' placeholder='background colour' {...register('bg', { required: true })} />
+                <Error>
+                    {errors.bg && errors.bg.type === "required" && <span>This is required</span>}
                 </Error>
             </InputContainer>
             <ButtonContainer>
@@ -86,4 +106,4 @@ const EditCategoryForm = ({ preloadedData }) => {
     )
 }
 
-export default EditCategoryForm
+export default EditBannerForm

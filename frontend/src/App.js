@@ -14,12 +14,11 @@ import AdminHome from "./pages/Admin/AdminHome";
 import AdminProduct from "./pages/Admin/AdminProduct";
 import AdminLogin from "./pages/AdminAuth/AdminLogin";
 import EditProduct from "./pages/ProductManagement/EditProduct";
-import AdminCategory from "./pages/categoryManagement/AdminCategory";
 import EditCategory from "./pages/categoryManagement/EditCategory";
-import AdminOrder from "./pages/OrderManagement/AdminOrder";
 import EditOrder from './pages/OrderManagement/EditOrder'
-import AdminUser from "./pages/UserManagement/AdminUser";
 import EditUser from './pages/UserManagement/EditUser'
+import EditBanner from './pages/BannerManagement/EditBanner'
+import EditAnnouncement from './pages/AnnouncementManagement/EditAnnouncement'
 
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
@@ -35,10 +34,10 @@ function App() {
         <Route path="/register" element={user ? <Navigate to='/' /> : <Register />} />
         <Route path="/login" element={user ? <Navigate to='/' /> : <Login />} />
         <Route path="/otplogin" element={user ? <Navigate to='/' /> : <OtpLogin />} />
-        <Route exact path="/" element={user ? <Home /> : <Navigate to='/login' />} />
-        <Route path="/products" element={user ? <ProductList /> : <Navigate to='/login' />} />
-        <Route path="/products/:category" element={user ? <ProductList /> : <Navigate to='/login' />} />
-        <Route path="/product/:id" element={user ? <Product /> : <Navigate to='/login' />} />
+        <Route exact path="/" element={ <Home />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/products/:category" element={<ProductList />}/>
+        <Route path="/product/:id" element={<Product />} />
         <Route path="/cart" element={user ? <Cart /> : <Navigate to='/login' />} />
         <Route path="/checkout" element={user ? <Checkout /> : <Navigate to='/login' />} />
         <Route path="/orders" element={user ? <Orders /> : <Navigate to='/login' />} />
@@ -51,12 +50,11 @@ function App() {
         <Route path="/adminlogin" element={admin ? <Navigate to='/admin' /> : <AdminLogin />} />
         <Route path="/editproduct/:id" element={admin ? <EditProduct /> : <Navigate to='/adminlogin' />} />
         <Route path="/viewproduct/:id" element={admin ? <AdminProduct /> : <Navigate to='/adminlogin' />} />
-        <Route path="/admincategory" element={admin ? <AdminCategory /> : <Navigate to='/adminlogin' />} />
         <Route path="/editcategory/:id" element={admin ? <EditCategory /> : <Navigate to='/adminlogin' />} />
-        <Route path="/adminorder" element={admin ? <AdminOrder /> : <Navigate to='/adminlogin' />} />
         <Route path="/editorder/:id" element={admin ? <EditOrder /> : <Navigate to='/adminlogin' />} />
-        <Route path="/adminuser" element={admin ? <AdminUser /> : <Navigate to='/adminlogin' />} />
         <Route path="/edituser/:id" element={admin ? <EditUser /> : <Navigate to='/adminlogin' />} />
+        <Route path="/editbanner/:id" element={admin ? <EditBanner /> : <Navigate to='/adminlogin' />} />
+        <Route path="/editannouncement/:id" element={admin ? <EditAnnouncement /> : <Navigate to='/adminlogin' />} />
       </Routes>
     </BrowserRouter>
   );

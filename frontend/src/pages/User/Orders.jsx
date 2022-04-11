@@ -52,14 +52,14 @@ const Hr = styled.div`
     margin: 10px 10px;
     ${mobile({ margin: '30px' })}
 `
-const Button = styled.div`
-   padding: 5px 0px;
+const Button = styled.button`
+   padding: 5px;
    background-color: #ef4242fe;
    color: white;
    text-align: center;
    cursor: pointer;
    border-radius: 20px;
-   box-shadow: 2px 4px lightgrey;
+   border: none;
 
    &:hover {
     background-color: #f52626fe;
@@ -94,7 +94,8 @@ const Orders = () => {
     }
     const cancelOrder = async (id) => {
         try {
-            const result = await confirm('Do you want to cancel ?')
+            let result
+            result = await confirm('Do you want to cancel ?')
             if (result) {
                 await axios.put('http://localhost:3001/api/orders/cancel/' + id, { headers: { header, userId } })
                 notify()
@@ -137,12 +138,19 @@ const Orders = () => {
                                 <Td>{data.products.length}</Td>
                                 <Td>₹{data.total}</Td>
                                 <Td>{data.payment}</Td>
-                                {data.status === 'Cancelled' ?
-                                    <Td style={{ color: 'red' }}>{data.status}</Td> : <>
-                                        <Td >{data.status}</Td>
-                                        <Td><Button onClick={() => cancelOrder(data._id)}>Cancel</Button></Td>
-                                    </>
-                                }
+                                {data.status === 'Cancelled' && <Td style={{ color: 'red' }}>{data.status}</Td> }
+                                {data.status === 'Pending' && 
+                                <>
+                                <Td >{data.status}</Td> 
+                                <Td style={{ textAlign: 'center' }}><Button onClick={() => cancelOrder(data._id)}>Cancel</Button></Td>
+                                </> }
+                                {data.status === 'Order placed' &&
+                                <>
+                                <Td >{data.status}</Td> 
+                                <Td style={{ textAlign: 'center' }}><Button onClick={() => cancelOrder(data._id)}>Cancel</Button></Td>
+                                </> }
+                                {data.status === 'Shipped' &&  <Td style={{ color: 'blue' }}>{data.status}</Td> }
+                                {data.status === 'Delivered' &&  <Td style={{ color: 'green' }}>{data.status}</Td> }
                             </Tr>
                         ))}
                     </Tbody>

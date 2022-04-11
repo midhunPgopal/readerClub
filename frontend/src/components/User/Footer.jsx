@@ -118,7 +118,7 @@ const Footer = () => {
                     <PermPhoneMsgIcon style={{ marginRight: '10px' }} />+91 9778147103
                 </ContactItem>
                 <ContactItem>
-                    <EmailIcon style={{ marginRight: '10px' }} />readerclub@club.co.in
+                    <EmailIcon style={{ marginRight: '10px' }} />midhunpgopal369@gmail.com
                 </ContactItem>
                 <Payment src='https://i.ibb.co/Qfvn4z6/payment.png' />
             </Right>

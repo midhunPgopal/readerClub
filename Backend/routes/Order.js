@@ -15,7 +15,7 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
     }
 })
 
-//Update cart
+//Update order
 
 router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     try {
@@ -28,26 +28,14 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     }
 })
 
-//cancel cart
+//cancel order
 
-router.put('/cancel/:id', verifyToken, verifyStatus, async (req, res) => {
+router.put('/cancel/:id', verifyStatus, async (req, res) => {
     try {
-        await Order.findByIdAndUpdate(req.params.id, {
+        await Order.findByIdAndUpdate({_id: req.params.id}, {
             $set: {'status':'Cancelled'}
         })
         res.status(200).json({msg: 'Order cancelled'})
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-
-
-//Delete oder
-
-router.delete('/:id', verifyTokenAndAdmin, async(req, res) => {
-    try {
-        await Order.findByIdAndDelete(req.params.id)
-        res.status(200).json('Order deleted')
     } catch (error) {
         res.status(500).json(error)
     }

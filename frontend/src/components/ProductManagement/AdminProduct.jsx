@@ -11,6 +11,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirm } from "react-confirm-box"
+import dateFormat from 'dateformat'
 
 const Container = styled.div`
   margin: 30px;
@@ -19,59 +20,6 @@ const Container = styled.div`
   flex-wrap: wrap;
   flex-direction: column;
   `
-const Info = styled.div`
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      background-color: rgba(0,0,0,0.2);
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.5s ease;
-  `
-const Icon = styled.div`
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 10px;
-      transition: all 0.1s ease;
-      cursor: pointer;
-      text-decoration: none;
-  
-      &:hover{
-          transform: scale(1.2);
-      }
-  `
-const Circle = styled.div`
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background-color: white;
-    position: absolute;
-`
-const Wrapper = styled.div`
-  flex: 1;
-  margin: 5px;
-  width: 280px;
-  height: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  flex-direction: column;
-
-  &:hover ${Info}{
-    opacity: 1;
-  }
-`
 const TopButton = styled.div`
   flex: 1;
   display: flex;
@@ -80,6 +28,7 @@ const TopButton = styled.div`
 const Button = styled.button`
   width: 10%;
   border: none;
+  border-radius: 10px;
   background-color: teal;
   color: white;
   cursor: pointer;
@@ -94,10 +43,9 @@ display: flex;
 flex-direction: row;
 `
 const Image = styled.img`
-height: 250px;
-width: 180px;
+height: 60px;
+width: 40px;
 object-fit: cover;
-z-index: 2;
 `
 const Title = styled.h3`
 margin: 10px;
@@ -105,9 +53,6 @@ text-align: center;
 color: #4b1f4cfe;
 `
 const AddProduct = styled.div`
-  margin: 0px;
-`
-const AddCategory = styled.div`
   margin: 0px;
 `
 const InputContainer = styled.div`
@@ -150,25 +95,46 @@ const Error = styled.span`
   padding: 5px;
   color: #f16969;
 `
+const Table = styled.table`
+    width: 100%;
+`
+const Td = styled.td`
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+`
+const Th = styled.th`
+    height: 30px;
+    border-bottom: 1px solid #ddd;
+`
+const Thead = styled.thead`
+    text-align: left;
+`
+const Tr = styled.tr`
+   &:hover {
+       background-color: #ccf6d678;
+   }
+`
+const Tbody = styled.tbody`
+`
+const Hr = styled.div`
+    background-color: teal;
+    border: none;
+    height: 1px;
+    margin: 10px 10px;
+    ${mobile({ margin: '30px' })}
+`
 toast.configure()
 const AdminProduct = () => {
 
   const admin = useSelector(state => state.admin)
   const header = admin.currentAdmin.accessToken
-  
+
   const { register, handleSubmit, formState: { errors } } = useForm()
-  
+
   const [product, setProduct] = useState()
   const [flag, setFlag] = useState(false)
-  const [check, setCheck] = useState(false)
-  
-  const notify = () => toast.success('Product added', {
-    position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
-  })
-  const notifyDelete = () => toast.success('Product deleted', {
-    position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
-  })
-  const notifyCategory = () => toast.success('Category deleted', {
+
+  const notify = (msg) => toast.success(msg, {
     position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
   })
 
@@ -179,37 +145,29 @@ const AdminProduct = () => {
   const getFlag = () => {
     setFlag(true)
   }
-  const getCheck = () => {
-    setCheck(true)
-  }
   const addProduct = async (data) => {
-    await axios.post('http://localhost:3001/api/products/', data, { headers: { header } })
-    notify()
+    const res = await axios.post('http://localhost:3001/api/products/', data, { headers: { header } })
+    notify(res.data.msg)
     setFlag(false)
   }
   const deleteProduct = async (id) => {
     const result = await confirm("Are you sure?")
     if (result) {
-      await axios.delete('http://localhost:3001/api/products/' + id, { headers: { header } })
+      const res = await axios.delete('http://localhost:3001/api/products/' + id, { headers: { header } })
       getProducts()
-      notifyDelete()
+      notify(res.data.msg)
     }
-  }
-  const addCategory = async (data) => {
-    await axios.post('http://localhost:3001/api/categories/', data, { headers: { header } })
-    notifyCategory()
-    setCheck(false)
   }
 
   useEffect(() => {
     getProducts()
   }, [flag])
-  
+
   return (
     <Container>
       <TopButton>
+        <Title>Your Products</Title>
         <Button onClick={getFlag}>Add Product</Button>
-        <Button onClick={getCheck}>Add Category</Button>
       </TopButton>
       <AddProduct>
         {flag &&
@@ -260,49 +218,48 @@ const AdminProduct = () => {
           </Form>
         }
       </AddProduct>
-      <AddCategory>
-        {check &&
-          <Form onSubmit={handleSubmit(addCategory)}>
-            <InputContainer>
-              <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
-              <Error>
-                {errors.category && errors.category.type === "required" && <span>This is required</span>}
-              </Error>
-              <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-              <Error>
-                {errors.img && errors.img.type === "required" && <span>This is required</span>}
-              </Error>
-            </InputContainer>
-            <ButtonContainer>
-              <ButtonSubmit type='submit' >Add Category</ButtonSubmit>
-              <ButtonClose onClick={() => setCheck(false)}>Close</ButtonClose>
-            </ButtonContainer>
-          </Form>
-        }
-      </AddCategory>
       <Product>
-        {product?.map(data => (
-          <Wrapper>
-            <Circle />
-            <Image src={data.img}></Image>
-            <Title>{data.title}</Title>
-            <Info>
-              <Icon>
-                <Link to={`/viewproduct/${data._id}`} >
-                  <RemoveRedEyeOutlinedIcon />
-                </Link>
-              </Icon>
-              <Icon>
-                <Link to={`/editproduct/${data._id}`} >
-                  <EditIcon />
-                </Link>
-              </Icon>
-              <Icon>
-                <DeleteForeverOutlinedIcon onClick={() => deleteProduct(data._id)} />
-              </Icon>
-            </Info>
-          </Wrapper>
-        ))}
+        <Hr />
+        <Table>
+          <Thead >
+            <Tr>
+              <Th scope="col">Created Date</Th>
+              <Th scope="col">Last Update</Th>
+              <Th scope="col"></Th>
+              <Th scope="col">Name</Th>
+              <Th scope="col">Author</Th>
+              <Th scope="col">Price</Th>
+              <Th scope='col'></Th>
+              <Th scope='col'></Th>
+              <Th scope='col'></Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {product?.map(data => (
+              <Tr key={data._id}>
+                <Td >{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
+                <Td >{dateFormat(data.updatedAt, "mmmm dS, yyyy")}</Td>
+                <Td><Image src={data.img}></Image></Td>
+                <Td>{data.title}</Td>
+                <Td>{data.author}</Td>
+                <Td>₹{data.price}</Td>
+                <Td>
+                  <Link to={`/viewproduct/${data._id}`} >
+                    <RemoveRedEyeOutlinedIcon />
+                  </Link>
+                </Td>
+                <Td>
+                  <Link to={`/editproduct/${data._id}`} style={{ textDecoration: 'none' }}>
+                    <EditIcon />
+                  </Link>
+                </Td>
+                <Td>
+                  <DeleteForeverOutlinedIcon onClick={() => deleteProduct(data._id)} />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
       </Product>
     </Container>
   )

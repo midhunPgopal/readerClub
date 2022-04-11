@@ -40,43 +40,38 @@ const Label = styled.label`
     color: #1517165b;
 `
 toast.configure()
-const EditCategoryForm = ({ preloadedData }) => {
-    
+const EditBannerForm = ({ preloadedData }) => {
+
     const navigate = useNavigate()
     const location = useLocation()
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
     const id = location.pathname.split('/')[2]
-    
+
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: preloadedData
     })
-    
+
     const notify = () => {
-        toast('Category updated', {
+        toast('Announcement updated', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
 
-    const updateCategory = async (data) => {
-        await axios.put('http://localhost:3001/api/categories/' + id, data, { headers: { header } })
+    const updateBanner = async (data) => {
+        await axios.put('http://localhost:3001/api/announcement/' + id, data, { headers: { header } })
         notify()
         navigate('/admin')
     }
 
     return (
-        <Form onSubmit={handleSubmit(updateCategory)}>
+        <Form onSubmit={handleSubmit(updateBanner)}>
             <InputContainer>
-                <Label>Category Name</Label>
-                <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+                <Label>Announcement</Label>
+                <Input id="announcement" type='text' placeholder='Announcement' {...register('announcement', { required: true })} />
                 <Error>
-                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
-                </Error>
-                <Label>Image source link</Label>
-                <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                <Error>
-                    {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                    {errors.announcement && errors.announcement.type === "required" && <span>This is required</span>}
                 </Error>
             </InputContainer>
             <ButtonContainer>
@@ -86,4 +81,4 @@ const EditCategoryForm = ({ preloadedData }) => {
     )
 }
 
-export default EditCategoryForm
+export default EditBannerForm

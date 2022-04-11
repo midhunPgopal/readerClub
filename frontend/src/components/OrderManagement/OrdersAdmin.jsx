@@ -109,11 +109,12 @@ const OrdersAdmin = () => {
                                 <Td>₹{data.total}</Td>
                                 <Td>{data.payment}</Td>
                                 <Td >{data.status}</Td>
+                                {data.status === 'Cancelled' ? <></> :
                                 <Td>
                                     <Link to={`/editorder/${data._id}`} style={{textDecoration: 'none'}}>
                                         <Button>Update</Button>
                                     </Link>
-                                </Td>
+                                </Td>}
                             </Tr>
                         ))}
                     </Tbody>

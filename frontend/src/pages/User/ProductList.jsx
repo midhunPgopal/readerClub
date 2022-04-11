@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+// import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import Announcement from '../../components/User/Announcement'
@@ -69,7 +70,7 @@ const ProductList = () => {
                     <FilterText>Filter Products</FilterText>
                     <Select onChange={e => setFilters(e.target.value)}>
                         <Option disabled >Categories</Option>
-                        <Option >{undefined}</Option>
+                        <Option >{cat}</Option>
                         {categories?.map(item => (
                             <Option>{item.category}</Option>
                         ))}

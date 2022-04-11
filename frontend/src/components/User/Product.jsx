@@ -22,7 +22,6 @@ const Info = styled.div`
     justify-content: center;
     transition: all 0.5s ease;
 `
-
 const Container = styled.div`
     flex: 1;
     margin: 5px;
@@ -37,7 +36,6 @@ const Container = styled.div`
         opacity: 1;
     }
 `
-
 const Circle = styled.div`
     width: 200px;
     height: 200px;
@@ -62,7 +60,6 @@ const Title = styled.h1`
     font-size: 20px;
     color: teal;
 `
-
 const Icon = styled.div`
     width: 40px;
     height: 40px;
@@ -77,7 +74,7 @@ const Icon = styled.div`
     text-decoration: none;
 
     &:hover{
-        transform: scale(1.2);
+        transform: scale(1.5);
     }
 `
 toast.configure()
@@ -86,44 +83,48 @@ const Product = ({ item }) => {
     const dispatch = useDispatch()
 
     const user = useSelector((state) => state.user.currentUser)
-    const userId = user.user._id
-    const header = user.accessToken
+    
+    let userId = null 
+    let header = null
+
+    if(user) { 
+        userId = user.user._id
+        header = user.accessToken
+    }
     
     const quantity = 1
     const chapter = 1
     const total = item.price
 
-    const notifyCart = () => toast.success('Item added to cart', {
+    const notifySuccess = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
-    const notifyWishlist = () => toast.success('Item added to wishlist', {
-        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
-    })
-    const notify = () => toast.error('Product already added', {
+    const notifyError = (msg) => toast.error(msg, {
         position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
     })
     
 
     const addToCart = async (product) => {
-        const data = { userId, product, quantity, chapter, total }
+        const productId = product._id
+        const data = { userId, productId, product, quantity, chapter, total }
         try {
-            await axios.post('http://localhost:3001/api/cart/', data, { headers: { header, userId } })
-            notifyCart()
+            const res = await axios.post('http://localhost:3001/api/cart/', data, { headers: { header, userId } })
+            notifySuccess(res.data.msg)
         } catch (error) {
             console.log(error)
-            error.response.data.status && dispatch(logOut())
+            error.response.data.status && dispatch(logOut()) && notifyError(error.response.data.msg)
         }
     }
     const addToWishlist = async (product) => {
         const productId = product._id
         const payload = { userId, productId, product }
         try {
-            await axios.post('http://localhost:3001/api/wishlist/', payload, { headers: { header, userId } })
-            notifyWishlist()
+            const res = await axios.post('http://localhost:3001/api/wishlist/', payload, { headers: { header, userId } })
+            notifySuccess(res.data.msg)
         } catch (error) {
             console.log(error.response)
-            error.response.data.msg && notify()
-            error.response.data.status && dispatch(logOut())
+            error.response.data.msg && notifyError(error.response.data.msg)
+            error.response.data.status && dispatch(logOut()) && notifyError(error.response.data.msg)
         }
     }
 
@@ -135,17 +136,19 @@ const Product = ({ item }) => {
                 <Title>{item.title}</Title>
             </Card>
             <Info>
+                {user &&
                 <Icon>
                     <ShoppingCartRoundedIcon onClick={() => addToCart(item)}/>
-                </Icon>
+                </Icon> }
                 <Icon>
                     <Link to={`/product/${item._id}`}>
                         <SearchRoundedIcon />
                     </Link>
                 </Icon>
+                {user &&
                 <Icon>
                     <FavoriteRoundedIcon onClick={() => addToWishlist(item)}/>
-                </Icon>
+                </Icon> }
             </Info>
         </Container>
     )

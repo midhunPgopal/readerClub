@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Category = require('../models/Category')
-const {verifyTokenAndAdmin, verifyToken} = require('../routes/verifyToken')
+const {verifyTokenAndAdmin, verifyToken, verifyTokenAuth} = require('../routes/verifyToken')
 const verifyStatus = require ('../routes/verifyStatus')
 
 router.post('/', verifyTokenAndAdmin, async (req, res) => {
@@ -13,7 +13,7 @@ router.post('/', verifyTokenAndAdmin, async (req, res) => {
     }
 })
 
-router.get('/', verifyToken, verifyStatus, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const category = await Category.find()
         res.status(200).json(category)
@@ -22,7 +22,7 @@ router.get('/', verifyToken, verifyStatus, async (req, res) => {
     }
 })
 
-router.get('/find/:id', verifyToken, async (req, res) => {
+router.get('/find/:id', async (req, res) => {
     try {
         const category = await Category.findById(req.params.id)
         res.status(200).json(category)

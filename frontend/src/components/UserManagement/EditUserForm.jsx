@@ -69,7 +69,7 @@ const EditUserForm = ({ preloadedData }) => {
     const updateOrder = async (data) => {
         await axios.put('http://localhost:3001/api/users/' + id, data, { headers: { header } })
         notify()
-        navigate('/adminorder')
+        navigate('/admin')
     }
 
     return (

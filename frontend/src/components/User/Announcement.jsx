@@ -1,4 +1,7 @@
+import {useEffect, useState} from 'react'
 import styled from 'styled-components'
+import { mobile } from '../../responsive';
+import axios from 'axios';
 
 const Container = styled.div`
     height: 30px;
@@ -12,10 +15,25 @@ const Container = styled.div`
 `
 
 const Announcement = () => {
+
+  const [announcement, setAnnouncement] = useState()
+
+  const getAnnouncement = async () => {
+    try {
+      const res = await axios.get('http://localhost:3001/api/announcement')
+      const [data] = res.data
+      setAnnouncement(data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {
+    getAnnouncement()
+  }, [])
+  
+
   return (
-    <Container>
-        Free shipping on orders above 699 INR *
-    </Container>
+    <Container>{announcement?.announcement}</Container>
   )
 }
 

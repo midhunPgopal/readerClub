@@ -120,15 +120,25 @@ const Navbar = () => {
                         </Link>
                     </Center>
                     <Right>
-                        <Title >Welcome <b style={{ textTransform: 'uppercase', color: 'teal' }}>{user.user.name}</b></Title>
-                        <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
-                        <Link to='/cart'>
-                            <MenuItem>
-                                <Badge color="secondary">
-                                    <ShoppingCartOutlinedIcon />
-                                </Badge>
-                            </MenuItem>
-                        </Link>
+                        {user ? <>
+                            <Title >Welcome <b style={{ textTransform: 'uppercase', color: 'teal' }}>{user.user.name}</b></Title>
+                            <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
+                            <Link to='/cart'>
+                                <MenuItem>
+                                    <Badge color="secondary">
+                                        <ShoppingCartOutlinedIcon />
+                                    </Badge>
+                                </MenuItem>
+                            </Link>
+                        </> :
+                            <>
+                                <Link to='/login' style={{ textDecoration: 'none' }}>
+                                    <MenuItem>LOGIN</MenuItem>
+                                </Link>
+                                <Link to='/register' style={{ textDecoration: 'none' }}>
+                                    <MenuItem>REGISTER</MenuItem>
+                                </Link>
+                            </>}
                     </Right>
                 </Wrapper>
             </Container>

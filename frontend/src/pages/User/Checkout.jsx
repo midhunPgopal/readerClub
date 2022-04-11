@@ -104,6 +104,7 @@ const RadioLabel = styled.p`
 
 toast.configure()
 const Cart = () => {
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -114,6 +115,7 @@ const Cart = () => {
     const header = user.currentUser.accessToken
 
     const [price, setPrice] = useState()
+    const [products, setProducts] = useState()
 
     const notify = () => toast.success('Order succesful', {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
@@ -124,6 +126,7 @@ const Cart = () => {
             const response = await axios.get(`http://localhost:3001/api/preorder/` + userId, { headers: { header, userId } })
             let [resData] = response.data
             setPrice(resData.grandTotal)
+            setProducts(resData.products)
         } catch (error) {
             console.log(error)
             error.response.data.status && dispatch(logOut())
@@ -133,12 +136,11 @@ const Cart = () => {
         let { name, email, mobile, address, pincode, payment } = data
         const deliveryAddress = { name, email, mobile, address, pincode }
         const total = price
-        const products = total
         const payload = { userId, products, total, deliveryAddress, payment }
         try {
             if (payment === 'Cash on delivery') {
                 await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
-                await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header } })
+                await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
                 notify()
                 navigate('/success')
             }

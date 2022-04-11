@@ -71,7 +71,7 @@ const EditOrderForm = ({ preloadedData }) => {
         const payload = { deliveryAddress, status }
         await axios.put('http://localhost:3001/api/orders/' + id, payload, { headers: { header } })
         notify()
-        navigate('/adminorder')
+        navigate('/admin')
     }
 
     return (
@@ -116,6 +116,7 @@ const EditOrderForm = ({ preloadedData }) => {
                 <Select {...register("status", { required: true })}>
                     <option value={preloadedData.status}>{preloadedData.status}</option>
                     <option value="Order placed">Order placed</option>
+                    <option value="Pending">Pending</option>
                     <option value="Shipped">Shipped</option>
                     <option value="Delivered">Delivered</option>
                     <option value="Cancelled">Cancelled</option>

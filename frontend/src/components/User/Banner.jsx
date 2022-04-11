@@ -1,10 +1,9 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import ArrowLeftRoundedIcon from '@mui/icons-material/ArrowLeftRounded';
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded';
-import {sliderItems} from '../../data'
-
 import { mobile } from '../../responsive';
+import axios from 'axios';
 
 const Container = styled.div`
     width: 100%;
@@ -91,6 +90,7 @@ const Button = styled.button`
 const Slider = () => {
 
     const [slideIndex, setSlideIndex] = useState(0)
+    const [banner, setBanner] = useState()
 
     const handleClick = (direction) => {
         if(direction === 'left') {
@@ -99,6 +99,17 @@ const Slider = () => {
             setSlideIndex(slideIndex<2 ? slideIndex+1 : 0)
         }
     }
+    const getBanner = async () =>{
+        try {
+            const res = await axios.get('http://localhost:3001/api/banner')
+            setBanner(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getBanner()
+    }, [])
 
     return (
         <Container>
@@ -106,15 +117,15 @@ const Slider = () => {
                 <ArrowLeftRoundedIcon />
             </Arrow>
             <Wrapper slideIndex={slideIndex}>
-                {sliderItems.map(item => (
+                {banner?.map(item => (
                 <Slide bg={item.bg} key={item.id}>
                     <ImgContainer>
                         <Image src={item.img} />
                     </ImgContainer>
                     <InfoContainer>
                         <Title>{item.title}</Title>
-                        <Desc>{item.desc}</Desc>
-                        <Offer>{item.offer}</Offer>
+                        <Desc>{item.description}</Desc>
+                        <Offer>{item.offerDescription}</Offer>
                         <Button>BUY NOW</Button>
                     </InfoContainer>
                 </Slide>

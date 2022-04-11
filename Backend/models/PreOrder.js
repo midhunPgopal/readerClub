@@ -9,6 +9,10 @@ const PreOrderSchema = new mongoose.Schema({
     grandTotal: {
         type: Number,
         required: true
+    },
+    products: {
+        type: Array,
+        required: true
     }
 })
 

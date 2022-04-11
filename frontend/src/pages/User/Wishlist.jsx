@@ -168,7 +168,8 @@ const Wishlist = () => {
     }
     const addToCart = async (product) => {
         const total = product.price
-        const payload = { userId, product, total }
+        const productId = product._id
+        const payload = { userId, productId, product, total } 
         const id = product._id
         try {
             await axios.post('http://localhost:3001/api/cart/', payload, { headers: { header, userId } })

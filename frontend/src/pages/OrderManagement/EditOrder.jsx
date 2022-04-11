@@ -40,7 +40,6 @@ const EditOrder = () => {
     let {deliveryAddress, status} = values
     let { name, mobile, email, pincode, address} = deliveryAddress
     const data = {name, mobile, email, pincode, address, status}
-    console.log(data);
     setOrder(data)
 }
 
