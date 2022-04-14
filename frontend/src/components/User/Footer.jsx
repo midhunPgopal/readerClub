@@ -103,7 +103,7 @@ const Footer = () => {
                     <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Home</Link></ListItem>
                     <ListItem><Link to='/cart' style={{ textDecoration: 'none' }}>Cart</Link></ListItem>
                     <ListItem><Link to='/orders' style={{ textDecoration: 'none' }}>Order tracking</Link></ListItem>
-                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>My Account</Link></ListItem>
+                    <ListItem><Link to='/account' style={{ textDecoration: 'none' }}>My Account</Link></ListItem>
                     <ListItem><Link to='/wishlist' style={{ textDecoration: 'none' }}>Wishlist</Link></ListItem>
                     <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Categories</Link></ListItem>
                     <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Terms and Conditions</Link></ListItem>

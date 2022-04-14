@@ -56,13 +56,13 @@ router.post('/login', async (req, res) => {
         }
         const hashedPassword = CryptoJS.AES.decrypt(
             user.password,
-            process.env.PASS_SECRET
+            process.env.PASS_SECRET 
         )
         const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8)
         if (originalPassword !== req.body.password) {
             return res.status(400).json({ password: 'Password incorrect' })
         }
-        const accessToken = jwt.sign({
+        const accessToken = jwt.sign({ 
             id: user._id,
             isAdmin: user.isAdmin
         }, process.env.JWT_SECRET, { expiresIn: '1d' })
@@ -85,7 +85,7 @@ router.post('/otplogin', async (req, res) => {
             .verifications.create({
                 to: `+91${req.body.mobile}`,
                 channel: 'sms'
-            })
+            }) 
         res.status(200).json(user)
     } catch (error) {
         console.log(error)

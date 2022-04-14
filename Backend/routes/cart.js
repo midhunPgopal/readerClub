@@ -6,12 +6,20 @@ const verifyStatus = require('./verifyStatus')
 //Creating
 
 router.post('/', verifyToken, verifyStatus, async (req, res) => {
-    const existingCart = await Cart.findOne({ productId: req.body.productId })
-    if (existingCart) {
+    let existingCart = null
+    const existingProduct = await Cart.find({ productId: req.body.productId })
+    const length = existingProduct.length
+    for(let i=0;i<length; i++) {
+        if(existingProduct[i].chapter == req.body.chapter) {
+            existingCart = existingProduct[i]
+            break;
+        }
+    }
+    if (existingCart) { 
         try {
             const total = existingCart.quantity + req.body.quantity
-            await Cart.updateOne({ product: req.body.product }, {
-                $set: { quantity: total }
+            await Cart.findByIdAndUpdate(existingCart._id, {
+                $set: { quantity : total }
             })
             res.status(200).json({ msg: 'Cart updated' })
         } catch (error) {
@@ -68,7 +76,7 @@ router.delete('/:id', verifyToken, verifyStatus, async (req, res) => {
 router.get('/find/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
         const cart = await Cart.find({ userId: req.params.id })
-        res.status(200).json({ cart })
+        res.status(200).json(cart)
     } catch (error) {
         res.status(500).json(error)
     }

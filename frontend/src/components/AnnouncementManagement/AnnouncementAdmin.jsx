@@ -24,7 +24,7 @@ const TopButton = styled.div`
   justify-content: space-around;
 `
 const Button = styled.button`
-  width: 10%;
+  width: 15%;
   border: none;
   border-radius: 10px;
   background-color: teal;
@@ -170,11 +170,12 @@ const AnnouncementAdmin = () => {
                 {flag &&
                     <Form onSubmit={handleSubmit(addAnnouncement)}>
                         <InputContainer>
-                            <Label>Announcement</Label>
-                            <Input id="announcement" type='text' placeholder='Announcement' {...register('announcement', { required: true })} />
-                            <Error>
-                                {errors.announcement && errors.announcement.type === "required" && <span>This is required</span>}
-                            </Error>
+                            <Label>Announcement
+                                <Input id="announcement" type='text' placeholder='Announcement' {...register('announcement', { required: true })} />
+                                <Error>
+                                    {errors.announcement && errors.announcement.type === "required" && <span>This is required</span>}
+                                </Error>
+                            </Label>
                         </InputContainer>
                         <ButtonContainer>
                             <ButtonSubmit type='submit' >Add Banner</ButtonSubmit>

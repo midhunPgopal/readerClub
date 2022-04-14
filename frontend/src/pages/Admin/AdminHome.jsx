@@ -43,8 +43,8 @@ const ListItem = styled.div`
 
 const AdminHome = () => {
 
-  const [homeFlag, setHomeFlag] = useState(true)
-  const [productFlag, setProductFlag] = useState(true)
+  const [homeFlag, setHomeFlag] = useState(false)
+  const [productFlag, setProductFlag] = useState(false)
   const [userFlag, setUserFlag] = useState(false)
   const [orderFlag, setOrderFlag] = useState(false)
   const [categoryFlag, setCategoryFlag] = useState(false)

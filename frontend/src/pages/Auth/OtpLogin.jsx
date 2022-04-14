@@ -192,7 +192,7 @@ const OtpLogin = () => {
                                     {errOtp && <ErrorNotice message={errOtp} />}
                                 </Error>
                                 <Bottom>
-                                    <Button type='submit' disabled={isFetching}>SUBMIT</Button>
+                                    <Button type='submit'>SUBMIT</Button>
                                 </Bottom>
                             </Form>
                             <Bottom>

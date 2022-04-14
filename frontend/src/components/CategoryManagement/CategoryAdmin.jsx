@@ -211,16 +211,24 @@ const CategoryAdmin = () => {
                     {check &&
                         <Form onSubmit={handleSubmit(addCategory)}>
                             <InputContainer>
-                                <Label>Category</Label>
-                                <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
-                                <Error>
-                                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
-                                </Error>
-                                <Label>Image source link</Label>
-                                <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                                <Error>
-                                    {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                                </Error>
+                                <Label>Category
+                                    <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+                                    <Error>
+                                        {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                                <Label>Image source link
+                                    <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
+                                    <Error>
+                                        {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                                <Label>Offer code
+                                    <Input id="offer" type='text' placeholder='Offer code' {...register('offer')} />
+                                </Label>
+                                <Label>Discount
+                                    <Input id="discount" type='number' step="0.01" placeholder='Offer code' {...register('discount')} />
+                                </Label>
                             </InputContainer>
                             <ButtonContainer>
                                 <ButtonSubmit type='submit' >Add Category</ButtonSubmit>

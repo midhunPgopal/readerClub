@@ -9,7 +9,7 @@ const verifyStatus = require('./verifyStatus')
 router.post('/', verifyToken, verifyStatus, async (req, res) => {
     const existingList = await Wishlist.findOne({ productId: req.body.productId })
     if (existingList) {
-        return res.status(500).json({ msg: 'Product already added' })
+        return res.status(200).json({ msg: 'Product already added' })
     } 
     const newWishlist = new Wishlist(req.body)
     try {

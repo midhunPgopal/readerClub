@@ -1,11 +1,14 @@
 import styled from 'styled-components'
 import AdminFooter from '../../components/Admin/AdminFooter'
-import AdminNavbar from '../../components/Admin/AdminNavbar' 
+import AdminNavbar from '../../components/Admin/AdminNavbar'
 import { mobile } from '../../responsive'
 import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import dateFormat from 'dateformat'
+import { useSelector } from 'react-redux'
+import { confirm } from 'react-confirm-box'
+import { toast } from 'react-toastify'
 
 
 const Container = styled.div``
@@ -63,14 +66,55 @@ const FilterSize = styled.select`
     padding: 5px;
 `
 const FilterSizeOption = styled.option``
-
+const ReviewWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin: 20px 50px 20px 50px;
+    padding: 10px;
+`
+const ButtonDelete = styled.button`
+    width: 35%;
+    padding: 10px;
+    border: none;
+    background-color: #94150cf0;
+    color : white;
+    cursor: pointer;
+    border-radius: 20px;
+    
+    &:hover {
+        background-color: #f53022f0;
+    }
+    `
+const Review = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px 0px 0px;
+`
+const UserName = styled.span`
+    margin-right: 15px;
+`
+const Rating = styled.span`
+margin-right: 15px;
+`
+const Details = styled.span`
+margin-right: 15px;
+`
+toast.configure()
 const AdminProduct = () => {
 
     const location = useLocation()
-
     const id = location.pathname.split('/')[2]
-    
+
+    const admin = useSelector(state => state.admin)
+    const header = admin.currentAdmin.accessToken
+
     const [product, setProduct] = useState({})
+    const [review, setReview] = useState()
+
+    const notify = (msg) => toast.success(msg, {
+        position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
+    })
 
     useEffect(() => {
         const getProduct = async () => {
@@ -83,6 +127,29 @@ const AdminProduct = () => {
         }
         getProduct()
     }, [id])
+    const getReview = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/api/review/' + product._id)
+            setReview(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const reviewDelete = async (id) => {
+        const result = await confirm("Are you sure want to delete?");
+        if (result) {
+            try {
+                const res = await axios.delete('http://localhost:3001/api/review/' + id, { headers: { header } })
+                notify(res.data.msg)
+                getReview()
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
+    useEffect(() => {
+        getReview()
+    }, [product])
 
     return (
         <Container>
@@ -114,7 +181,7 @@ const AdminProduct = () => {
                                 ))}
                             </FilterSize>
                         </Filter>
-                        {product.offers?.length>1 && (
+                        {product.offers?.length > 1 && (
                             <Filter>
                                 <FilterTitle>Offers</FilterTitle>
                                 <FilterSize >
@@ -127,6 +194,18 @@ const AdminProduct = () => {
                     </FilterContainer>
                 </InfoContainer>
             </Wrapper>
+            <ReviewWrapper>
+                {review?.map(item => (
+                    <Review>
+                        <>
+                            <UserName><b>Name</b> : {item.name}</UserName>
+                            <Rating><b>Rating </b> : {item.rating} / 10</Rating>
+                            <Details><b>Review</b> : {item.details}</Details>
+                            <ButtonDelete onClick={() => reviewDelete(item._id)}>Remove</ButtonDelete>
+                        </>
+                    </Review>
+                ))}
+            </ReviewWrapper>
             <AdminFooter />
         </Container>
     )

@@ -68,11 +68,12 @@ const EditBannerForm = ({ preloadedData }) => {
     return (
         <Form onSubmit={handleSubmit(updateBanner)}>
             <InputContainer>
-                <Label>Announcement</Label>
-                <Input id="announcement" type='text' placeholder='Announcement' {...register('announcement', { required: true })} />
-                <Error>
-                    {errors.announcement && errors.announcement.type === "required" && <span>This is required</span>}
-                </Error>
+                <Label>Announcement
+                    <Input id="announcement" type='text' placeholder='Announcement' {...register('announcement', { required: true })} />
+                    <Error>
+                        {errors.announcement && errors.announcement.type === "required" && <span>This is required</span>}
+                    </Error>
+                </Label>
             </InputContainer>
             <ButtonContainer>
                 <ButtonSubmit type='submit'>Update</ButtonSubmit>

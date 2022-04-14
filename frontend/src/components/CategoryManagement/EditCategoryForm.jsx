@@ -41,18 +41,18 @@ const Label = styled.label`
 `
 toast.configure()
 const EditCategoryForm = ({ preloadedData }) => {
-    
+
     const navigate = useNavigate()
     const location = useLocation()
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
     const id = location.pathname.split('/')[2]
-    
+
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: preloadedData
     })
-    
+
     const notify = () => {
         toast('Category updated', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
@@ -68,16 +68,24 @@ const EditCategoryForm = ({ preloadedData }) => {
     return (
         <Form onSubmit={handleSubmit(updateCategory)}>
             <InputContainer>
-                <Label>Category Name</Label>
-                <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
-                <Error>
-                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
-                </Error>
-                <Label>Image source link</Label>
-                <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                <Error>
-                    {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                </Error>
+                <Label>Category Name
+                    <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+                    <Error>
+                        {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                    </Error>
+                </Label>
+                <Label>Image source link
+                    <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
+                    <Error>
+                        {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                    </Error>
+                </Label>
+                <Label>Offer code
+                    <Input id="offer" type='text' placeholder='Offer code' {...register('offer')} />
+                </Label>
+                <Label>Discount
+                    <Input id="discount" type='number' step="0.01" placeholder='Offer code' {...register('discount')} />
+                </Label>
             </InputContainer>
             <ButtonContainer>
                 <ButtonSubmit type='submit'>Update</ButtonSubmit>

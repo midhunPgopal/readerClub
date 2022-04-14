@@ -6,9 +6,12 @@ import { mobile } from '../../responsive'
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logOut } from '../../redux/userRedux'
+import  { previousCart } from '../../redux/cartRedux'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirm } from "react-confirm-box"
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 
 const Container = styled.div`
@@ -85,11 +88,32 @@ const Navbar = () => {
     const dispatch = useDispatch()
 
     const user = useSelector((state) => state.user.currentUser)
+    const cart = useSelector((state) => state.cart.currentCart)
+
+    let userId = null
+    let header = null
+
+    const [quantity, setQuantity] = useState()
+
+    if (user) { 
+        userId = user.user._id
+        header = user.accessToken
+    }
 
     const notify = () => {
         toast('Come back soon', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
+    }
+
+    const getCartItems = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/api/cart/find/' + userId, { headers: {header, userId} })
+            setQuantity(res.data.length)
+            dispatch(previousCart(res.data.length))
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleClick = async () => {
@@ -102,6 +126,11 @@ const Navbar = () => {
             logout(dispatch)
         }
     }
+    useEffect(() => {
+        if(user) {
+            getCartItems()
+        }
+    }, [])
 
     return (
         <div>
@@ -125,7 +154,7 @@ const Navbar = () => {
                             <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
                             <Link to='/cart'>
                                 <MenuItem>
-                                    <Badge color="secondary">
+                                    <Badge badgeContent={cart} color="secondary">
                                         <ShoppingCartOutlinedIcon />
                                     </Badge>
                                 </MenuItem>

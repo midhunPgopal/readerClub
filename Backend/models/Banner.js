@@ -17,13 +17,16 @@ const BannerSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    discount: {
+        type: Number,
+        requierd: true
+    },
     img: {
         type: String,
         required: true
     },
     bg: {
-        type: String,
-        required: true
+        type: String
     }
 },{
     timestamps: true

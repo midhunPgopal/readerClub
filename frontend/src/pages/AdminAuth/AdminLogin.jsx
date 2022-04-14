@@ -137,7 +137,7 @@ const AdminLogin = () => {
                         {errPassword && <ErrorNotice message={errPassword} />}
                     </Error>
                     <Bottom>
-                        <Button type='submit' disabled={isFetching}>LOGIN</Button>
+                        <Button type='submit'>LOGIN</Button>
                         <Link to='/login'>
                             <Links>Login as User</Links>
                         </Link>

@@ -48,7 +48,7 @@ const CategoryItems = ({ item }) => {
             <Image src={item.img} />
             <Info>
                 <Title style={{textTransform:'capitalize'}}>{item.category}</Title>
-                <Link to={`/products/${item.category}`}>
+                <Link to={`/products/cat/${item.category}`}>
                     <Button>Shop Now</Button>
                 </Link> 
             </Info>

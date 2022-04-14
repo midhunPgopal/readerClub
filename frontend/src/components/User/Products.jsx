@@ -33,23 +33,28 @@ const Button = styled.button`
   }
 `
 
-const Products = ({ cat, filters, sort }) => {
+const Products = ({ cat, offer, filters, sort }) => {
 
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   
   const getproducts = async () => {
     try {
-      const res = await axios.get(cat ? `http://localhost:3001/api/products?category=${cat}`
-        : `http://localhost:3001/api/products`)
-      setProducts(res.data)
+      const res = await axios.get(cat ? `http://localhost:3001/api/products/cat?category=${cat}` : `http://localhost:3001/api/products`)
+      const ress = await axios.get(offer ? `http://localhost:3001/api/products/offer?offer=${offer}` : `http://localhost:3001/api/products`)
+      if(offer) {
+        setProducts(ress.data)
+      }
+      else {
+        setProducts(res.data)
+      }
     } catch (error) {
       console.log(error)
     }
   }
   const getFilteredProducts = async () => {
     try {
-      const res = await axios.get(`http://localhost:3001/api/products?category=${filters}`)
+      const res = await axios.get(`http://localhost:3001/api/products/cat?category=${filters}`)
       setFilteredProducts(res.data)
     } catch (error) {
       console.log(error)

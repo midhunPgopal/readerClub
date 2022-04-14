@@ -21,6 +21,17 @@ router.get('/find/:id', async (req, res) => {
     }
 })
 
+router.get('/get/:code', async (req, res) => {
+    try {
+        const data = await Banner.find({offerCode: req.params.code})
+        const  [banner] = data
+        res.status(200).json(banner)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+})
+
 router.post('/', verifyTokenAndAdmin, async (req, res) => {
     const newBanner = new Banner(req.body)
     try {

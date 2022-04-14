@@ -141,7 +141,7 @@ const Login = () => {
                         {errPassword && <ErrorNotice message={errPassword} />}
                     </Error>
                     <Bottom>
-                        <Button type='submit' disabled={isFetching}>LOGIN</Button>
+                        <Button type='submit' >LOGIN</Button>
                         <Link to='/register'>
                             <Links>Create new Account</Links>
                         </Link>

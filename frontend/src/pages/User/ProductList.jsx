@@ -41,7 +41,15 @@ const Option = styled.option``
 const ProductList = () => {
 
     const location = useLocation()
-    const cat = location.pathname.split('/')[2]
+    const value = location.pathname.split('/')[2]
+    let cat = null
+    let offer = null
+
+    if(value === 'offer') {
+        offer = location.pathname.split('/')[3]
+    } else {
+        cat = location.pathname.split('/')[3]
+    }
 
     const [filters, setFilters] = useState({})
     const [sort, setSort] = useState('newest')
@@ -70,7 +78,7 @@ const ProductList = () => {
                     <FilterText>Filter Products</FilterText>
                     <Select onChange={e => setFilters(e.target.value)}>
                         <Option disabled >Categories</Option>
-                        <Option >{cat}</Option>
+                        <Option ></Option>
                         {categories?.map(item => (
                             <Option>{item.category}</Option>
                         ))}
@@ -86,7 +94,7 @@ const ProductList = () => {
                     </Select>
                 </Filter>
             </FilterContainer>
-            <Products cat={cat} filters={filters} sort={sort} />
+            <Products cat={cat} offer={offer} filters={filters} sort={sort} />
             <Newsletter />
             <Footer />
         </Container>

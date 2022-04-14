@@ -6,9 +6,11 @@ import Navbar from '../../components/User/Navbar'
 import RemoveIcon from '@mui/icons-material/Remove'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { mobile } from '../../responsive'
 import { useSelector, useDispatch } from 'react-redux'
 import { logOut } from '../../redux/userRedux'
+import { addCart } from '../../redux/cartRedux'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios'
@@ -127,17 +129,21 @@ const Button = styled.button`
     font-weight: 600;
     cursor: pointer
 `
+const Icons = styled.div`
+    display: flex;
+    flex-direction: row;
+`
 
 toast.configure()
 const Cart = () => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    
+
     const user = useSelector(state => state.user)
     const userId = user.currentUser.user._id
     const header = user.currentUser.accessToken
-    
+
     const [resData, setResData] = useState()
     const [subTotal, setSubTotal] = useState()
     const [grandTotal, setGrandTotal] = useState()
@@ -145,27 +151,20 @@ const Cart = () => {
     const [cartId, setCartId] = useState()
     const [productPrice, setProductPrice] = useState()
 
-    const notify = () => toast('Lets finish this order', {
+    const notify = (msg) => toast(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
     const notifyDelete = () => toast.success('Item removed from your cart', {
         position: "top-center", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
-    
+
     const getData = async () => {
         try {
             const response = await axios.get(`http://localhost:3001/api/cart/find/` + userId, { headers: { header, userId } })
-            setResData(response.data.cart)
+            setResData(response.data)
         } catch (error) {
             console.log(error)
             error.response.data.status && dispatch(logOut())
-        }
-    }
-    const removePreOrders = async () => {
-        try {
-            await axios.delete('http://localhost:3001/api/preorder/' + userId, { headers: { header } })
-        } catch (error) {
-            console.log(error)
         }
     }
     const handleDelete = async (id) => {
@@ -173,6 +172,7 @@ const Cart = () => {
             const result = await confirm("Are you sure about this?");
             if (result) {
                 await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header, userId } })
+                dispatch(addCart(-1))
                 notifyDelete()
                 getData()
             }
@@ -192,15 +192,16 @@ const Cart = () => {
         }
     }
     const handleQuantity = async (id, quantity, price, value) => {
+        setCartId(id)
+        setProductPrice(price / quantity)
         try {
-            setCartId(id)
-            setProductPrice(price)
             if (value === 'dec' && quantity > 1) {
                 setProductQuantity(quantity - 1)
             } else if (value === 'dec' && quantity === 1) {
                 const result = await confirm("Do you want to remove it?");
                 if (result) {
                     await axios.delete('http://localhost:3001/api/cart/find/' + id, { headers: { header, userId } })
+                    dispatch(addCart(-1))
                     notifyDelete()
                     getData()
                 }
@@ -218,11 +219,37 @@ const Cart = () => {
         navigate('/checkout')
         notify()
     }
+    const removePreOrders = async () => {
+        try {
+            await axios.delete('http://localhost:3001/api/preorder/' + userId, { headers: { header } })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const addToWishlist = async (cart) => {
+        const productId = cart.product._id
+        const product = cart.product
+        const payload = { userId, productId, product }
+        try {
+            const result = await confirm("Do you want to move this to wishlist?")
+            if (result) {
+                await axios.post('http://localhost:3001/api/wishlist/', payload, { headers: { header, userId } })
+                await axios.delete('http://localhost:3001/api/cart/find/' + cart._id, { headers: { header, userId } })
+                dispatch(addCart(-1))
+                notifyDelete()
+                getData()
+            }
+        } catch (error) {
+            console.log(error)
+            error.response.data.msg && notify(error.response.data.msg)
+            error.response.data.status && dispatch(logOut()) && notify(error.response.data.msg)
+        }
+    }
 
     useEffect(() => {
         removePreOrders()
         getData()
-    }, [header, productQuantity])
+    }, [header])
     useEffect(() => {
         updateCart()
     }, [productQuantity])
@@ -263,18 +290,24 @@ const Cart = () => {
                                         <ProductAmountContainer>
                                             <RemoveIcon
                                                 style={{ cursor: 'pointer', color: 'rgb(103, 88, 219)' }}
-                                                onClick={() => handleQuantity(data._id, data.quantity, data.product.price, 'dec')}
+                                                onClick={() => handleQuantity(data._id, data.quantity, data.total, 'dec')}
                                             />
                                             <ProductAmount>{data.quantity}</ProductAmount>
                                             <AddIcon
                                                 style={{ cursor: 'pointer', color: 'rgba(18, 231, 36, 0.981)' }}
-                                                onClick={() => handleQuantity(data._id, data.quantity, data.product.price, 'inc')}
+                                                onClick={() => handleQuantity(data._id, data.quantity, data.total, 'inc')}
                                             />
                                         </ProductAmountContainer>
-                                        <DeleteForeverIcon
-                                            style={{ cursor: 'pointer', color: 'red' }}
-                                            onClick={() => handleDelete(data._id)}
-                                        />
+                                        <Icons>
+                                            <DeleteForeverIcon
+                                                style={{ cursor: 'pointer', margin: '10px' }}
+                                                onClick={() => handleDelete(data._id)}
+                                            />
+                                            <FavoriteRoundedIcon
+                                                style={{ cursor: 'pointer', color: 'red', margin: '10px' }}
+                                                onClick={() => addToWishlist(data)}
+                                            />
+                                        </Icons>
                                         <ProductPrize>₹ {data.total}</ProductPrize>
                                     </PriceDetails>
                                 </Product>

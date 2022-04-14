@@ -1,9 +1,10 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ArrowLeftRoundedIcon from '@mui/icons-material/ArrowLeftRounded';
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded';
 import { mobile } from '../../responsive';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     width: 100%;
@@ -11,7 +12,7 @@ const Container = styled.div`
     display: flex;
     position: relative;
     overflow: hidden;
-    ${mobile({ display: 'none'})}
+    ${mobile({ display: 'none' })}
 `
 
 const Arrow = styled.div`
@@ -93,13 +94,13 @@ const Slider = () => {
     const [banner, setBanner] = useState()
 
     const handleClick = (direction) => {
-        if(direction === 'left') {
-            setSlideIndex(slideIndex>0 ? slideIndex-1 : 2)
+        if (direction === 'left') {
+            setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2)
         } else if (direction === 'right') {
-            setSlideIndex(slideIndex<2 ? slideIndex+1 : 0)
+            setSlideIndex(slideIndex < 2 ? slideIndex + 1 : 0)
         }
     }
-    const getBanner = async () =>{
+    const getBanner = async () => {
         try {
             const res = await axios.get('http://localhost:3001/api/banner')
             setBanner(res.data)
@@ -118,17 +119,19 @@ const Slider = () => {
             </Arrow>
             <Wrapper slideIndex={slideIndex}>
                 {banner?.map(item => (
-                <Slide bg={item.bg} key={item.id}>
-                    <ImgContainer>
-                        <Image src={item.img} />
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>{item.title}</Title>
-                        <Desc>{item.description}</Desc>
-                        <Offer>{item.offerDescription}</Offer>
-                        <Button>BUY NOW</Button>
-                    </InfoContainer>
-                </Slide>
+                    <Slide bg={item.bg} key={item.id}>
+                        <ImgContainer>
+                            <Image src={item.img} />
+                        </ImgContainer>
+                        <InfoContainer>
+                            <Title>{item.title}</Title>
+                            <Desc>{item.description}</Desc>
+                            <Offer>{item.offerDescription}</Offer>
+                            <Link to={`/products/offer/${item.offerCode}`}>
+                                <Button>BUY NOW</Button>
+                            </Link>
+                        </InfoContainer>
+                    </Slide>
                 ))}
             </Wrapper>
             <Arrow direction='right' onClick={() => handleClick('right')}>

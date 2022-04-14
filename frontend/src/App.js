@@ -9,6 +9,7 @@ import Orders from "./pages/User/Orders";
 import ProductList from "./pages/User/ProductList";
 import Checkout from './pages/User/Checkout'
 import Wishlist from './pages/User/Wishlist'
+import UserAccount from "./pages/User/UserAccount";
 
 import AdminHome from "./pages/Admin/AdminHome";
 import AdminProduct from "./pages/Admin/AdminProduct";
@@ -36,13 +37,15 @@ function App() {
         <Route path="/otplogin" element={user ? <Navigate to='/' /> : <OtpLogin />} />
         <Route exact path="/" element={ <Home />} />
         <Route path="/products" element={<ProductList />} />
-        <Route path="/products/:category" element={<ProductList />}/>
+        <Route path="/products/cat/:value" element={<ProductList />}/>
+        <Route path="/products/offer/:value" element={<ProductList />}/>
         <Route path="/product/:id" element={<Product />} />
         <Route path="/cart" element={user ? <Cart /> : <Navigate to='/login' />} />
         <Route path="/checkout" element={user ? <Checkout /> : <Navigate to='/login' />} />
         <Route path="/orders" element={user ? <Orders /> : <Navigate to='/login' />} />
         <Route path='/success' element={user ? <Success /> : <Navigate to='/login' />} />
         <Route path='/wishlist' element={user ? <Wishlist /> : <Navigate to='/login' />} />
+        <Route path='/account' element={user ? <UserAccount /> : <Navigate to='/login' />} />
 
         {/* Admin routes */}
 
