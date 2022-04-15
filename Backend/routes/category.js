@@ -1,8 +1,6 @@
 const router = require('express').Router()
 const Category = require('../models/Category')
-const {verifyTokenAndAdmin, verifyToken, verifyTokenAuth} = require('../routes/verifyToken')
-const verifyStatus = require ('../routes/verifyStatus')
-
+const {verifyTokenAndAdmin} = require('../routes/verifyToken')
 router.post('/', verifyTokenAndAdmin, async (req, res) => {
     const category = new Category(req.body)
     try {

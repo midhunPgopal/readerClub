@@ -11,6 +11,14 @@ router.get('/:id', verifyToken, async (req, res) => {
         console.log(error)
     }
 })
+router.get('/find/:id', async (req, res) => {
+    try {
+        const address = await Address.findById(req.params.id)
+        res.status(200).json(address)
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 router.post('/', verifyToken, verifyStatus, async (req, res) => {
     const newAddress = new Address(req.body)
@@ -25,9 +33,17 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
 router.put('/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
         await Address.findByIdAndUpdate(req.params.id, {
-            $set: req.body
-        }, {new: true})
+            $set: { 'address': req.body.address, 'pincode': req.body.pinode, 'landmark': req.body.landmark}
+        })
         res.status(200).json({msg: 'Address updated'})
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+router.delete('/:id', verifyToken, verifyStatus, async (req, res) => {
+    try {
+        await Address.findByIdAndDelete(req.params.id)
+        res.status(200).json({msg: 'Address deleted'})
     } catch (error) {
         res.status(500).json(error)
     }

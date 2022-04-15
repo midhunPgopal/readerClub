@@ -12,6 +12,13 @@ const UserDetailsSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    dob: {
+        type: Date
+    },
+    wallet: {
+        type: Number,
+        default: 0
+    },
     image: {
         type: String
     }

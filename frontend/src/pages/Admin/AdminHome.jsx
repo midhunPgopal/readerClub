@@ -7,6 +7,7 @@ import OrdersAdmin from '../../components/OrderManagement/OrdersAdmin'
 import UsersAdmin from '../../components/UserManagement/UsersAdmin'
 import BannerAdmin from '../../components/BannerManagement/BannerAdmin'
 import AnnouncementAdmin from '../../components/AnnouncementManagement/AnnouncementAdmin'
+import CouponAdmin from '../../components/CouponManagement/CouponAdmin'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
 
@@ -50,6 +51,7 @@ const AdminHome = () => {
   const [categoryFlag, setCategoryFlag] = useState(false)
   const [bannerFlag, setBannerFlag] = useState(false)
   const [announcementFlag, setAnnouncementFlag] = useState(false)
+  const [couponFlag, setCouponFlag] = useState(false)
 
   const getHome = () => {
     setHomeFlag(true)
@@ -59,6 +61,7 @@ const AdminHome = () => {
     setCategoryFlag(false)
     setBannerFlag(false)
     setAnnouncementFlag(false)
+    setCouponFlag(false)
   }
   const getProduct = () => {
     setProductFlag(true)
@@ -67,6 +70,7 @@ const AdminHome = () => {
     setOrderFlag(false)
     setCategoryFlag(false)
     setBannerFlag(false)
+    setCouponFlag(false)
     setAnnouncementFlag(false)
   }
   const getUser = () => {
@@ -76,6 +80,7 @@ const AdminHome = () => {
     setOrderFlag(false)
     setCategoryFlag(false)
     setBannerFlag(false)
+    setCouponFlag(false)
     setAnnouncementFlag(false)
   }
   const getOrder = () => {
@@ -85,6 +90,7 @@ const AdminHome = () => {
     setUserFlag(false)
     setCategoryFlag(false)
     setBannerFlag(false)
+    setCouponFlag(false)
     setAnnouncementFlag(false)
   }
   const getCategory = () => {
@@ -94,6 +100,7 @@ const AdminHome = () => {
     setUserFlag(false)
     setOrderFlag(false)
     setBannerFlag(false)
+    setCouponFlag(false)
     setAnnouncementFlag(false)
   }
   const getBanner = () => {
@@ -103,10 +110,22 @@ const AdminHome = () => {
     setUserFlag(false)
     setOrderFlag(false)
     setCategoryFlag(false)
+    setCouponFlag(false)
     setAnnouncementFlag(false)
   }
   const getAnnouncement = () => {
     setAnnouncementFlag(true)
+    setHomeFlag(false)
+    setProductFlag(false)
+    setCategoryFlag(false)
+    setUserFlag(false)
+    setOrderFlag(false)
+    setCouponFlag(false)
+    setBannerFlag(false)
+  }
+  const getCoupon = () => {
+    setCouponFlag(true)
+    setAnnouncementFlag(false)
     setHomeFlag(false)
     setProductFlag(false)
     setCategoryFlag(false)
@@ -129,6 +148,7 @@ const AdminHome = () => {
               <ListItem onClick={getCategory}>Category Management</ListItem>
               <ListItem onClick={getBanner}>Banner Management</ListItem>
               <ListItem onClick={getAnnouncement}>Announcement Management</ListItem>
+              <ListItem onClick={getCoupon}>Coupon Management</ListItem>
             </List>
           </Container>
         </SideBarDiv>
@@ -139,6 +159,7 @@ const AdminHome = () => {
         {userFlag && <UsersAdmin /> }
         {bannerFlag && <BannerAdmin /> }
         {announcementFlag && <AnnouncementAdmin /> }
+        {couponFlag && <CouponAdmin /> }
         </Content>
       </Wrapper>
       <AdminFooter />

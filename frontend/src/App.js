@@ -10,6 +10,7 @@ import ProductList from "./pages/User/ProductList";
 import Checkout from './pages/User/Checkout'
 import Wishlist from './pages/User/Wishlist'
 import UserAccount from "./pages/User/UserAccount";
+import EditAddress from './pages/User/EditAddress'
 
 import AdminHome from "./pages/Admin/AdminHome";
 import AdminProduct from "./pages/Admin/AdminProduct";
@@ -20,6 +21,7 @@ import EditOrder from './pages/OrderManagement/EditOrder'
 import EditUser from './pages/UserManagement/EditUser'
 import EditBanner from './pages/BannerManagement/EditBanner'
 import EditAnnouncement from './pages/AnnouncementManagement/EditAnnouncement'
+import EditCoupon from './pages/CouponManagement/EditCoupon'
 
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
@@ -46,6 +48,7 @@ function App() {
         <Route path='/success' element={user ? <Success /> : <Navigate to='/login' />} />
         <Route path='/wishlist' element={user ? <Wishlist /> : <Navigate to='/login' />} />
         <Route path='/account' element={user ? <UserAccount /> : <Navigate to='/login' />} />
+        <Route path='/editaddress/:id' element={user ? <EditAddress /> : <Navigate to='/login' />} />
 
         {/* Admin routes */}
 
@@ -58,6 +61,7 @@ function App() {
         <Route path="/edituser/:id" element={admin ? <EditUser /> : <Navigate to='/adminlogin' />} />
         <Route path="/editbanner/:id" element={admin ? <EditBanner /> : <Navigate to='/adminlogin' />} />
         <Route path="/editannouncement/:id" element={admin ? <EditAnnouncement /> : <Navigate to='/adminlogin' />} />
+        <Route path="/editcoupon/:id" element={admin ? <EditCoupon /> : <Navigate to='/adminlogin' />} />
       </Routes>
     </BrowserRouter>
   );

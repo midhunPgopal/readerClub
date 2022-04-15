@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios'
 import { confirm } from "react-confirm-box"
+import { useForm } from 'react-hook-form'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -133,7 +134,6 @@ const Icons = styled.div`
     display: flex;
     flex-direction: row;
 `
-
 toast.configure()
 const Cart = () => {
 
@@ -145,11 +145,13 @@ const Cart = () => {
     const header = user.currentUser.accessToken
 
     const [resData, setResData] = useState()
-    const [subTotal, setSubTotal] = useState()
-    const [grandTotal, setGrandTotal] = useState()
+    const [subTotal, setSubTotal] = useState(0)
+    const [grandTotal, setGrandTotal] = useState(0)
     const [productQuantity, setProductQuantity] = useState()
     const [cartId, setCartId] = useState()
     const [productPrice, setProductPrice] = useState()
+    const [shipping, setShipping] = useState(99)
+    
 
     const notify = (msg) => toast(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
@@ -258,7 +260,7 @@ const Cart = () => {
         setSubTotal(total)
     }, [resData])
     useEffect(() => {
-        setGrandTotal(subTotal)
+        setGrandTotal(subTotal + shipping)
     }, [subTotal])
 
     return (
@@ -324,11 +326,11 @@ const Cart = () => {
                             </SummaryItem>
                             <SummaryItem>
                                 <SummaryItemText>Estimated Shipping</SummaryItemText>
-                                <SummaryItemPrice>₹ 125</SummaryItemPrice>
+                                <SummaryItemPrice>₹{shipping}</SummaryItemPrice>
                             </SummaryItem>
                             <SummaryItem type='total'>
                                 <SummaryItemText>Total</SummaryItemText>
-                                <SummaryItemPrice>₹ {grandTotal + 125}</SummaryItemPrice>
+                                <SummaryItemPrice>₹ {grandTotal}</SummaryItemPrice>
                             </SummaryItem>
                         </Summary>
                         <Button onClick={preOrder}>Proceed to Checkout</Button>

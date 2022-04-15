@@ -24,7 +24,7 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
 
 router.put('/:id', verifyToken, verifyStatus, async (req, res) => {
     try {
-        await UserDetails.findByIdAndUpdate(req.params.id, {
+        await UserDetails.findOneAndUpdate({userId: req.params.id}, {
             $set: req.body
         }, {new: true})
         res.status(200).json({msg: 'UserDetails updated'})

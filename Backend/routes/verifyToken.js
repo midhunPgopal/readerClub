@@ -17,8 +17,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyTokenAuth = (req, res, next) => {
     verifyToken(req, res, () => {
-        console.log(req.user.id);
-        if(req.user._id === req.params.id || req.user.isAdmin) {
+        if(req.user.id === req.params.id || req.user.isAdmin) {
             next()
         } else {
             res.status(403).json('You are not allowed')

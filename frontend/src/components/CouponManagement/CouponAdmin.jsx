@@ -159,79 +159,75 @@ const CategoryAdmin = () => {
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
 
-    const [categories, setCategories] = useState()
+    const [coupon, setCoupon] = useState()
     const [check, setCheck] = useState(false)
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
-    const notifyCategory = () => toast.success('Category added', {
+    const notify = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
 
-    const getCheck = () => {
-        setCheck(true)
-    }
-
-    const notifyDelete = () => toast.success('Category deleted', {
+    const notifyDelete = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
 
-    const getCategories = async () => {
-        const res = await axios.get('http://localhost:3001/api/categories')
-        setCategories(res.data)
+    const getCoupon = async () => {
+        const res = await axios.get('http://localhost:3001/api/coupon')
+        setCoupon(res.data)
     }
-    const addCategory = async (data) => {
-        await axios.post('http://localhost:3001/api/categories/', data, { headers: { header } })
-        notifyCategory()
-        getCategories()
+    const addCoupon = async (data) => {
+        const res = await axios.post('http://localhost:3001/api/coupon/', data, { headers: { header } })
+        notify(res.data.msg)
+        getCoupon()
         setCheck(false)
     }
 
-    const deleteCat = async (id) => {
+    const deleteCoupon = async (id) => {
         const result = await confirm('Are you sure?')
         if (result) {
-            await axios.delete('http://localhost:3001/api/categories/' + id, { headers: { header } })
-            notifyDelete()
-            getCategories()
+            const res = await axios.delete('http://localhost:3001/api/coupon/' + id, { headers: { header } })
+            notifyDelete(res.data.msg)
+            getCoupon()
         }
     }
 
     useEffect(() => {
-        getCategories()
+        getCoupon()
     }, [])
 
     return (
         <Container>
             <Wrapper>
                 <TopButton>
-                    <Title>Your Categories</Title>
-                    <Button onClick={getCheck}>Add Category</Button>
+                    <Title>Your Coupons</Title>
+                    <Button onClick={() => setCheck(true)}>Add Coupon</Button>
                 </TopButton>
                 <AddCategory>
                     {check &&
-                        <Form onSubmit={handleSubmit(addCategory)}>
+                        <Form onSubmit={handleSubmit(addCoupon)}>
                             <InputContainer>
-                                <Label>Category
-                                    <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+                                <Label>Coupon code
+                                    <Input id="couponCode" type='text' placeholder='Coupon code' {...register('couponCode', { required: true })} />
                                     <Error>
-                                        {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                                        {errors.couponCode && errors.couponCode.type === "required" && <span>This is required</span>}
                                     </Error>
                                 </Label>
-                                <Label>Image source link
-                                    <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
+                                <Label>Coupon discount
+                                    <Input id="discount" type='number' step='0.01' placeholder='Coupon discount' {...register('discount', { required: true })} />
                                     <Error>
-                                        {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                                        {errors.discount && errors.discount.type === "required" && <span>This is required</span>}
                                     </Error>
                                 </Label>
-                                <Label>Offer code
-                                    <Input id="offer" type='text' placeholder='Offer code' {...register('offer')} />
-                                </Label>
-                                <Label>Discount
-                                    <Input id="discount" type='number' step="0.01" placeholder='Offer code' {...register('discount')} />
+                                <Label>Coupon maximum
+                                    <Input id="maximumOfffer" type='number' placeholder='Coupon maximum discount' {...register('maximumOfffer', { required: true })} />
+                                    <Error>
+                                        {errors.maximumOfffer && errors.maximumOfffer.type === "required" && <span>This is required</span>}
+                                    </Error>
                                 </Label>
                             </InputContainer>
                             <ButtonContainer>
-                                <ButtonSubmit type='submit' >Add Category</ButtonSubmit>
+                                <ButtonSubmit type='submit' >Add Coupon</ButtonSubmit>
                                 <ButtonClose onClick={() => setCheck(false)}>Close</ButtonClose>
                             </ButtonContainer>
                         </Form>
@@ -241,24 +237,28 @@ const CategoryAdmin = () => {
                 <Table>
                     <Thead >
                         <Tr>
-                            <Th scope="col">Name</Th>
+                            <Th scope="col">Coupon code</Th>
+                            <Th scope="col">Coupon discount</Th>
+                            <Th scope="col">Coupon maximum</Th>
                             <Th scope="col">Edit</Th>
                             <Th scope="col">Delete</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {categories?.map(data => (
+                        {coupon?.map(data => (
                             <>
                                 <Tr key={data._id}>
-                                    <Td>{data.category}</Td>
+                                    <Td>{data.couponCode}</Td>
+                                    <Td>{data.discount}</Td>
+                                    <Td>{data.maximumOfffer}</Td>
                                     <Td>
                                         <ButtonEdit>
-                                            <Link to={`/editcategory/${data._id}`} style={{ textDecoration: 'none' }}>
+                                            <Link to={`/editcoupon/${data._id}`} style={{ textDecoration: 'none' }}>
                                                 <EditIcon />
                                             </Link>
                                         </ButtonEdit>
                                     </Td>
-                                    <Td><ButtonDelete onClick={() => deleteCat(data._id)}><DeleteForeverIcon /></ButtonDelete></Td>
+                                    <Td><ButtonDelete onClick={() => deleteCoupon(data._id)}><DeleteForeverIcon /></ButtonDelete></Td>
                                 </Tr>
                             </>
                         ))}

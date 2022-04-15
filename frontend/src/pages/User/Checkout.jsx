@@ -11,6 +11,7 @@ import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { logOut } from '../../redux/userRedux'
+import ErrorNotice from '../../error/ErrorNotice'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -36,7 +37,8 @@ const TopButton = styled.button`
     color: ${props => props.type === 'filled' && 'white'};
 `
 const Bottom = styled.div`
-
+    display: flex;
+    flex:direction: row;
     ${mobile({ flexDirection: 'column' })}
 `
 const Summary = styled.div`
@@ -53,8 +55,8 @@ const SummaryItem = styled.div`
     margin: 30px 0px;
     display: flex;
     justify-content: space-between;
-    font-weight: ${props => props.type === 'total' && '500'}
-    font-size: ${props => props.type === 'total' && '24px'}
+    font-weight: ${props => props.type === 'totalPrice' && '500'}
+    font-size: ${props => props.type === 'totalPrice' && '24px'}
 `
 const SummaryItemText = styled.span``
 const SummaryItemPrice = styled.span``
@@ -67,17 +69,15 @@ const Button = styled.button`
     cursor: pointer
 `
 const Form = styled.form`
-    display: flex;
+    width: 80%;
     margin: 20px;
     padding: 20px;
-    display: flex;
-    justify-content: center;
+    flex: 1;
 
     ${mobile({ flexDirection: 'column' })}
 `
 const InputContainer = styled.div`
     display: flex;
-    flex: 1;
     flex-wrap: wrap;
     flex-direction: column;
     margin: 20px;
@@ -99,7 +99,28 @@ const Label = styled.label`
     color: #1517165b;
 `
 const RadioLabel = styled.p`
-
+`
+const FormCoupon = styled.form``
+const InputCoupon = styled.input`
+    width: 300px;
+    margin: 10px;
+    padding: 10px;
+    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+`
+const ButtonCheck = styled.button`
+    width: 20%;
+    padding: 10px;
+    background-color: teal;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+`
+const CouponContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `
 
 toast.configure()
@@ -114,10 +135,16 @@ const Cart = () => {
     const userId = user.currentUser.user._id
     const header = user.currentUser.accessToken
 
-    const [price, setPrice] = useState()
+    const [totalPrice, setTotalPrice] = useState()
+    const [grandTotal, setGrandTotal] = useState()
     const [products, setProducts] = useState()
+    const [discount, setDiscount] = useState(0)
+    const [maxDiscount, setMAxDiscount] = useState(0)
+    const [coupon, setCoupon] = useState()
+    const [buttonFlag, setButtonFlag] = useState(true)
+    const [errCoupon, setErrCoupon] = useState()
 
-    const notify = () => toast.success('Order succesful', {
+    const notify = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
 
@@ -125,7 +152,7 @@ const Cart = () => {
         try {
             const response = await axios.get(`http://localhost:3001/api/preorder/` + userId, { headers: { header, userId } })
             let [resData] = response.data
-            setPrice(resData.grandTotal)
+            setTotalPrice(resData.grandTotal)
             setProducts(resData.products)
         } catch (error) {
             console.log(error)
@@ -135,13 +162,13 @@ const Cart = () => {
     const onSubmit = async (data) => {
         let { name, email, mobile, address, pincode, payment } = data
         const deliveryAddress = { name, email, mobile, address, pincode }
-        const total = price
+        const total = grandTotal
         const payload = { userId, products, total, deliveryAddress, payment }
         try {
             if (payment === 'Cash on delivery') {
-                await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
+                const res = await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
                 await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
-                notify()
+                notify(res.data.msg)
                 navigate('/success')
             }
         } catch (error) {
@@ -149,10 +176,39 @@ const Cart = () => {
             error.response.data.status && dispatch(logOut())
         }
     }
+    const checkCoupon = async (e) => {
+        e.preventDefault()
+        try {
+            const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon)
+            setMAxDiscount(res.data.maximumOfffer)
+            setDiscount(res.data.discount)
+            notify('coupon added')
+            setButtonFlag(false)
+        } catch (error) {
+            console.log(error)
+            error.response.data.coupon && setErrCoupon(error.response.data.coupon)
+        }
+    }
+    const removeCoupon = () => {
+        setButtonFlag(true)
+        setMAxDiscount(0)
+        setDiscount(0)
+    }
 
     useEffect(() => {
         getData()
     }, [header])
+    useEffect(() => {
+        setGrandTotal(totalPrice)
+    }, [totalPrice])
+    useEffect(() => {
+        const discountValue = totalPrice * discount
+        if (discountValue <= maxDiscount) {
+            setGrandTotal(totalPrice - (totalPrice * discount))
+        } else {
+            setGrandTotal(totalPrice - maxDiscount)
+        }
+    }, [discount, maxDiscount])
 
     return (
         <Container>
@@ -200,28 +256,38 @@ const Cart = () => {
                             <Label>Payment method</Label>
                             <RadioLabel><Input type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} />Cash on Delivery</RadioLabel>
                             <RadioLabel><Input type="radio" value="Online Payment" id="Online Payment" {...register("payment")} />Online Payment</RadioLabel>
-                        </InputContainer>
-                        <Summary>
-                            <SummaryTitle><b>Final Payment</b></SummaryTitle>
-                            <SummaryItem>
-                                <SummaryItemText>Total</SummaryItemText>
-                                <SummaryItemPrice>₹ {price}</SummaryItemPrice>
-                            </SummaryItem>
-                            <SummaryItem>
-                                <SummaryItemText>Coupon Discount</SummaryItemText>
-                                <SummaryItemPrice>₹ 125</SummaryItemPrice>
-                            </SummaryItem>
-                            <SummaryItem type='total'>
-                                <SummaryItemText>Total</SummaryItemText>
-                                <SummaryItemPrice>₹ {price - 125}</SummaryItemPrice>
-                            </SummaryItem>
                             <Button type='submit'>Complete your Order</Button>
-                        </Summary>
+                        </InputContainer>
                     </Form>
+                    <Summary>
+                        <SummaryTitle><b>Final Payment</b></SummaryTitle>
+                        <SummaryItem>
+                            <SummaryItemText>Total</SummaryItemText>
+                            <SummaryItemPrice>₹ {totalPrice}</SummaryItemPrice>
+                        </SummaryItem>
+                        <FormCoupon >
+                            <CouponContainer>
+                                <Label>Coupon code
+                                    <InputCoupon type='text' placeholder='Copon code' onChange={(e) => setCoupon(e.target.value)} />
+                                    <Error>
+                                        {errCoupon && <ErrorNotice message={errCoupon} />}
+                                    </Error>
+                                </Label>
+                                {buttonFlag ?
+                                    <ButtonCheck onClick={checkCoupon} >Check</ButtonCheck> :
+                                    <ButtonCheck style={{ backgroundColor: 'red', padding: 'px' }} onClick={removeCoupon} >Remove Coupon</ButtonCheck>
+                                }
+                            </CouponContainer>
+                        </FormCoupon>
+                        <SummaryItem type='totalPrice'>
+                            <SummaryItemText>Total</SummaryItemText>
+                            <SummaryItemPrice>₹ {grandTotal}</SummaryItemPrice>
+                        </SummaryItem>
+                    </Summary>
                 </Bottom>
             </Wrapper>
             <Footer />
-        </Container>
+        </Container >
     )
 }
 

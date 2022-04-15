@@ -1,10 +1,10 @@
 const router = require('express').Router()
-const { verifyTokenAndAdmin } = require('../routes/verifyToken')
+const { verifyTokenAndAdmin, verifyTokenAuth } = require('../routes/verifyToken')
 const User = require('../models/User')
 
 //update userdetails
 
-router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
+router.put('/:id', verifyTokenAuth, async (req, res) => {
     try {
         await User.findByIdAndUpdate(req.params.id, {
             $set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
@@ -34,7 +34,6 @@ router.get('/find/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
         const {password, ...others} = user._doc
-        console.log(user._doc);
         res.status(200).json(others)
     } catch (error) {
         res.status(500).json(error)
