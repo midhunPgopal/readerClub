@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {verifyToken, verifyTokenAndAdmin} = require('./verifyToken')
+const { verifyTokenAndAdmin} = require('./verifyToken')
 const Review = require('../models/Reviews')
 const verifyStatus = require('./verifyStatus')
 
@@ -12,7 +12,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.post('/', verifyToken, verifyStatus, async (req, res) => {
+router.post('/',  verifyStatus, async (req, res) => {
     const newReview = new Review(req.body)
     try {
         await newReview.save()

@@ -3,7 +3,7 @@ const {verifyToken} = require('../routes/verifyToken')
 const PreOrder = require('../models/PreOrder')
 const verifyStatus = require('../routes/verifyStatus')
 
-router.get('/:id', verifyToken, verifyStatus, async (req, res) => {
+router.get('/:id', verifyStatus, async (req, res) => {
     try {
         const preOrders = await PreOrder.find({UserId: req.params.id})
         res.status(200).json(preOrders)
@@ -11,7 +11,7 @@ router.get('/:id', verifyToken, verifyStatus, async (req, res) => {
         res.status(500).json(error)
     }
 })
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', async (req, res) => {
     const newPreOrder = new PreOrder(req.body)
     try {
         await newPreOrder.save()
@@ -20,7 +20,7 @@ router.post('/', verifyToken, async (req, res) => {
         res.status(500).json(error)
     }
 })
-router.delete('/:id', verifyToken, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         await PreOrder.deleteMany({UserId: req.params.id})
         res.status(200).json({msg:'Pre-order deleted'})

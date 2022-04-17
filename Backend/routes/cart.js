@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const { verifyToken, verifyTokenAndAdmin } = require('../routes/verifyToken')
+const {  verifyTokenAndAdmin } = require('./verifyToken')
 const Cart = require('../models/Cart')
 const verifyStatus = require('./verifyStatus')
 
 //Creating
 
-router.post('/', verifyToken, verifyStatus, async (req, res) => {
+router.post('/',  verifyStatus, async (req, res) => {
     let existingCart = null
     const existingProduct = await Cart.find({ productId: req.body.productId })
     const length = existingProduct.length
@@ -38,7 +38,7 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
 
 //Update cart quantity
 
-router.put('/quantity/:id', verifyToken, verifyStatus, async (req, res) => {
+router.put('/quantity/:id', verifyStatus, async (req, res) => {
     try {
         await Cart.findByIdAndUpdate({ _id: req.params.id }, {
             $set: { 'quantity': req.body.productQuantity, 'total': req.body.total }
@@ -51,7 +51,7 @@ router.put('/quantity/:id', verifyToken, verifyStatus, async (req, res) => {
 
 //delete one cart entry
 
-router.delete('/find/:id', verifyToken, verifyStatus, async (req, res) => {
+router.delete('/find/:id',  verifyStatus, async (req, res) => {
     try {
         await Cart.findByIdAndDelete({ _id: req.params.id })
         res.status(200).json('Cart deleted')
@@ -62,7 +62,7 @@ router.delete('/find/:id', verifyToken, verifyStatus, async (req, res) => {
 
 //delete user cart
 
-router.delete('/:id', verifyToken, verifyStatus, async (req, res) => {
+router.delete('/:id',  verifyStatus, async (req, res) => {
     try {
         await Cart.deleteMany({ userId: req.params.id })
         res.status(200).json('User cart deleted')
@@ -73,7 +73,7 @@ router.delete('/:id', verifyToken, verifyStatus, async (req, res) => {
 
 //Get cart
 
-router.get('/find/:id', verifyToken, verifyStatus, async (req, res) => {
+router.get('/find/:id', verifyStatus, async (req, res) => {
     try {
         const cart = await Cart.find({ userId: req.params.id })
         res.status(200).json(cart)

@@ -1,12 +1,10 @@
 const router = require('express').Router()
-const { verifyToken } = require('../routes/verifyToken')
 const Wishlist = require('../models/Wishlist')
-const Product = require('../models/Product')
 const verifyStatus = require('./verifyStatus')
 
 //Creating
 
-router.post('/', verifyToken, verifyStatus, async (req, res) => {
+router.post('/',  verifyStatus, async (req, res) => {
     const existingList = await Wishlist.findOne({ productId: req.body.productId })
     if (existingList) {
         return res.status(200).json({ msg: 'Product already added' })
@@ -23,7 +21,7 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
 
 //Delete Wishlist
 
-router.delete('/:id', verifyToken, verifyStatus, async (req, res) => {
+router.delete('/:id',  verifyStatus, async (req, res) => {
     try {
         await Wishlist.deleteMany({ userId: req.params.id })
         res.status(200).json('Cart deleted')
@@ -34,7 +32,7 @@ router.delete('/:id', verifyToken, verifyStatus, async (req, res) => {
 
 //delete one wishlist entry
 
-router.delete('/find/:id', verifyToken, verifyStatus, async (req, res) => {
+router.delete('/find/:id',  verifyStatus, async (req, res) => {
     try {
         await Wishlist.deleteOne({ productId: req.params.id })
         res.status(200).json('Cart deleted')
@@ -45,7 +43,7 @@ router.delete('/find/:id', verifyToken, verifyStatus, async (req, res) => {
 
 //Get wishlist
 
-router.get('/:id', verifyToken, verifyStatus, async (req, res) => {
+router.get('/:id',  verifyStatus, async (req, res) => {
     try {
         const product = await Wishlist.find({ userId: req.params.id })
         res.status(200).json(product)

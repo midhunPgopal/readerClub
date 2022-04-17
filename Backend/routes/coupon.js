@@ -27,15 +27,10 @@ router.get('/check/:id', async (req, res) => {
         if(!coupon) {
             return res.status(500).json({coupon:'Coupon doesnt found'})
         }
-        res.status(200).json(coupon)
-    } catch (error) {
-        res.status(500).json(error)
-    }
-})
-
-router.get('/find/:id', async (req, res) => {
-    try {
-        const coupon = await Coupon.findById(req.params.id)
+        const result = coupon.users.includes(req.headers.userid)
+        if(result) {
+            return res.status(500).json({coupon:'Coupon already used'})
+        }
         res.status(200).json(coupon)
     } catch (error) {
         res.status(500).json(error)
@@ -47,6 +42,21 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
         await Coupon.findByIdAndUpdate(req.params.id, {
             $set: req.body
         }, {new: true})
+        res.status(200).json({msg:'Coupon updated'})
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
+router.put('/add/:id', async (req, res) => {
+    try {
+        const coupon = await Coupon.find({couponCode: req.params.id})
+        const [data] = coupon
+        const userList = data.users
+        userList.push(req.body.userId)
+        await Coupon.findOneAndUpdate({couponCode: req.params.id}, {
+            $set: {users: userList}
+        })
         res.status(200).json({msg:'Coupon updated'})
     } catch (error) {
         res.status(500).json(error)

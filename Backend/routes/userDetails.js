@@ -1,9 +1,8 @@
 const router = require('express').Router()
-const {verifyToken} = require('./verifyToken')
 const UserDetails = require('../models/UserDetails')
 const verifyStatus = require('./verifyStatus')
 
-router.get('/:id', verifyToken, async (req, res) => {
+router.get('/:id',  async (req, res) => {
     try {
         const userDetails = await UserDetails.find({userId: req.params.id})
         res.status(200).json(userDetails)
@@ -12,7 +11,7 @@ router.get('/:id', verifyToken, async (req, res) => {
     }
 }) 
 
-router.post('/', verifyToken, verifyStatus, async (req, res) => {
+router.post('/',  verifyStatus, async (req, res) => {
     const newUserDetails = new UserDetails(req.body)
     try {
         await newUserDetails.save()
@@ -22,7 +21,7 @@ router.post('/', verifyToken, verifyStatus, async (req, res) => {
     }
 })
 
-router.put('/:id', verifyToken, verifyStatus, async (req, res) => {
+router.put('/:id',  verifyStatus, async (req, res) => {
     try {
         await UserDetails.findOneAndUpdate({userId: req.params.id}, {
             $set: req.body

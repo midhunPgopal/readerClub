@@ -123,6 +123,20 @@ const CouponContainer = styled.div`
     align-items: center;
 `
 
+
+function loadScript(src) {
+    return new Promise((resolve) => {
+        const script = document.createElement('script')
+        script.src = src
+        script.onload = () => {
+            resolve(true)
+        }
+        script.onerror = () => {
+            resolve(false)
+        }
+        document.body.appendChild(script)
+    })
+}
 toast.configure()
 const Cart = () => {
 
@@ -131,9 +145,13 @@ const Cart = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
-    const user = useSelector(state => state.user)
-    const userId = user.currentUser.user._id
-    const header = user.currentUser.accessToken
+    const user = useSelector(state => state.user.currentUser)
+    let userId = null
+    let header = null
+    if(user) {
+        userId = user.user._id
+        header = user.accessToken
+    }
 
     const [totalPrice, setTotalPrice] = useState()
     const [grandTotal, setGrandTotal] = useState()
@@ -159,27 +177,60 @@ const Cart = () => {
             error.response.data.status && dispatch(logOut())
         }
     }
-    const onSubmit = async (data) => {
-        let { name, email, mobile, address, pincode, payment } = data
+    const onSubmit = async (value) => {
+        let { name, email, mobile, address, pincode, payment } = value
         const deliveryAddress = { name, email, mobile, address, pincode }
         const total = grandTotal
         const payload = { userId, products, total, deliveryAddress, payment }
-        try {
-            if (payment === 'Cash on delivery') {
+        if (payment === 'Cash on delivery') {
+            try {
                 const res = await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
+                await axios.put('http://localhost:3001/api/coupon/add/' + coupon, {userId})
                 await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
                 notify(res.data.msg)
                 navigate('/success')
+            } catch (error) {
+                console.log(error)
+                error.response.data.status && dispatch(logOut())
             }
-        } catch (error) {
-            console.log(error)
-            error.response.data.status && dispatch(logOut())
+        } else {
+            const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+            if (!res) {
+                alert('Razorpay SDK failed to load. Are you online?')
+                return
+            }
+            try {
+                const data = await axios.post('http://localhost:3001/api/orders/razorpay', payload)
+                const options = {
+                    key: 'rzp_test_teiWvQe7PwRGVv',
+                    currency: data.data.currency,
+                    amount: data.data.amount.toString(),
+                    order_id: data.data.id,
+                    name: 'Order',
+                    description: 'Place your order',
+                    image: 'https://st2.depositphotos.com/1364916/6359/v/600/depositphotos_63590137-stock-illustration-blue-book-logo-vector.jpg',
+                    handler: async (response) => {
+                        alert(response.razorpay_payment_id)
+                        alert(response.razorpay_order_id)
+                        alert(response.razorpay_signature)
+                    },
+                    prefill: {
+                        name: value.name,
+                        email: value.email,
+                        contact: value.mobile
+                    }
+                }
+                const paymentObject = new window.Razorpay(options)
+                paymentObject.open()
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
     const checkCoupon = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon)
+            const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon, {headers: {userId}})
             setMAxDiscount(res.data.maximumOfffer)
             setDiscount(res.data.discount)
             notify('coupon added')
