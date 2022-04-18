@@ -31,6 +31,7 @@ const Info = styled.div`
 const Title = styled.h1`
     color: white;
     margin-bottom: 20px;
+    text-transform: capitalize;
 `
 
 const Button = styled.button`
@@ -47,7 +48,7 @@ const CategoryItems = ({ item }) => {
         <Container>
             <Image src={item.img} />
             <Info>
-                <Title style={{textTransform:'capitalize'}}>{item.category}</Title>
+                <Title >{item.category}</Title>
                 <Link to={`/products/cat/${item.category}`}>
                     <Button>Shop Now</Button>
                 </Link> 

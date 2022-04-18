@@ -80,12 +80,6 @@ const EditCategoryForm = ({ preloadedData }) => {
                         {errors.img && errors.img.type === "required" && <span>This is required</span>}
                     </Error>
                 </Label>
-                <Label>Offer code
-                    <Input id="offer" type='text' placeholder='Offer code' {...register('offer')} />
-                </Label>
-                <Label>Discount
-                    <Input id="discount" type='number' step="0.01" placeholder='Offer code' {...register('discount')} />
-                </Label>
             </InputContainer>
             <ButtonContainer>
                 <ButtonSubmit type='submit'>Update</ButtonSubmit>

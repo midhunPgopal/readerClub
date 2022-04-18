@@ -8,12 +8,6 @@ const CategorySchema = new mongoose.Schema({
     img: {
         type: String,
         required: true
-    },
-    offer: {
-        tyoe: String
-    },
-    discount: {
-        type: Number
     }
 })
 

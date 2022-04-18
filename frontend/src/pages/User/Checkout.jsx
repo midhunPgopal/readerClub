@@ -36,14 +36,43 @@ const TopButton = styled.button`
     background-color: ${props => props.type === 'filled' ? 'black' : 'transperant'};
     color: ${props => props.type === 'filled' && 'white'};
 `
-const Bottom = styled.div`
+const Content = styled.div`
     display: flex;
-    flex:direction: row;
+    flex-direction: row;
+    margin: 20px;
+    padding: 10px;
+`
+const End = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin: 20px;
+    border: 0.5px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
     ${mobile({ flexDirection: 'column' })}
 `
-const Summary = styled.div`
-    margin: 20px;
+const Middle = styled.div`
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    margin: 20px;
+    border: 0.5px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
+    ${mobile({ flexDirection: 'column' })}
+`
+const Address = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    border: 0.5px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
+`
+const Summary = styled.div`
+    flex: 1;
+    margin: 20px;
     border: 0.5px solid lightgray;
     border-radius: 10px;
     padding: 20px;
@@ -108,7 +137,7 @@ const InputCoupon = styled.input`
     ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
 `
 const ButtonCheck = styled.button`
-    width: 20%;
+    width: 30%;
     padding: 10px;
     background-color: teal;
     color: white;
@@ -148,7 +177,7 @@ const Cart = () => {
     const user = useSelector(state => state.user.currentUser)
     let userId = null
     let header = null
-    if(user) {
+    if (user) {
         userId = user.user._id
         header = user.accessToken
     }
@@ -161,6 +190,13 @@ const Cart = () => {
     const [coupon, setCoupon] = useState()
     const [buttonFlag, setButtonFlag] = useState(true)
     const [errCoupon, setErrCoupon] = useState()
+    const [address, setAddress] = useState()
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [mobile, setMobile] = useState(0)
+    const [fullAddress, setFullAddress] = useState('')
+    const [pincode, setPincode] = useState(0)
+    const [landmark, setLandmark] = useState('')
 
     const notify = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
@@ -177,15 +213,35 @@ const Cart = () => {
             error.response.data.status && dispatch(logOut())
         }
     }
+    const getUserCredentials = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/api/users/find/' + userId, { headers: { header } })
+            setName(res.data.name)
+            setEmail(res.data.email)
+            setMobile(res.data.mobile)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const getAddress = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/api/address/' + userId, { headers: { header } })
+            setAddress(res.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const onSubmit = async (value) => {
-        let { name, email, mobile, address, pincode, payment } = value
-        const deliveryAddress = { name, email, mobile, address, pincode }
+        const deliveryAddress = { name, email, mobile, fullAddress, pincode, landmark }
         const total = grandTotal
+        const payment = value.payment
         const payload = { userId, products, total, deliveryAddress, payment }
         if (payment === 'Cash on delivery') {
             try {
                 const res = await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
-                await axios.put('http://localhost:3001/api/coupon/add/' + coupon, {userId})
+                if (coupon) {
+                    await axios.put('http://localhost:3001/api/coupon/add/' + coupon, { userId })
+                }
                 await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
                 notify(res.data.msg)
                 navigate('/success')
@@ -209,15 +265,19 @@ const Cart = () => {
                     name: 'Order',
                     description: 'Place your order',
                     image: 'https://st2.depositphotos.com/1364916/6359/v/600/depositphotos_63590137-stock-illustration-blue-book-logo-vector.jpg',
-                    handler: async (response) => {
-                        alert(response.razorpay_payment_id)
-                        alert(response.razorpay_order_id)
-                        alert(response.razorpay_signature)
+                    handler: async () => {
+                        const res = await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
+                        if (coupon) {
+                            await axios.put('http://localhost:3001/api/coupon/add/' + coupon, { userId })
+                        }
+                        await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
+                        notify(res.data.msg)
+                        navigate('/success')
                     },
                     prefill: {
-                        name: value.name,
-                        email: value.email,
-                        contact: value.mobile
+                        name: name,
+                        email: email,
+                        contact: mobile
                     }
                 }
                 const paymentObject = new window.Razorpay(options)
@@ -230,7 +290,7 @@ const Cart = () => {
     const checkCoupon = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon, {headers: {userId}})
+            const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon, { headers: { userId } })
             setMAxDiscount(res.data.maximumOfffer)
             setDiscount(res.data.discount)
             notify('coupon added')
@@ -245,10 +305,17 @@ const Cart = () => {
         setMAxDiscount(0)
         setDiscount(0)
     }
+    const choose = (data) => {
+        setFullAddress(data.address)
+        setPincode(data.pincode)
+        setLandmark(data.landmark)
+    }
 
     useEffect(() => {
         getData()
-    }, [header])
+        getAddress()
+        getUserCredentials()
+    }, [])
     useEffect(() => {
         setGrandTotal(totalPrice)
     }, [totalPrice])
@@ -270,47 +337,8 @@ const Cart = () => {
                 <Top>
                     <TopButton><Link to='/cart' style={{ textDecoration: 'none' }}>Back to your Cart</Link></TopButton>
                 </Top>
-                <Bottom>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        <InputContainer>
-                            <SummaryTitle>Delivery Address</SummaryTitle>
-                            <Input id="name" type='text' placeholder='Name' {...register('name', { required: true, maxLength: 15, minLength: 3 })} />
-                            <Error>
-                                {errors.name && errors.name.type === "required" && <span>This is required</span>}
-                                {errors.name && errors.name.type === "maxLength" && <span>Max length exceeded</span>}
-                                {errors.name && errors.name.type === "minLength" && <span>Min length of 3 required</span>}
-                            </Error>
-                            <Input id="email" placeholder='Email' {...register('email', {
-                                required: true,
-                                pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                            })} />
-                            <Error>
-                                {errors.email && errors.email.type === "required" && <span>This is required</span>}
-                                {errors.email && errors.email.type === "pattern" && <span>Invalid email</span>}
-                            </Error>
-                            <Input id="mobile" type='number' placeholder='Mobile number' {...register('mobile', { required: true, maxLength: 10, minLength: 10 })} />
-                            <Error>
-                                {errors.mobile && errors.mobile.type === "required" && <span>This is required</span>}
-                                {errors.mobile && errors.mobile.type === "maxLength" && <span>Mobile number should be 10 digits</span>}
-                                {errors.mobile && errors.mobile.type === "minLength" && <span>Mobile number should be 10 digits</span>}
-                            </Error>
-                            <Input id="address" type='text' placeholder='Full address' {...register('address', { required: true })} />
-                            <Error>
-                                {errors.address && errors.address.type === "required" && <span>This is required</span>}
-                            </Error>
-                            <Input id="pincode" type='number' placeholder='Pincode' {...register('pincode', { required: true, maxLength: 6, minLength: 6 })} />
-                            <Error>
-                                {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
-                                {errors.pincode && errors.pincode.type === "maxLength" && <span>Pincode should be 6 digits</span>}
-                                {errors.pincode && errors.pincode.type === "minLength" && <span>Pincode should be 6 digits</span>}
-                            </Error>
-                            <Label>Payment method</Label>
-                            <RadioLabel><Input type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} />Cash on Delivery</RadioLabel>
-                            <RadioLabel><Input type="radio" value="Online Payment" id="Online Payment" {...register("payment")} />Online Payment</RadioLabel>
-                            <Button type='submit'>Complete your Order</Button>
-                        </InputContainer>
-                    </Form>
-                    <Summary>
+                <Content>
+                <Summary>
                         <SummaryTitle><b>Final Payment</b></SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Total</SummaryItemText>
@@ -335,7 +363,35 @@ const Cart = () => {
                             <SummaryItemPrice>₹ {grandTotal}</SummaryItemPrice>
                         </SummaryItem>
                     </Summary>
-                </Bottom>
+                    <Middle>
+                        <SummaryTitle>Saved Address</SummaryTitle>
+                        {address?.map(data => (
+                            <Address>
+                                <SummaryItemText>Address: {data.address}</SummaryItemText>
+                                <SummaryItemText>Pincode: {data.pincode}</SummaryItemText>
+                                <SummaryItemText>Landmark: {data.landmark}</SummaryItemText>
+                                <ButtonCheck style={{ padding: '10px' }} onClick={() => choose(data)} >Choose</ButtonCheck>
+                            </Address>
+                        ))}
+                    </Middle>
+                    <End>
+                        <SummaryTitle>Delivery Address</SummaryTitle>
+                        <Input type='text' placeholder='Name' onChange={(e) => setName(e.target.value)} required value={name} /> 
+                        <Input type='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} required value={email} />
+                        <Input type='number' placeholder='Mobile' onChange={(e) => setMobile(e.target.value)} required value={mobile} />
+                        <Input type='text' placeholder='Full address' onChange={(e) => setFullAddress(e.target.value)} required value={fullAddress} />
+                        <Input type='number' placeholder='Pincode' onChange={(e) => setPincode(e.target.value)} required value={pincode} />
+                        <Input type='text' placeholder='Landmark (optional)' onChange={(e) => setLandmark(e.target.value)} required  value={landmark} />
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            <InputContainer>
+                                <Label>Payment method</Label>
+                                <RadioLabel><Input type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} />Cash on Delivery</RadioLabel>
+                                <RadioLabel><Input type="radio" value="Online Payment" id="Online Payment" {...register("payment")} />Online Payment</RadioLabel>
+                                <Button type='submit'>Complete your Order</Button>
+                            </InputContainer>
+                        </Form>
+                    </End>
+                </Content>
             </Wrapper>
             <Footer />
         </Container >

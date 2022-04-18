@@ -7,7 +7,7 @@ import axios from "axios"
 const Container = styled.div`
     display: flex;
     padding: 20px;
-    justify-content: space-between;
+    flex-direction: row;
     ${mobile({ padding: '0px', flexDirection: 'column' })}
 `
 

@@ -7,7 +7,7 @@ const verifyStatus = require('./verifyStatus')
 
 router.post('/',  verifyStatus, async (req, res) => {
     let existingCart = null
-    const existingProduct = await Cart.find({ productId: req.body.productId })
+    const existingProduct = await Cart.find({ productId: req.body.productId, userId: req.body.userId })
     const length = existingProduct.length
     for(let i=0;i<length; i++) {
         if(existingProduct[i].chapter == req.body.chapter) {
