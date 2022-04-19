@@ -1,8 +1,10 @@
 const router = require('express').Router()
 const User = require('../models/User')
+const ReferalCode = require('../models/ReferralCode')
 const CryptoJS = require('crypto-js')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
+const shortid = require('shortid')
 
 dotenv.config()
 
@@ -15,29 +17,47 @@ const client = require('twilio')(accountSId, authToken)
 //for register
 
 router.post('/register', async (req, res) => {
-    let { name, username, email, mobile, password, cpassword } = req.body
-    //validation
-    if (password !== cpassword) {
-        return res.status(400).json({ password: 'Password doesnt match' })
-    }
-    const existingUsername = await User.findOne({ username })
-    if (existingUsername) {
-        return res.status(400).json({ username: 'Username already exists' })
-    } 
-    const existingUser = await User.findOne({ email: email })
-    if (existingUser) {
-        return res.status(400).json({ user: 'User already exists' })
-    }
-    const newUser = new User({
-        name,
-        username,
-        email,
-        mobile,
-        password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SECRET).toString()
-    })
     try {
+        let { name, username, email, mobile, password, cpassword } = req.body
+        //validation
+        if (password !== cpassword) {
+            return res.status(400).json({ password: 'Password doesnt match' })
+        }
+        const existingUsername = await User.findOne({ username })
+        if (existingUsername) {
+            return res.status(400).json({ username: 'Username already exists' })
+        }
+        const existingUser = await User.findOne({ email: email })
+        if (existingUser) {
+            return res.status(400).json({ user: 'User already exists' })
+        }
+        const newReferal = new ReferalCode({
+            username,
+            referalCode: Math.random().toString(36).replace(/[^a-z]+/g, '').slice(0, 8)
+        })
+        const ref = await ReferalCode.findOne({ referalCode: req.body.referal })
+        let newUser = null
+        if (ref) {
+            newUser = new User({
+                name,
+                username,
+                email,
+                mobile,
+                wallet: 50,
+                password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SECRET).toString()
+            })
+        } else {
+            newUser = new User({
+                name,
+                username,
+                email,
+                mobile,
+                password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_SECRET).toString()
+            })
+        }
         await newUser.save()
-        res.status(200).json({msg: 'User created'})
+        await newReferal.save()
+        res.status(200).json({ msg: 'User created' })
     } catch (error) {
         console.log(error);
     }
@@ -56,13 +76,13 @@ router.post('/login', async (req, res) => {
         }
         const hashedPassword = CryptoJS.AES.decrypt(
             user.password,
-            process.env.PASS_SECRET 
+            process.env.PASS_SECRET
         )
         const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8)
         if (originalPassword !== req.body.password) {
             return res.status(400).json({ password: 'Password incorrect' })
         }
-        const accessToken = jwt.sign({ 
+        const accessToken = jwt.sign({
             id: user._id,
             isAdmin: user.isAdmin
         }, process.env.JWT_SECRET, { expiresIn: '1d' })
@@ -85,7 +105,7 @@ router.post('/otplogin', async (req, res) => {
             .verifications.create({
                 to: `+91${req.body.mobile}`,
                 channel: 'sms'
-            }) 
+            })
         res.status(200).json(user)
     } catch (error) {
         console.log(error)
@@ -108,7 +128,7 @@ router.post('/otpverify', async (req, res) => {
                 res.status(200).json({ user, accessToken })
             }
             else {
-                res.status(401).json({msg:'Token not validated'})
+                res.status(401).json({ msg: 'Token not validated' })
             }
         }).catch(err => console.log(err))
 })

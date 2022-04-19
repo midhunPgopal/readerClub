@@ -86,6 +86,12 @@ const EditCouponForm = ({ preloadedData }) => {
                         {errors.maximumOfffer && errors.maximumOfffer.type === "required" && <span>This is required</span>}
                     </Error>
                 </Label>
+                <Label>Coupon expiry
+                    <Input id="expiry" type='date' placeholder='Coupon expiry date' {...register('expiry', { required: true })} />
+                    <Error>
+                        {errors.expiry && errors.expiry.type === "required" && <span>This is required</span>}
+                    </Error>
+                </Label>
             </InputContainer>
             <ButtonContainer>
                 <ButtonSubmit type='submit'>Update</ButtonSubmit>

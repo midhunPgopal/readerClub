@@ -67,7 +67,7 @@ router.delete('/:id',  verifyStatus, async (req, res) => {
         await Cart.deleteMany({ userId: req.params.id })
         res.status(200).json('User cart deleted')
     } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json(error) 
     }
 })
 

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-// import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import Announcement from '../../components/User/Announcement'
@@ -9,6 +8,7 @@ import Navbar from '../../components/User/Navbar'
 import Newsletter from '../../components/User/Newsletter'
 import Products from '../../components/User/Products'
 import { mobile } from '../../responsive'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 const Container = styled.div`
 
@@ -37,6 +37,18 @@ const Select = styled.select`
     ${mobile({ margin: '10px 0px' })}
 `
 const Option = styled.option``
+const SearchContainer = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: 25px;
+    height: 45px;
+`
+
+const Input = styled.input`
+border: 1px solid lightgrey;
+
+    ${mobile({ width: '50px' })}
+`
 
 const ProductList = () => {
 
@@ -45,7 +57,7 @@ const ProductList = () => {
     let cat = null
     let offer = null
 
-    if(value === 'offer') {
+    if (value === 'offer') {
         offer = location.pathname.split('/')[3]
     } else {
         cat = location.pathname.split('/')[3]
@@ -54,6 +66,7 @@ const ProductList = () => {
     const [filters, setFilters] = useState({})
     const [sort, setSort] = useState('newest')
     const [categories, setCategories] = useState()
+    const [search, setSearch] = useState()
 
     const getCategories = async () => {
         try {
@@ -63,7 +76,7 @@ const ProductList = () => {
             console.log(error)
         }
     }
-    
+
     useEffect(() => {
         getCategories()
     }, [])
@@ -93,8 +106,14 @@ const ProductList = () => {
                         <Option value='desc'>Price (desc)</Option>
                     </Select>
                 </Filter>
+                <SearchContainer>
+
+                    <Input placeholder='search' onChange={(e) => setSearch(e.target.value)}/>
+                    <SearchRoundedIcon  />
+
+                </SearchContainer>
             </FilterContainer>
-            <Products cat={cat} offer={offer} filters={filters} sort={sort} />
+            <Products cat={cat} offer={offer} filters={filters} sort={sort} search={search}/>
             <Newsletter />
             <Footer />
         </Container>

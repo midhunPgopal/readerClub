@@ -13,6 +13,10 @@ const CouponSchema = new mongoose.Schema({
         type: Number,
         requied: true
     },
+    expiry: {
+        type: Date,
+        required: true
+    },
     users: {
         type: Array
     }

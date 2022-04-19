@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import dateFormat from 'dateformat'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -225,6 +226,12 @@ const CategoryAdmin = () => {
                                         {errors.maximumOfffer && errors.maximumOfffer.type === "required" && <span>This is required</span>}
                                     </Error>
                                 </Label>
+                                <Label>Coupon expiry
+                                    <Input id="expiry" type='date' placeholder='Coupon expiry date' {...register('expiry', { required: true })} />
+                                    <Error>
+                                        {errors.expiry && errors.expiry.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
                             </InputContainer>
                             <ButtonContainer>
                                 <ButtonSubmit type='submit' >Add Coupon</ButtonSubmit>
@@ -240,6 +247,7 @@ const CategoryAdmin = () => {
                             <Th scope="col">Coupon code</Th>
                             <Th scope="col">Coupon discount</Th>
                             <Th scope="col">Coupon maximum</Th>
+                            <Th scope="col">Coupon expiry</Th>
                             <Th scope="col">Edit</Th>
                             <Th scope="col">Delete</Th>
                         </Tr>
@@ -251,6 +259,7 @@ const CategoryAdmin = () => {
                                     <Td>{data.couponCode}</Td>
                                     <Td>{data.discount}</Td>
                                     <Td>{data.maximumOfffer}</Td>
+                                    <Td>{dateFormat(data.expiry, "mmmm dS, yyyy")}</Td>
                                     <Td>
                                         <ButtonEdit>
                                             <Link to={`/editcoupon/${data._id}`} style={{ textDecoration: 'none' }}>

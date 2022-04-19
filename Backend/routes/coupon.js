@@ -21,15 +21,28 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/find/:id', async (req, res) => {
+    try {
+        const coupon = await Coupon.findById(req.params.id)
+        res.status(200).json(coupon)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 router.get('/check/:id', async (req, res) => {
     try {
         const coupon = await Coupon.findOne({couponCode: req.params.id})
+        const date = new Date()
         if(!coupon) {
             return res.status(500).json({coupon:'Coupon doesnt found'})
         }
         const result = coupon.users.includes(req.headers.userid)
         if(result) {
             return res.status(500).json({coupon:'Coupon already used'})
+        }
+        if(date > coupon.expiry) {
+            return res.status(500).json({coupon:'Coupon expired'})
         }
         res.status(200).json(coupon)
     } catch (error) {

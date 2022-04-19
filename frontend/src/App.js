@@ -41,6 +41,7 @@ function App() {
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/cat/:value" element={<ProductList />}/>
         <Route path="/products/offer/:value" element={<ProductList />}/>
+        <Route path="/products/search/:value" element={<ProductList />}/>
         <Route path="/product/:id" element={<Product />} />
         <Route path="/cart" element={user ? <Cart /> : <Navigate to='/login' />} />
         <Route path="/checkout" element={user ? <Checkout /> : <Navigate to='/login' />} />

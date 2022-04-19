@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import Badge from '@mui/material/Badge';
-import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { mobile } from '../../responsive'
 import { useSelector, useDispatch } from 'react-redux';
@@ -37,19 +36,6 @@ const Language = styled.span`
     font-size:14px;
     cursor: pointer;
     ${mobile({ display: 'none' })}
-`
-
-const SearchContainer = styled.div`
-    border: 1px solid lightgrey;
-    display: flex;
-    align-items: center;
-    margin-left: 25px;
-    padding: 5px;
-`
-
-const Input = styled.input`
-    border: none;
-    ${mobile({ width: '50px' })}
 `
 
 const Right = styled.div`
@@ -138,10 +124,6 @@ const Navbar = () => {
                 <Wrapper>
                     <Left>
                         <Language>EN</Language>
-                        <SearchContainer>
-                            <Input placeholder='search' />
-                            <SearchIcon style={{ color: 'grey', fontSize: 16 }} />
-                        </SearchContainer>
                     </Left>
                     <Center>
                         <Link to='/' style={{ textDecoration: 'none' }}>

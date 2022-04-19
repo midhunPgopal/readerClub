@@ -393,6 +393,12 @@ function UserDetails() {
                                 {errors.dob && errors.dob.type === "required" && <span>This is required</span>}
                             </Error>
                         </Label>
+                        <Label>Image
+                            <Input id="image" type='text' placeholder='Display picture' {...register('image', { required: true, value: userData.image })} />
+                            <Error>
+                                {errors.image && errors.image.type === "required" && <span>This is required</span>}
+                            </Error>
+                        </Label>
                     </InputContainer>
                     <ButtonContainer>
                         <ButtonSubmit type='submit'>Update</ButtonSubmit>
@@ -411,7 +417,7 @@ function UserDetails() {
                     <Dob>DOB : {userData && dateFormat(userData.dob, "mmmm dS, yyyy")}</Dob>
                     <Email>Email : {userCredentials && userCredentials.email}</Email>
                     <Mobile>Mobile : {userCredentials && userCredentials.mobile}</Mobile>
-                    <Wallet>Wallet Money : {userData && userData.wallet}</Wallet>
+                    <Wallet>Wallet Money : {userCredentials && userCredentials.wallet}</Wallet>
                 </Details>
                 <Address>
                     {address?.map(data => (

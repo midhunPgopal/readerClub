@@ -9,9 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios'
 
 const Container = styled.div`
-    width: 100vw;
-    height: 100vh;
     display: flex;
+    padding: 20px;
     align-items: center;
     justify-content: center;
     background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), 
@@ -20,6 +19,7 @@ const Container = styled.div`
 `
 const Wrapper = styled.div`
     width: 40%;
+    height: 100%;
     padding: 20px;
     background-color: white;
     ${mobile({ width: '75%', padding: '5px' })}
@@ -159,6 +159,8 @@ const Register = () => {
                         {errors.password && errors.password.type === "minLength" && <span>Min length of 6 required</span>}
                         {errPassword && <ErrorNotice message={errPassword} />}
                     </Error>
+                    <Label>Referal Code</Label>
+                    <Input id="referal" type='text' placeholder='Referal code(optional) ' {...register('referal')} />
                     <Agreement>By creating an account, I consent to the processing
                         of my personal data in accordance with the <b>PRIVACY POLICY</b>
                     </Agreement>

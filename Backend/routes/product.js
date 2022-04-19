@@ -96,5 +96,27 @@ router.get('/offer', async (req, res) => {
         res.status(500).json(error)
     }
 })
+router.get('/search', async (req, res) => {
+    const qSearch = req.query.search
+    console.log(qSearch)
+    try {
+        let products = null
+        if (qSearch) {
+            const product = await Product.find()
+            product.filter(data => {
+                const flag = data.title.includes(qSearch, 0)
+                if (flag) {
+                    products.push(data)
+                }
+            })
+            console.log(products);
+        } else {
+            products = await Product.find()
+        }
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
 
 module.exports = router

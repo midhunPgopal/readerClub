@@ -33,19 +33,23 @@ const Button = styled.button`
   }
 `
 
-const Products = ({ cat, offer, filters, sort }) => {
+const Products = ({ cat, offer, filters, sort, search }) => {
 
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   
   const getproducts = async () => {
     try {
-      const res = await axios.get(cat ? `http://localhost:3001/api/products/cat?category=${cat}` : `http://localhost:3001/api/products`)
-      const ress = await axios.get(offer ? `http://localhost:3001/api/products/offer?offer=${offer}` : `http://localhost:3001/api/products`)
-      if(offer) {
+      if(offer && !cat && !search) {
+        const ress = await axios.get(`http://localhost:3001/api/products/offer?offer=${offer}`)
         setProducts(ress.data)
       }
+       else if(!offer && !cat && search) {
+        const resss = await axios.get( `http://localhost:3001/api/products/search?search=${search}`)
+        setProducts(resss.data)
+      }
       else {
+        const res = await axios.get(cat ? `http://localhost:3001/api/products/cat?category=${cat}` : `http://localhost:3001/api/products`)
         setProducts(res.data)
       }
     } catch (error) {
@@ -65,11 +69,11 @@ const Products = ({ cat, offer, filters, sort }) => {
   }, [])
   useEffect(() => {
     getproducts()
-  }, [cat]) 
+  }, [cat, search]) 
 
   useEffect(() => {
     setFilteredProducts(products)
-  }, [products, cat])
+  }, [products, cat, offer])
   useEffect(() => {
   }, [filteredProducts])
   

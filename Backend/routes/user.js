@@ -27,6 +27,19 @@ router.put('/status/:id',verifyTokenAndAdmin, async (req, res) => {
         res.status(500).json(error)
     }
 })
+
+//update user wallet
+
+router.put('/wallet/:id', async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.params.id, {
+            $set: {'wallet': req.body.amount}
+        })
+        res.status(200).json({msg:'wallet updated'})
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
  
 //Get user
 

@@ -5,13 +5,15 @@ import Footer from '../../components/User/Footer'
 import Navbar from '../../components/User/Navbar'
 import { mobile } from '../../responsive'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { logOut } from '../../redux/userRedux'
 import ErrorNotice from '../../error/ErrorNotice'
+import successNotice from '../../success/SuccessNotice'
+import SuccessNotice from '../../success/SuccessNotice'
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -98,9 +100,7 @@ const Button = styled.button`
     cursor: pointer
 `
 const Form = styled.form`
-    width: 80%;
-    margin: 20px;
-    padding: 20px;
+    width: 100%;
     flex: 1;
 
     ${mobile({ flexDirection: 'column' })}
@@ -109,7 +109,6 @@ const InputContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    margin: 20px;
 `
 const Input = styled.input`
     flex: 1;
@@ -118,10 +117,22 @@ const Input = styled.input`
     padding: 10px;
     ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
 `
+const InputRadio = styled.input`
+    flex: 1;
+    min-width: 10%;
+    margin: 10px 10px 0px 0px;
+    padding: 10px;
+    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+`
 const Error = styled.span`
     font-size: 14px;
     padding: 5px;
-    color: #f16969;
+    color: red;
+`
+const Success = styled.span`
+    font-size: 14px;
+    padding: 5px;
+    color: green;
 `
 const Label = styled.label`
     font-weight: bolder;
@@ -171,8 +182,9 @@ const Cart = () => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const paypal = useRef()
 
-    const { register, handleSubmit, formState: { errors } } = useForm()
+    const { register, handleSubmit } = useForm()
 
     const user = useSelector(state => state.user.currentUser)
     let userId = null
@@ -186,10 +198,11 @@ const Cart = () => {
     const [grandTotal, setGrandTotal] = useState()
     const [products, setProducts] = useState()
     const [discount, setDiscount] = useState(0)
-    const [maxDiscount, setMAxDiscount] = useState(0)
+    const [maxDiscount, setMaxDiscount] = useState(0)
     const [coupon, setCoupon] = useState()
-    const [buttonFlag, setButtonFlag] = useState(true)
+    const [buttonFlag, setButtonFlag] = useState(true) 
     const [errCoupon, setErrCoupon] = useState()
+    const [succCoupon, setSuccCoupon] = useState()
     const [address, setAddress] = useState()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -197,6 +210,12 @@ const Cart = () => {
     const [fullAddress, setFullAddress] = useState('')
     const [pincode, setPincode] = useState(0)
     const [landmark, setLandmark] = useState('')
+    const [wallet, setWallet] = useState(0)
+    const [money, setMoney] = useState(0)
+    const [amount, setAmount] = useState(0)
+    const [errWallet, setErrWallet] = useState()
+    const [succWallet, setSuccWallet] = useState()
+    const [walletFlag, setWalletFlag] = useState(true)
 
     const notify = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
@@ -219,6 +238,7 @@ const Cart = () => {
             setName(res.data.name)
             setEmail(res.data.email)
             setMobile(res.data.mobile)
+            setWallet(res.data.wallet)
         } catch (error) {
             console.log(error);
         }
@@ -243,13 +263,14 @@ const Cart = () => {
                     await axios.put('http://localhost:3001/api/coupon/add/' + coupon, { userId })
                 }
                 await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
+                await axios.put('http://localhost:3001/api/users/wallet/' + userId, amount)
                 notify(res.data.msg)
                 navigate('/success')
             } catch (error) {
                 console.log(error)
                 error.response.data.status && dispatch(logOut())
             }
-        } else {
+        } else if (payment === 'Razorpay') {
             const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
             if (!res) {
                 alert('Razorpay SDK failed to load. Are you online?')
@@ -271,6 +292,7 @@ const Cart = () => {
                             await axios.put('http://localhost:3001/api/coupon/add/' + coupon, { userId })
                         }
                         await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
+                        await axios.put('http://localhost:3001/api/users/wallet/' + userId, amount)
                         notify(res.data.msg)
                         navigate('/success')
                     },
@@ -285,16 +307,41 @@ const Cart = () => {
             } catch (error) {
                 console.log(error)
             }
+        } else if (payment === 'Paypal') {
+            window.paypal.Buttons({
+                createOrder: (data, actions, err) => {
+                    return actions.order.create({
+                        intent: "CAPTURE",
+                        purchase_units: [
+                            {
+                                //description: "Cool looking table",
+                                amount: {
+                                    currency_code: "USD",
+                                    value: (total/71)
+                                },
+                            },
+                        ],
+                    });
+                },
+                onApprove: async (data, actions) => {
+                    const order = await actions.order.capture();
+                    console.log('success : '+order);
+                },
+                onError: (err) => {
+                    console.log(err);
+                },
+            })
+                .render(paypal.current)
         }
     }
     const checkCoupon = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon, { headers: { userId } })
-            setMAxDiscount(res.data.maximumOfffer)
+            setMaxDiscount(res.data.maximumOfffer)
             setDiscount(res.data.discount)
-            notify('coupon added')
             setButtonFlag(false)
+            setSuccCoupon('Coupon applied')
         } catch (error) {
             console.log(error)
             error.response.data.coupon && setErrCoupon(error.response.data.coupon)
@@ -302,8 +349,26 @@ const Cart = () => {
     }
     const removeCoupon = () => {
         setButtonFlag(true)
-        setMAxDiscount(0)
+        setMaxDiscount(0)
         setDiscount(0)
+        setSuccCoupon()
+
+    }
+    const checkWallet = async (e) => {
+        e.preventDefault()
+        if(wallet < money) {
+            setErrWallet('Not enough money in wallet')
+        } else {
+            setGrandTotal(totalPrice - money)
+            setAmount(wallet - money)
+            setWalletFlag(false)
+            setSuccWallet('Wallet money added')
+        }
+    }
+    const removeWallet = () => {
+        setWalletFlag(true)
+        setAmount(wallet)
+        setSuccWallet()
     }
     const choose = (data) => {
         setFullAddress(data.address)
@@ -338,7 +403,7 @@ const Cart = () => {
                     <TopButton><Link to='/cart' style={{ textDecoration: 'none' }}>Back to your Cart</Link></TopButton>
                 </Top>
                 <Content>
-                <Summary>
+                    <Summary>
                         <SummaryTitle><b>Final Payment</b></SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Total</SummaryItemText>
@@ -348,13 +413,33 @@ const Cart = () => {
                             <CouponContainer>
                                 <Label>Coupon code
                                     <InputCoupon type='text' placeholder='Copon code' onChange={(e) => setCoupon(e.target.value)} />
+                                </Label>
                                     <Error>
                                         {errCoupon && <ErrorNotice message={errCoupon} />}
                                     </Error>
-                                </Label>
+                                    <Success>
+                                        {succCoupon && <SuccessNotice message={succCoupon} />}
+                                    </Success>
                                 {buttonFlag ?
                                     <ButtonCheck onClick={checkCoupon} >Check</ButtonCheck> :
                                     <ButtonCheck style={{ backgroundColor: 'red', padding: 'px' }} onClick={removeCoupon} >Remove Coupon</ButtonCheck>
+                                }
+                            </CouponContainer>
+                        </FormCoupon>
+                        <FormCoupon >
+                            <CouponContainer>
+                                <Label>Wallte money
+                                    <InputCoupon type='number' placeholder='amount tobe added' onChange={(e) => setMoney(e.target.value)} />
+                                </Label>
+                                    <Error>
+                                        {errWallet && <ErrorNotice message={errWallet} />}
+                                    </Error>
+                                    <Success>
+                                        {succWallet && <SuccessNotice message={succWallet} />}
+                                    </Success>
+                                {walletFlag ?
+                                    <ButtonCheck onClick={checkWallet} >Add</ButtonCheck> :
+                                    <ButtonCheck style={{ backgroundColor: 'red', padding: 'px' }} onClick={removeWallet} >Remove wallet Money</ButtonCheck>
                                 }
                             </CouponContainer>
                         </FormCoupon>
@@ -376,20 +461,22 @@ const Cart = () => {
                     </Middle>
                     <End>
                         <SummaryTitle>Delivery Address</SummaryTitle>
-                        <Input type='text' placeholder='Name' onChange={(e) => setName(e.target.value)} required value={name} /> 
+                        <Input type='text' placeholder='Name' onChange={(e) => setName(e.target.value)} required value={name} />
                         <Input type='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} required value={email} />
                         <Input type='number' placeholder='Mobile' onChange={(e) => setMobile(e.target.value)} required value={mobile} />
                         <Input type='text' placeholder='Full address' onChange={(e) => setFullAddress(e.target.value)} required value={fullAddress} />
                         <Input type='number' placeholder='Pincode' onChange={(e) => setPincode(e.target.value)} required value={pincode} />
-                        <Input type='text' placeholder='Landmark (optional)' onChange={(e) => setLandmark(e.target.value)} required  value={landmark} />
+                        <Input type='text' placeholder='Landmark (optional)' onChange={(e) => setLandmark(e.target.value)} required value={landmark} />
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <InputContainer>
                                 <Label>Payment method</Label>
-                                <RadioLabel><Input type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} />Cash on Delivery</RadioLabel>
-                                <RadioLabel><Input type="radio" value="Online Payment" id="Online Payment" {...register("payment")} />Online Payment</RadioLabel>
+                                <RadioLabel><InputRadio type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} />Cash on Delivery</RadioLabel>
+                                <RadioLabel><InputRadio type="radio" value="Razorpay" id="Razorpay" {...register("payment")} />Domestic transaction with razorpay</RadioLabel>
+                                <RadioLabel><InputRadio type="radio" value="Paypal" id="Paypal" {...register("payment")} />International transaction with paypal</RadioLabel>
                                 <Button type='submit'>Complete your Order</Button>
                             </InputContainer>
                         </Form>
+                        <div ref={paypal}></div>
                     </End>
                 </Content>
             </Wrapper>
