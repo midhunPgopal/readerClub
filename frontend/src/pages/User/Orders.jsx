@@ -10,6 +10,7 @@ import dateFormat from 'dateformat'
 import { confirm } from 'react-confirm-box'
 import { toast } from 'react-toastify'
 import { logOut } from '../../redux/userRedux'
+import { DataGrid } from '@mui/x-data-grid';
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -19,31 +20,6 @@ const Wrapper = styled.div`
 const Title = styled.h1`
     font-weight: 300;
     text-align: center;
-`
-const Table = styled.table`
-    padding: 20px;
-    margin: 20px;
-    width: 100%;
-`
-const Td = styled.td`
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-`
-const Th = styled.th`
-    height: 60px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-`
-const Thead = styled.thead`
-    text-align: left;
-`
-const Tr = styled.tr`
-   &:hover {
-       background-color: #c8edd2fe;
-   }
-`
-const Tbody = styled.tbody`
 `
 const Hr = styled.div`
     background-color: teal;
@@ -64,8 +40,10 @@ const Button = styled.button`
    &:hover {
     background-color: #f52626fe;
    }
+   &:disabled {
+       cursor: not-allowed;
+   }
 `
-
 toast.configure()
 const Orders = () => {
 
@@ -77,8 +55,8 @@ const Orders = () => {
 
     const [orders, setOrders] = useState()
 
-    const notify = () => {
-        toast.error('Order Cancelled', {
+    const notify = (msg) => {
+        toast.success(msg, {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
@@ -97,8 +75,8 @@ const Orders = () => {
             let result
             result = await confirm('Do you want to cancel ?')
             if (result) {
-                await axios.put('http://localhost:3001/api/orders/cancel/' + id, { headers: { header, userId } })
-                notify()
+                const res = await axios.put('http://localhost:3001/api/orders/cancel/' + id, { headers: { header, userId } })
+                notify(res.data.msg)
                 getOrders()
             }
         } catch (error) {
@@ -106,10 +84,45 @@ const Orders = () => {
             error.response.data.status && dispatch(logOut())
         }
     }
+    const cancelButton = (params) => {
+        return (
+            <Button
+                disabled={params.row.status === 'Cancelled' || params.row.status === 'Shipped' || params.row.status === 'Delivered'}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    cancelOrder(params.row.id)
+                }}
+            >
+                Cancel
+            </Button>
+        )
+    }
+    const columns = [
+        { field: 'date', headerName: 'Date', width: 200 },
+        { field: 'name', headerName: 'Full Name', width: 200 },
+        { field: 'quantity', headerName: 'Quantity', width: 150 },
+        { field: 'price', headerName: 'Price', width: 150 },
+        { field: 'payment', headerName: 'Payment', width: 200 },
+        { field: 'status', headerName: 'Status', width: 150 },
+        { field: 'cancel', headerName: '', width: 100, renderCell: cancelButton, disableClickEventBubbling: true, },
+    ]
+    const rows = orders?.map((data) => (
+        {
+            id: data._id,
+            date: dateFormat(data.createdAt, "mmmm dS, yyyy"),
+            name: data.deliveryAddress.name,
+            quantity: data.products.length,
+            price: data.total,
+            payment: data.payment,
+            status: data.status
+        })
+    )
 
     useEffect(() => {
         getOrders()
-    }, [user])
+    }, [])
 
     return (
         <Container>
@@ -118,43 +131,20 @@ const Orders = () => {
             <Wrapper>
                 <Title>Your Orders</Title>
                 <Hr />
-                <Table>
-                    <Thead >
-                        <Tr>
-                            <Th scope="col">Date</Th>
-                            <Th scope="col">Name</Th>
-                            <Th scope="col">Quantity</Th>
-                            <Th scope="col">Price</Th>
-                            <Th scope='col'>Payment</Th>
-                            <Th scope='col'>Status</Th>
-                            <Th scope='col'></Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {orders?.map(data => (
-                            <Tr key={data._id}>
-                                <Td >{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
-                                <Td>{data.deliveryAddress.name}</Td>
-                                <Td>{data.products.length}</Td>
-                                <Td>₹{data.total}</Td>
-                                <Td>{data.payment}</Td>
-                                {data.status === 'Cancelled' && <Td style={{ color: 'red' }}>{data.status}</Td> }
-                                {data.status === 'Pending' && 
-                                <>
-                                <Td >{data.status}</Td> 
-                                <Td style={{ textAlign: 'center' }}><Button onClick={() => cancelOrder(data._id)}>Cancel</Button></Td>
-                                </> }
-                                {data.status === 'Order placed' &&
-                                <>
-                                <Td >{data.status}</Td> 
-                                <Td style={{ textAlign: 'center' }}><Button onClick={() => cancelOrder(data._id)}>Cancel</Button></Td>
-                                </> }
-                                {data.status === 'Shipped' &&  <Td style={{ color: 'blue' }}>{data.status}</Td> }
-                                {data.status === 'Delivered' &&  <Td style={{ color: 'green' }}>{data.status}</Td> }
-                            </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        sx={{
+                            '& .MuiDataGrid-cell:hover': {
+                                color: 'primary.main',
+                            },
+                        }}
+                    />
+                </div>
             </Wrapper>
             <Footer />
         </Container>

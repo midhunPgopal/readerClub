@@ -34,7 +34,7 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
 
 router.put('/cancel/:id', verifyStatus, async (req, res) => {
     try {
-        await Order.findByIdAndUpdate({_id: req.params.id}, {
+        await Order.findByIdAndUpdate(req.params.id, {
             $set: {'status':'Cancelled'}
         })
         res.status(200).json({msg: 'Order cancelled'})

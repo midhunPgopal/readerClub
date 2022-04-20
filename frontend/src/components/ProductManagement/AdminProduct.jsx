@@ -5,13 +5,14 @@ import { useForm } from 'react-hook-form'
 import { mobile } from '../../responsive'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirm } from "react-confirm-box"
 import dateFormat from 'dateformat'
+import { DataGrid } from '@mui/x-data-grid';
 
 const Container = styled.div`
   margin: 30px;
@@ -41,11 +42,6 @@ const Button = styled.button`
 const Product = styled.div`
 display: flex;
 flex-direction: row;
-`
-const Image = styled.img`
-height: 60px;
-width: 40px;
-object-fit: cover;
 `
 const Title = styled.h3`
 margin: 10px;
@@ -95,27 +91,6 @@ const Error = styled.span`
   padding: 5px;
   color: #f16969;
 `
-const Table = styled.table`
-    width: 100%;
-`
-const Td = styled.td`
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-`
-const Th = styled.th`
-    height: 30px;
-    border-bottom: 1px solid #ddd;
-`
-const Thead = styled.thead`
-    text-align: left;
-`
-const Tr = styled.tr`
-   &:hover {
-       background-color: #ccf6d678;
-   }
-`
-const Tbody = styled.tbody`
-`
 const Hr = styled.div`
     background-color: teal;
     border: none;
@@ -127,11 +102,21 @@ const Label = styled.label`
     font-weight: bolder;
     color: #1517165b;
 `
+const ButtonEdit = styled.button`
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+`
 toast.configure()
 const AdminProduct = () => {
 
   const admin = useSelector(state => state.admin)
   const header = admin.currentAdmin.accessToken
+
+  const navigate = useNavigate()
 
   const { register, handleSubmit, formState: { errors } } = useForm()
 
@@ -151,8 +136,14 @@ const AdminProduct = () => {
   }
   const addProduct = async (data) => {
     const res = await axios.post('http://localhost:3001/api/products/', data, { headers: { header } })
+    getProducts()
     notify(res.data.msg)
-    setFlag(false)
+  }
+  const viewProduct = (id) => {
+    navigate(`/viewproduct/${id}`)
+  }
+  const editProduct = (id) => {
+    navigate(`/editproduct/${id}`)
   }
   const deleteProduct = async (id) => {
     const result = await confirm("Are you sure?")
@@ -162,10 +153,75 @@ const AdminProduct = () => {
       notify(res.data.msg)
     }
   }
+  const viewButton = (params) => {
+    return (
+      <ButtonEdit
+        style={{ cursor: 'pointer' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => {
+          viewProduct(params.row.id)
+        }}
+      >
+        <RemoveRedEyeOutlinedIcon />
+      </ButtonEdit>
+    )
+  }
+  const editButton = (params) => {
+    return (
+      <ButtonEdit
+        style={{ cursor: 'pointer' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => {
+          editProduct(params.row.id)
+        }}
+      >
+        <EditIcon />
+      </ButtonEdit>
+    )
+  }
+  const deleteButton = (params) => {
+    return (
+      <ButtonEdit
+        style={{ cursor: 'pointer' }}
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={() => {
+          deleteProduct(params.row.id)
+        }}
+      >
+        <DeleteForeverOutlinedIcon />
+      </ButtonEdit>
+    )
+  }
+  const columns = [
+    { field: 'createdAt', headerName: 'Created At', width: 200 },
+    { field: 'updatedAt', headerName: 'Updated At', width: 200 },
+    { field: 'title', headerName: 'Title', width: 200 },
+    { field: 'author', headerName: 'Author', width: 150 },
+    { field: 'price', headerName: 'Price', width: 80 },
+    { field: 'view', headerName: '', renderCell: viewButton, disableClickEventBubbling: true, width: 50 },
+    { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 50 },
+    { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 50 },
+  ]
+  const rows = product?.map((data) => (
+    {
+      id: data._id,
+      createdAt: dateFormat(data.createdAt, "mmmm dS, yyyy"),
+      updatedAt: dateFormat(data.updatedAt, "mmmm dS, yyyy"),
+      title: data.title,
+      author: data.author,
+      price: data.price
+    })
+  )
 
   useEffect(() => {
     getProducts()
-  }, [flag])
+  }, [])
 
   return (
     <Container>
@@ -244,48 +300,22 @@ const AdminProduct = () => {
       </AddProduct>
       <Product>
         <Hr />
-        <Table>
-          <Thead >
-            <Tr>
-              <Th scope="col">Created Date</Th>
-              <Th scope="col">Last Update</Th>
-              <Th scope="col"></Th>
-              <Th scope="col">Name</Th>
-              <Th scope="col">Author</Th>
-              <Th scope="col">Price</Th>
-              <Th scope='col'></Th>
-              <Th scope='col'></Th>
-              <Th scope='col'></Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {product?.map(data => (
-              <Tr key={data._id}>
-                <Td >{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
-                <Td >{dateFormat(data.updatedAt, "mmmm dS, yyyy")}</Td>
-                <Td><Image src={data.img}></Image></Td>
-                <Td>{data.title}</Td>
-                <Td>{data.author}</Td>
-                <Td>₹{data.price}</Td>
-                <Td>
-                  <Link to={`/viewproduct/${data._id}`} >
-                    <RemoveRedEyeOutlinedIcon />
-                  </Link>
-                </Td>
-                <Td>
-                  <Link to={`/editproduct/${data._id}`} style={{ textDecoration: 'none' }}>
-                    <EditIcon />
-                  </Link>
-                </Td>
-                <Td>
-                  <DeleteForeverOutlinedIcon onClick={() => deleteProduct(data._id)} />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+        <div style={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            checkboxSelection
+            sx={{
+              '& .MuiDataGrid-cell:hover': {
+                color: 'teal',
+              },
+            }}
+          />
+        </div>
       </Product>
-    </Container>
+    </Container >
   )
 }
 

@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { confirm } from 'react-confirm-box'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import dateFormat from 'dateformat'
+import { DataGrid } from '@mui/x-data-grid';
 
 const Container = styled.div`
   margin: 30px;
@@ -88,27 +89,6 @@ const Error = styled.span`
   padding: 5px;
   color: #f16969;
 `
-const Table = styled.table`
-    width: 100%;
-`
-const Td = styled.td`
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-`
-const Th = styled.th`
-    height: 30px;
-    border-bottom: 1px solid #ddd;
-`
-const Thead = styled.thead`
-    text-align: left;
-`
-const Tr = styled.tr`
-   &:hover {
-       background-color: #ccf6d678;
-   }
-`
-const Tbody = styled.tbody`
-`
 const Hr = styled.div`
     background-color: teal;
     border: none;
@@ -120,11 +100,20 @@ const Label = styled.label`
     font-weight: bolder;
     color: #1517165b;
 `
+const ButtonEdit = styled.button`
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+`
 toast.configure()
 const AnnouncementAdmin = () => {
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
+    const navigate = useNavigate()
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
@@ -156,6 +145,54 @@ const AnnouncementAdmin = () => {
             notify(res.data.msg)
         }
     }
+    const editAnnouncement = (id) => {
+        navigate(`/editannouncement/${id}`)
+    }
+    const editButton = (params) => {
+        return (
+            <ButtonEdit
+                style={{ cursor: 'pointer' }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    editAnnouncement(params.row.id)
+                }}
+            >
+                <EditIcon />
+            </ButtonEdit>
+        )
+    }
+    const deleteButton = (params) => {
+        return (
+            <ButtonEdit
+                style={{ cursor: 'pointer' }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    deleteAnnouncement(params.row.id)
+                }}
+            >
+                <DeleteForeverOutlinedIcon />
+            </ButtonEdit>
+        )
+    }
+    const columns = [
+        { field: 'createdAt', headerName: 'Created At', width: 200 },
+        { field: 'updatedAt', headerName: 'Updated At', width: 200 },
+        { field: 'description', headerName: 'Description', width: 500 },
+        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 50 },
+        { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 50 },
+    ]
+    const rows = announcement?.map((data) => (
+        {
+            id: data._id,
+            createdAt: dateFormat(data.createdAt, "mmmm dS, yyyy"),
+            updatedAt: dateFormat(data.updatedAt, "mmmm dS, yyyy"),
+            description: data.announcement,
+        }
+    ))
     useEffect(() => {
         getAnnouncement()
     }, [])
@@ -186,34 +223,20 @@ const AnnouncementAdmin = () => {
             </AddProduct>
             <Product>
                 <Hr />
-                <Table>
-                    <Thead >
-                        <Tr>
-                            <Th scope="col">Created At</Th>
-                            <Th scope="col">Updated At</Th>
-                            <Th scope="col">Description</Th>
-                            <Th scope='col'></Th>
-                            <Th scope='col'></Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {announcement?.map(data => (
-                            <Tr key={data._id}>
-                                <Td>{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
-                                <Td>{dateFormat(data.updatedAt, "mmmm dS, yyyy")}</Td>
-                                <Td>{data.announcement}</Td>
-                                <Td>
-                                    <Link to={`/editannouncement/${data._id}`} style={{ textDecoration: 'none' }}>
-                                        <EditIcon />
-                                    </Link>
-                                </Td>
-                                <Td>
-                                    <DeleteForeverIcon onClick={() => deleteAnnouncement(data._id)} />
-                                </Td>
-                            </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        sx={{
+                            '& .MuiDataGrid-cell:hover': {
+                                color: 'teal',
+                            },
+                        }}
+                    />
+                </div>
             </Product>
         </Container>
     )

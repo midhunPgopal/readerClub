@@ -1,15 +1,16 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { mobile } from '../../responsive'
 import { confirm } from 'react-confirm-box'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import dateFormat from 'dateformat'
+import { DataGrid } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -20,71 +21,12 @@ const Title = styled.h1`
     font-weight: 300;
     text-align: center;
 `
-const Table = styled.table`
-    padding: 20px;
-    margin: 20px 0 20px 0px;
-    width: 100%;
-`
-const Td = styled.td`
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-`
-const Th = styled.th`
-    height: 60px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-`
-const Thead = styled.thead`
-    text-align: left;
-`
-const Tr = styled.tr`
-   &:hover {
-       background-color: #ccf6d678;
-   }
-`
-const Tbody = styled.tbody`
-`
 const Hr = styled.div`
     background-color: teal;
     border: none;
     height: 1px;
     margin: 10px 10px;
     ${mobile({ margin: '30px' })}
-`
-const ButtonEdit = styled.button`
-    padding: 5px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #8bf1a5fe;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 20px;
-    box-shadow: 2px 4px lightgrey;
-
-    &:hover {
-        background-color: #00ff40fe;
-    }
-`
-const ButtonDelete = styled.button`
-    padding: 5px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgb(249, 121, 121);
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 20px;
-    box-shadow: 2px 4px lightgrey;
-
-    &:hover {
-        background-color: rgb(246, 0, 0);
-    }
 `
 const TopButton = styled.div`
   flex: 1;
@@ -153,12 +95,21 @@ const Label = styled.label`
     font-weight: bolder;
     color: #1517165b;
 `
+const ButtonEdit = styled.button`
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+`
 
 toast.configure()
 const CategoryAdmin = () => {
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
+    const navigate = useNavigate()
 
     const [coupon, setCoupon] = useState()
     const [check, setCheck] = useState(false)
@@ -192,6 +143,56 @@ const CategoryAdmin = () => {
             getCoupon()
         }
     }
+    const editCoupon = (id) => {
+        navigate(`/editcoupon/${id}`)
+    }
+    const editButton = (params) => {
+        return (
+            <ButtonEdit
+                style={{ cursor: 'pointer' }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    editCoupon(params.row.id)
+                }}
+            > 
+                <EditIcon />
+            </ButtonEdit>
+        )
+    }
+    const deleteButton = (params) => {
+        return (
+            <ButtonEdit
+                style={{ cursor: 'pointer' }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    deleteCoupon(params.row.id)
+                }}
+            >
+                <DeleteForeverOutlinedIcon />
+            </ButtonEdit>
+        )
+    }
+    const columns = [
+        { field: 'code', headerName: 'Coupon Code', width: 200 },
+        { field: 'discount', headerName: 'Coupon discount', width: 200 },
+        { field: 'maximum', headerName: 'Maximum offer', width: 200 },
+        { field: 'expiry', headerName: 'Coupon Expiry', width: 180 },
+        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 100 },
+        { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 100 },
+    ]
+    const rows = coupon?.map((data) => (
+        {
+            id: data._id,
+            code: data.couponCode,
+            discount: data.discount,
+            maximum: data.maximumOfffer,
+            expiry: dateFormat(data.expiry, "mmmm dS, yyyy")
+        })
+    )
 
     useEffect(() => {
         getCoupon()
@@ -241,38 +242,20 @@ const CategoryAdmin = () => {
                     }
                 </AddCategory>
                 <Hr />
-                <Table>
-                    <Thead >
-                        <Tr>
-                            <Th scope="col">Coupon code</Th>
-                            <Th scope="col">Coupon discount</Th>
-                            <Th scope="col">Coupon maximum</Th>
-                            <Th scope="col">Coupon expiry</Th>
-                            <Th scope="col">Edit</Th>
-                            <Th scope="col">Delete</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {coupon?.map(data => (
-                            <>
-                                <Tr key={data._id}>
-                                    <Td>{data.couponCode}</Td>
-                                    <Td>{data.discount}</Td>
-                                    <Td>{data.maximumOfffer}</Td>
-                                    <Td>{dateFormat(data.expiry, "mmmm dS, yyyy")}</Td>
-                                    <Td>
-                                        <ButtonEdit>
-                                            <Link to={`/editcoupon/${data._id}`} style={{ textDecoration: 'none' }}>
-                                                <EditIcon />
-                                            </Link>
-                                        </ButtonEdit>
-                                    </Td>
-                                    <Td><ButtonDelete onClick={() => deleteCoupon(data._id)}><DeleteForeverIcon /></ButtonDelete></Td>
-                                </Tr>
-                            </>
-                        ))}
-                    </Tbody>
-                </Table>
+                <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        sx={{
+                            '& .MuiDataGrid-cell:hover': {
+                                color: 'primary.main',
+                            },
+                        }}
+                    />
+                </div>
                 <Hr />
             </Wrapper>
         </Container>

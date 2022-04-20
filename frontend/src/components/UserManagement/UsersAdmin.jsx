@@ -4,9 +4,11 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
 import dateFormat from 'dateformat'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { confirm } from 'react-confirm-box'
 import { toast } from 'react-toastify'
+import { DataGrid } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -17,51 +19,12 @@ const Title = styled.h1`
     font-weight: 300;
     text-align: center;
 `
-const Table = styled.table`
-    padding: 20px;
-    margin: 20px 0px 20px;
-    width: 100%;
-`
-const Td = styled.td`
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-`
-const Th = styled.th`
-    height: 60px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-`
-const Thead = styled.thead`
-    text-align: left;
-`
-const Tr = styled.tr`
-   &:hover {
-       background-color: #c8edd2fe;
-   }
-`
-const Tbody = styled.tbody`
-`
 const Hr = styled.div`
     background-color: teal;
     border: none;
     height: 1px;
     margin: 10px 10px;
     ${mobile({ margin: '30px' })}
-`
-const Button = styled.button`
-    padding: 5px;
-    border: none;
-   background-color: #8bf1a5fe;
-   color: white;
-   text-align: center;
-   cursor: pointer;
-   border-radius: 20px;
-   box-shadow: 2px 4px lightgrey;
-
-   &:hover {
-    background-color: #00ff40fe;
-   }
 `
 const ButtonBlock = styled.button`
     padding: 5px;
@@ -91,11 +54,21 @@ const ButtonUnblock = styled.button`
         background-color: #0b34eb78;
     }
 `
+const ButtonEdit = styled.button`
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+`
 toast.configure()
 const UsersAdmin = () => {
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
+
+    const navigate = useNavigate()
 
     const [users, setUsers] = useState()
     const [flag, setFlag] = useState(null)
@@ -117,21 +90,91 @@ const UsersAdmin = () => {
     }
     const block = async (id) => {
         const result = await confirm('Do you want to block this user?')
-        if(result) {
-            await axios.put('http://localhost:3001/api/users/status/' + id, {status: false}, {headers: {header}} )
+        if (result) {
+            await axios.put('http://localhost:3001/api/users/status/' + id, { status: false }, { headers: { header } })
             notifyBlocked()
             setFlag(true)
         }
     }
     const unblock = async (id) => {
         const result = await confirm('Do you want to unblock this user?')
-        if(result) {
-            await axios.put('http://localhost:3001/api/users/status/' + id, {status: true}, {headers: {header}} )
+        if (result) {
+            await axios.put('http://localhost:3001/api/users/status/' + id, { status: true }, { headers: { header } })
             notifyUnblocked()
             setFlag(false)
         }
     }
-
+    const edituser = (id) => {
+        navigate(`/edituser/${id}`)
+    }
+    const editButton = (params) => {
+        return (
+            <ButtonEdit
+                style={{ cursor: 'pointer' }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    edituser(params.row.id)
+                }}
+            >
+                <EditIcon />
+            </ButtonEdit>
+        )
+    }
+    const blockButton = (params) => {
+        if (params.row.status) {
+            return (
+                <ButtonBlock
+                    style={{ cursor: 'pointer' }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                        block(params.row.id)
+                    }}
+                >
+                    Block
+                </ButtonBlock >
+            )
+        } else {
+            return (
+                <ButtonUnblock
+                    style={{ cursor: 'pointer' }}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                        unblock(params.row.id)
+                    }}
+                >
+                    Unblock
+                </ButtonUnblock >
+            )
+        }
+    }
+    const columns = [
+        { field: 'createdAt', headerName: 'Created At', width: 180 },
+        { field: 'updatedAt', headerName: 'Updated At', width: 180 },
+        { field: 'name', headerName: 'Name', width: 100 },
+        { field: 'email', headerName: 'Email ID', width: 200 },
+        { field: 'mobile', headerName: 'Mobile', width: 120 },
+        { field: 'admin', headerName: 'Admin Status', width: 120 },
+        { field: 'block', headerName: '', renderCell: blockButton, disableClickEventBubbling: true, width: 100 },
+        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 100 },
+    ]
+    const rows = users?.map((data) => (
+        {
+            id: data._id,
+            createdAt: dateFormat(data.createdAt, "mmmm dS, yyyy"),
+            updatedAt: dateFormat(data.updatedAt, "mmmm dS, yyyy"),
+            name: data.name,
+            email: data.email,
+            mobile: data.mobile,
+            admin: data.isAdmin,
+            status: data.status
+        })
+    )
     useEffect(() => {
         getUsers()
     }, [flag])
@@ -141,41 +184,20 @@ const UsersAdmin = () => {
             <Wrapper>
                 <Title>All users</Title>
                 <Hr />
-                <Table>
-                    <Thead >
-                        <Tr>
-                            <Th scope="col">Created Date</Th>
-                            <Th scope="col">Last Update</Th>
-                            <Th scope="col">Name</Th>
-                            <Th scope="col">Email</Th>
-                            <Th scope="col">Mobile</Th>
-                            <Th scope="col">Admin Status</Th>
-                            <Th scope='col'></Th>
-                            <Th scope='col'></Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {users?.map(data => (
-                            <Tr key={data._id}>
-                                <Td >{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
-                                <Td >{dateFormat(data.updatedAt, "mmmm dS, yyyy")}</Td>
-                                <Td>{data.name}</Td>
-                                <Td>{data.email}</Td>
-                                <Td>{data.mobile}</Td>
-                                {data.isAdmin === true ? <Td>True</Td> : <Td>False</Td>}
-                                {data.status ?
-                                    <Td><ButtonBlock onClick={() => block(data._id)}>Block</ButtonBlock></Td> :
-                                    <Td><ButtonUnblock onClick={() => unblock(data._id)}>Unblock</ButtonUnblock></Td>
-                                }
-                                <Td>
-                                    <Link to={`/edituser/${data._id}`} style={{ textDecoration: 'none' }}>
-                                        <Button>Modify</Button>
-                                    </Link>
-                                </Td>
-                            </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        sx={{
+                            '& .MuiDataGrid-cell:hover': {
+                                color: 'teal',
+                            },
+                        }}
+                    />
+                </div>
             </Wrapper>
         </Container>
     )

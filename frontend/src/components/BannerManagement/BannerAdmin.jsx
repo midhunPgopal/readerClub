@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { confirm } from 'react-confirm-box'
 import { useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import { DataGrid } from '@mui/x-data-grid';
 
 const Container = styled.div`
   margin: 30px;
@@ -38,11 +39,6 @@ const Button = styled.button`
 const Product = styled.div`
 display: flex;
 flex-direction: row;
-`
-const Image = styled.img`
-height: 60px;
-width: 40px;
-object-fit: cover;
 `
 const Title = styled.h3`
 margin: 10px;
@@ -92,27 +88,6 @@ const Error = styled.span`
   padding: 5px;
   color: #f16969;
 `
-const Table = styled.table`
-    width: 100%;
-`
-const Td = styled.td`
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-`
-const Th = styled.th`
-    height: 30px;
-    border-bottom: 1px solid #ddd;
-`
-const Thead = styled.thead`
-    text-align: left;
-`
-const Tr = styled.tr`
-   &:hover {
-       background-color: #ccf6d678;
-   }
-`
-const Tbody = styled.tbody`
-`
 const Hr = styled.div`
     background-color: teal;
     border: none;
@@ -124,11 +99,20 @@ const Label = styled.label`
     font-weight: bolder;
     color: #1517165b;
 `
+const ButtonEdit = styled.button`
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+`
 toast.configure()
 const BannerAdmin = () => {
 
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
+    const navigate = useNavigate()
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
@@ -160,6 +144,54 @@ const BannerAdmin = () => {
             notify(res.data.msg)
         }
     }
+    const editBanner = (id) => {
+        navigate(`/editbanner/${id}`)
+    }
+    const editButton = (params) => {
+        return (
+            <ButtonEdit
+                style={{ cursor: 'pointer' }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    editBanner(params.row.id)
+                }}
+            >
+                <EditIcon />
+            </ButtonEdit>
+        )
+    }
+    const deleteButton = (params) => {
+        return (
+            <ButtonEdit
+                style={{ cursor: 'pointer' }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    deleteBanner(params.row.id)
+                }}
+            >
+                <DeleteForeverOutlinedIcon />
+            </ButtonEdit>
+        )
+    }
+    const columns = [
+        { field: 'title', headerName: 'Title', width: 200 },
+        { field: 'description', headerName: 'Description', width: 300 },
+        { field: 'offer', headerName: 'Offer Description', width: 400 },
+        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 50 },
+        { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 50 },
+    ]
+    const rows = banner?.map((data) => (
+        {
+            id: data._id,
+            title: data.title,
+            description: data.description,
+            offer: data.offerDescription
+        }
+    ))
     useEffect(() => {
         getBanner()
     }, [])
@@ -226,38 +258,22 @@ const BannerAdmin = () => {
             </AddProduct>
             <Product>
                 <Hr />
-                <Table>
-                    <Thead >
-                        <Tr>
-                            <Th scope="col">Image source</Th>
-                            <Th scope="col">Title</Th>
-                            <Th scope="col">Description</Th>
-                            <Th scope="col">Offer Description</Th>
-                            <Th scope='col'></Th>
-                            <Th scope='col'></Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {banner?.map(data => (
-                            <Tr key={data._id}>
-                                <Td><Image src={data.img}></Image></Td>
-                                <Td>{data.title}</Td>
-                                <Td>{data.description}</Td>
-                                <Td>₹{data.offerDescription}</Td>
-                                <Td>
-                                    <Link to={`/editbanner/${data._id}`} style={{ textDecoration: 'none' }}>
-                                        <EditIcon />
-                                    </Link>
-                                </Td>
-                                <Td>
-                                    <DeleteForeverIcon onClick={() => deleteBanner(data._id)} />
-                                </Td>
-                            </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        sx={{
+                            '& .MuiDataGrid-cell:hover': {
+                                color: 'teal',
+                            },
+                        }}
+                    />
+                </div>
             </Product>
-        </Container>
+        </Container >
     )
 }
 

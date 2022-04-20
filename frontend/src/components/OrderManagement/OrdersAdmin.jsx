@@ -4,7 +4,9 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
 import dateFormat from 'dateformat'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { DataGrid } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Container = styled.div``
 const Wrapper = styled.div`
@@ -15,31 +17,6 @@ const Title = styled.h1`
     font-weight: 300;
     text-align: center;
 `
-const Table = styled.table`
-    padding: 20px;
-    margin: 20px 0px 20px 0px;
-    width: 100%;
-`
-const Td = styled.td`
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-`
-const Th = styled.th`
-    height: 60px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-`
-const Thead = styled.thead`
-    text-align: left;
-`
-const Tr = styled.tr`
-   &:hover {
-       background-color: #ccf6d678;
-   }
-`
-const Tbody = styled.tbody`
-`
 const Hr = styled.div`
     background-color: teal;
     border: none;
@@ -48,17 +25,11 @@ const Hr = styled.div`
     ${mobile({ margin: '30px' })}
 `
 const Button = styled.button`
-    padding: 5px;
     border: none;
-    background-color: #8bf1a5fe;
-    color: white;
-    text-align: center;
     cursor: pointer;
-    border-radius: 20px;
-    box-shadow: 2px 4px lightgrey;
 
-    &:hover {
-        background-color: #00ff40fe;
+    &:disabled {
+        cursor: not-allowed;
     }
 `
 
@@ -67,6 +38,7 @@ const OrdersAdmin = () => {
     const admin = useSelector(state => state.admin)
     const header = admin.currentAdmin.accessToken
     const status = admin.currentAdmin.status
+    const navigate = useNavigate()
 
     const [orders, setOrders] = useState()
 
@@ -74,6 +46,46 @@ const OrdersAdmin = () => {
         const res = await axios.get('http://localhost:3001/api/orders/', { headers: { header, status } })
         setOrders(res.data)
     }
+    const editOrder = (id) => {
+        navigate(`/editorder/${id}`)
+    }
+    const updateButton = (params) => {
+        return (
+            <Button
+                disabled={params.row.status === 'Cancelled'}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                    editOrder(params.row.id)
+                }}
+            >
+                <EditIcon />
+            </Button>
+        )
+    }
+    const columns = [
+        { field: 'createdAt', headerName: 'Created At', width: 150 },
+        { field: 'updatedAt', headerName: 'Updated At', width: 150 },
+        { field: 'name', headerName: 'Name', width: 150 },
+        { field: 'quantity', headerName: 'Quantity', width: 100 },
+        { field: 'price', headerName: 'Price (₹)', width: 80 },
+        { field: 'payment', headerName: 'Payment', width: 160 },
+        { field: 'status', headerName: 'Status', width: 100 },
+        { field: 'update', headerName: '', renderCell: updateButton, disableClickEventBubbling: true, width: 100 },
+    ]
+    const rows = orders?.map((data) => (
+        {
+            id: data._id,
+            createdAt: dateFormat(data.createdAt, "mmmm dS, yyyy"),
+            updatedAt: dateFormat(data.updatedAt, "mmmm dS, yyyy"),
+            name: data.deliveryAddress.name,
+            quantity: data.products.length,
+            price: data.total,
+            payment: data.payment,
+            status: data.status,
+        })
+    )
 
     useEffect(() => {
         getOrders()
@@ -84,41 +96,20 @@ const OrdersAdmin = () => {
             <Wrapper>
                 <Title>Your Orders</Title>
                 <Hr />
-                <Table>
-                    <Thead >
-                        <Tr>
-                            <Th scope="col">Created Date</Th>
-                            <Th scope="col">Last Update</Th>
-                            <Th scope="col">Name</Th>
-                            <Th scope="col">Shipping To</Th>
-                            <Th scope="col">Quantity</Th>
-                            <Th scope="col">Price</Th>
-                            <Th scope='col'>Payment</Th>
-                            <Th scope='col'>Status</Th>
-                            <Th scope='col'></Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {orders?.map(data => (
-                            <Tr key={data._id}>
-                                <Td >{dateFormat(data.createdAt, "mmmm dS, yyyy")}</Td>
-                                <Td >{dateFormat(data.updatedAt, "mmmm dS, yyyy")}</Td>
-                                <Td>{data.deliveryAddress.name}</Td>
-                                <Td>{data.deliveryAddress.address} , {data.deliveryAddress.pincode}</Td>
-                                <Td>{data.products.length}</Td>
-                                <Td>₹{data.total}</Td>
-                                <Td>{data.payment}</Td>
-                                <Td >{data.status}</Td>
-                                {data.status === 'Cancelled' ? <></> :
-                                <Td>
-                                    <Link to={`/editorder/${data._id}`} style={{textDecoration: 'none'}}>
-                                        <Button>Update</Button>
-                                    </Link>
-                                </Td>}
-                            </Tr>
-                        ))}
-                    </Tbody>
-                </Table>
+                <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        sx={{
+                            '& .MuiDataGrid-cell:hover': {
+                                color: 'teal',
+                            },
+                        }}
+                    />
+                </div>
             </Wrapper>
         </Container>
     )
