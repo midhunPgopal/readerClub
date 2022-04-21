@@ -4,7 +4,6 @@ const ReferalCode = require('../models/ReferralCode')
 const CryptoJS = require('crypto-js')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
-const shortid = require('shortid')
 
 dotenv.config()
 

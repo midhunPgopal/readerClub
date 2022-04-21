@@ -16,12 +16,6 @@ const Input = styled.input`
     padding: 10px;
     ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
 `
-const Select = styled.select`
-    width: 300px;
-    margin: 10px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
-`
 const Error = styled.span`
     font-size: 14px;
     padding: 5px;

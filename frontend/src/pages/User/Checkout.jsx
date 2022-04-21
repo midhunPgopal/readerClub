@@ -12,7 +12,6 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { logOut } from '../../redux/userRedux'
 import ErrorNotice from '../../error/ErrorNotice'
-import successNotice from '../../success/SuccessNotice'
 import SuccessNotice from '../../success/SuccessNotice'
 
 const Container = styled.div``
@@ -337,7 +336,7 @@ const Cart = () => {
     const checkCoupon = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon, { headers: { userId } })
+            const res = await axios.get('http://localhost:3001/api/coupon/check/' + coupon, { headers: { userId, totalPrice } })
             setMaxDiscount(res.data.maximumOfffer)
             setDiscount(res.data.discount)
             setButtonFlag(false)

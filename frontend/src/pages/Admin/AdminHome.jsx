@@ -8,6 +8,8 @@ import UsersAdmin from '../../components/UserManagement/UsersAdmin'
 import BannerAdmin from '../../components/BannerManagement/BannerAdmin'
 import AnnouncementAdmin from '../../components/AnnouncementManagement/AnnouncementAdmin'
 import CouponAdmin from '../../components/CouponManagement/CouponAdmin'
+import Dashboard from '../../components/Admin/Dashboard'
+import SalesAdmin from '../../components/Admin/SalesAdmin'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
 
@@ -44,7 +46,7 @@ const ListItem = styled.div`
 
 const AdminHome = () => {
 
-  const [homeFlag, setHomeFlag] = useState(false)
+  const [homeFlag, setHomeFlag] = useState(true)
   const [productFlag, setProductFlag] = useState(false)
   const [userFlag, setUserFlag] = useState(false)
   const [orderFlag, setOrderFlag] = useState(false)
@@ -52,6 +54,7 @@ const AdminHome = () => {
   const [bannerFlag, setBannerFlag] = useState(false)
   const [announcementFlag, setAnnouncementFlag] = useState(false)
   const [couponFlag, setCouponFlag] = useState(false)
+  const [salesFlag, setSalesFlag] = useState(false)
 
   const getHome = () => {
     setHomeFlag(true)
@@ -62,6 +65,7 @@ const AdminHome = () => {
     setBannerFlag(false)
     setAnnouncementFlag(false)
     setCouponFlag(false)
+    setSalesFlag(false)
   }
   const getProduct = () => {
     setProductFlag(true)
@@ -72,6 +76,7 @@ const AdminHome = () => {
     setBannerFlag(false)
     setCouponFlag(false)
     setAnnouncementFlag(false)
+    setSalesFlag(false)
   }
   const getUser = () => {
     setUserFlag(true)
@@ -82,6 +87,7 @@ const AdminHome = () => {
     setBannerFlag(false)
     setCouponFlag(false)
     setAnnouncementFlag(false)
+    setSalesFlag(false)
   }
   const getOrder = () => {
     setOrderFlag(true)
@@ -92,6 +98,7 @@ const AdminHome = () => {
     setBannerFlag(false)
     setCouponFlag(false)
     setAnnouncementFlag(false)
+    setSalesFlag(false)
   }
   const getCategory = () => {
     setCategoryFlag(true)
@@ -102,6 +109,7 @@ const AdminHome = () => {
     setBannerFlag(false)
     setCouponFlag(false)
     setAnnouncementFlag(false)
+    setSalesFlag(false)
   }
   const getBanner = () => {
     setBannerFlag(true)
@@ -112,6 +120,7 @@ const AdminHome = () => {
     setCategoryFlag(false)
     setCouponFlag(false)
     setAnnouncementFlag(false)
+    setSalesFlag(false)
   }
   const getAnnouncement = () => {
     setAnnouncementFlag(true)
@@ -122,6 +131,7 @@ const AdminHome = () => {
     setOrderFlag(false)
     setCouponFlag(false)
     setBannerFlag(false)
+    setSalesFlag(false)
   }
   const getCoupon = () => {
     setCouponFlag(true)
@@ -132,6 +142,18 @@ const AdminHome = () => {
     setUserFlag(false)
     setOrderFlag(false)
     setBannerFlag(false)
+    setSalesFlag(false)
+  }
+  const getSales = () => {
+    setCouponFlag(false)
+    setAnnouncementFlag(false)
+    setHomeFlag(false)
+    setProductFlag(false)
+    setCategoryFlag(false)
+    setUserFlag(false)
+    setOrderFlag(false)
+    setBannerFlag(false)
+    setSalesFlag(true)
   }
 
   return (
@@ -141,7 +163,7 @@ const AdminHome = () => {
         <SideBarDiv>
           <Container>
             <List>
-              <ListItem onClick={getHome}>Admin Home</ListItem>
+              <ListItem onClick={getHome}>Dashboard</ListItem>
               <ListItem onClick={getProduct}>Product Management</ListItem>
               <ListItem onClick={getUser}>User Management</ListItem>
               <ListItem onClick={getOrder}>Order Management</ListItem>
@@ -149,17 +171,20 @@ const AdminHome = () => {
               <ListItem onClick={getBanner}>Banner Management</ListItem>
               <ListItem onClick={getAnnouncement}>Announcement Management</ListItem>
               <ListItem onClick={getCoupon}>Coupon Management</ListItem>
+              <ListItem onClick={getSales}>Sales Report</ListItem>
             </List>
           </Container>
         </SideBarDiv>
         <Content>
-        {productFlag && <AdminProduct /> }
-        {categoryFlag && <CategoryAdmin /> }
-        {orderFlag && <OrdersAdmin /> }
-        {userFlag && <UsersAdmin /> }
-        {bannerFlag && <BannerAdmin /> }
-        {announcementFlag && <AnnouncementAdmin /> }
-        {couponFlag && <CouponAdmin /> }
+          {homeFlag && <Dashboard />}
+          {productFlag && <AdminProduct />}
+          {categoryFlag && <CategoryAdmin />}
+          {orderFlag && <OrdersAdmin />}
+          {userFlag && <UsersAdmin />}
+          {bannerFlag && <BannerAdmin />}
+          {announcementFlag && <AnnouncementAdmin />}
+          {couponFlag && <CouponAdmin />}
+          {salesFlag && <SalesAdmin />}
         </Content>
       </Wrapper>
       <AdminFooter />

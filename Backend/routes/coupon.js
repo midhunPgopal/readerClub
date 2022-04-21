@@ -33,6 +33,7 @@ router.get('/find/:id', async (req, res) => {
 router.get('/check/:id', async (req, res) => {
     try {
         const coupon = await Coupon.findOne({couponCode: req.params.id})
+        const price = req.headers.totalprice
         const date = new Date()
         if(!coupon) {
             return res.status(500).json({coupon:'Coupon doesnt found'})
@@ -43,6 +44,9 @@ router.get('/check/:id', async (req, res) => {
         }
         if(date > coupon.expiry) {
             return res.status(500).json({coupon:'Coupon expired'})
+        }
+        if(price < coupon.minimumAmount) {
+            return res.status(500).json({coupon:`Minimum amuount of ${coupon.minimumAmount} required`})
         }
         res.status(200).json(coupon)
     } catch (error) {

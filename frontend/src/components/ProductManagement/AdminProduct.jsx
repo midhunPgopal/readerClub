@@ -15,19 +15,24 @@ import dateFormat from 'dateformat'
 import { DataGrid } from '@mui/x-data-grid';
 
 const Container = styled.div`
-  margin: 30px;
+margin: 30px;
   padding: 20px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  `
-const TopButton = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: space-around;
+`
+const Wrapper = styled.div`
+    padding: 10px;
+    ${mobile({ pading: '10px' })}
+`
+const Title = styled.h1`
+text-align: center;
+color: #4b1f4cfe;
+font-weight: 500;
 `
 const Button = styled.button`
-  width: 10%;
+  width: 15%;
+  padding: 10px;
   border: none;
   border-radius: 10px;
   background-color: teal;
@@ -38,16 +43,13 @@ const Button = styled.button`
   &:hover {
     background-color: #26e090fe;
   }
-`
-const Product = styled.div`
-display: flex;
-flex-direction: row;
-`
-const Title = styled.h3`
-margin: 10px;
-text-align: center;
-color: #4b1f4cfe;
-`
+  `
+const TopButton = styled.div`
+    flex: 1;
+    display: flex;
+    aling-items: center;
+    justify-content: space-around;
+  `
 const AddProduct = styled.div`
   margin: 0px;
 `
@@ -199,8 +201,8 @@ const AdminProduct = () => {
     )
   }
   const columns = [
-    { field: 'createdAt', headerName: 'Created At', width: 200 },
-    { field: 'updatedAt', headerName: 'Updated At', width: 200 },
+    { field: 'createdAt', headerName: 'Created At', width: 170 },
+    { field: 'updatedAt', headerName: 'Updated At', width: 170 },
     { field: 'title', headerName: 'Title', width: 200 },
     { field: 'author', headerName: 'Author', width: 150 },
     { field: 'price', headerName: 'Price', width: 80 },
@@ -225,82 +227,82 @@ const AdminProduct = () => {
 
   return (
     <Container>
-      <TopButton>
-        <Title>Your Products</Title>
-        <Button onClick={getFlag}>Add Product</Button>
-      </TopButton>
-      <AddProduct>
-        {flag &&
-          <Form onSubmit={handleSubmit(addProduct)}>
-            <InputContainer>
-              <Label>Title
-                <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
-                <Error>
-                  {errors.title && errors.title.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Description
-                <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
-                <Error>
-                  {errors.description && errors.description.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Author
-                <Input id="author" type='text' placeholder='Author' {...register('author', { required: true })} />
-                <Error>
-                  {errors.author && errors.author.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Publisher
-                <Input id="publisher" type='text' placeholder='Publisher' {...register('publisher', { required: true })} />
-                <Error>
-                  {errors.publisher && errors.publisher.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Published on
-                <Input id="publishedAt" type='date' placeholder='Published on' {...register('publishedAt', { required: true })} />
-                <Error>
-                  {errors.publishedAt && errors.publishedAt.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Image source Link
-                <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                <Error>
-                  {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Category
-                <Input id="category" type='text' placeholder='Separate the categories by a coma' {...register('category', { required: true })} />
-                <Error>
-                  {errors.category && errors.category.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Chapters
-                <Input id="chapter" type='text' placeholder='Separate the chapters by a coma' {...register('chapter', { required: true })} />
-                <Error>
-                  {errors.chapter && errors.chapter.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Price
-                <Input id="price" type='number' placeholder='Selling Price' {...register('price', { required: true })} />
-                <Error>
-                  {errors.price && errors.price.type === "required" && <span>This is required</span>}
-                </Error>
-              </Label>
-              <Label>Offers
-                <Input id="offer" type='text' placeholder='Offers' {...register('offer', { required: false })} />
-              </Label>
-            </InputContainer>
-            <ButtonContainer>
-              <ButtonSubmit type='submit' >Add Book</ButtonSubmit>
-              <ButtonClose onClick={() => setFlag(false)}>Close</ButtonClose>
-            </ButtonContainer>
-          </Form>
-        }
-      </AddProduct>
-      <Product>
+      <Wrapper>
+        <TopButton>
+          <Title>Your Products</Title>
+          <Button onClick={getFlag}>Add Product</Button>
+        </TopButton>
+        <AddProduct>
+          {flag &&
+            <Form onSubmit={handleSubmit(addProduct)}>
+              <InputContainer>
+                <Label>Title
+                  <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
+                  <Error>
+                    {errors.title && errors.title.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Description
+                  <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
+                  <Error>
+                    {errors.description && errors.description.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Author
+                  <Input id="author" type='text' placeholder='Author' {...register('author', { required: true })} />
+                  <Error>
+                    {errors.author && errors.author.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Publisher
+                  <Input id="publisher" type='text' placeholder='Publisher' {...register('publisher', { required: true })} />
+                  <Error>
+                    {errors.publisher && errors.publisher.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Published on
+                  <Input id="publishedAt" type='date' placeholder='Published on' {...register('publishedAt', { required: true })} />
+                  <Error>
+                    {errors.publishedAt && errors.publishedAt.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Image source Link
+                  <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
+                  <Error>
+                    {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Category
+                  <Input id="category" type='text' placeholder='Separate the categories by a coma' {...register('category', { required: true })} />
+                  <Error>
+                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Chapters
+                  <Input id="chapter" type='text' placeholder='Separate the chapters by a coma' {...register('chapter', { required: true })} />
+                  <Error>
+                    {errors.chapter && errors.chapter.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Price
+                  <Input id="price" type='number' placeholder='Selling Price' {...register('price', { required: true })} />
+                  <Error>
+                    {errors.price && errors.price.type === "required" && <span>This is required</span>}
+                  </Error>
+                </Label>
+                <Label>Offers
+                  <Input id="offer" type='text' placeholder='Offers' {...register('offer', { required: false })} />
+                </Label>
+              </InputContainer>
+              <ButtonContainer>
+                <ButtonSubmit type='submit' >Add Book</ButtonSubmit>
+                <ButtonClose onClick={() => setFlag(false)}>Close</ButtonClose>
+              </ButtonContainer>
+            </Form>
+          }
+        </AddProduct>
         <Hr />
-        <div style={{ height: 400, width: '100%' }}>
+        <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
           <DataGrid
             rows={rows}
             columns={columns}
@@ -314,7 +316,8 @@ const AdminProduct = () => {
             }}
           />
         </div>
-      </Product>
+        <Hr />
+      </Wrapper>
     </Container >
   )
 }

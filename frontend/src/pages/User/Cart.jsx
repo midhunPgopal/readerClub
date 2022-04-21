@@ -149,7 +149,7 @@ const Cart = () => {
     const [productQuantity, setProductQuantity] = useState()
     const [cartId, setCartId] = useState()
     const [productPrice, setProductPrice] = useState()
-    const [shipping, setShipping] = useState(99)
+    const shipping = 99
     
 
     const notify = (msg) => toast(msg, {

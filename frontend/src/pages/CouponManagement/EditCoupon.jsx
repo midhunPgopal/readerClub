@@ -32,9 +32,9 @@ const EditCoupon = () => {
 
   const getCoupon = async () => {
     const res = await axios.get('http://localhost:3001/api/coupon/find/' + id)
-    let { _id, couponCode, discount, maximumOfffer, users, expiry} = res.data
+    let { _id, couponCode, discount, maximumOfffer, users, expiry, minimumAmount} = res.data
     expiry = expiry.slice(0,10)
-    setCoupon({_id, couponCode, discount, maximumOfffer, users, expiry})
+    setCoupon({_id, couponCode, discount, maximumOfffer, users, expiry, minimumAmount})
   }
 
   useEffect(() => {

@@ -17,6 +17,10 @@ const CouponSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    minimumAmount : {
+        type: Number,
+        required: true
+    },
     users: {
         type: Array
     }

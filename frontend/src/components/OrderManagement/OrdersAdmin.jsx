@@ -8,14 +8,21 @@ import { useNavigate } from 'react-router-dom'
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 
-const Container = styled.div``
+const Container = styled.div`
+margin: 30px;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+`
 const Wrapper = styled.div`
-    padding: 20px;
+    padding: 10px;
     ${mobile({ pading: '10px' })}
 `
 const Title = styled.h1`
-    font-weight: 300;
-    text-align: center;
+text-align: center;
+color: #4b1f4cfe;
+font-weight: 500;
 `
 const Hr = styled.div`
     background-color: teal;
@@ -67,12 +74,12 @@ const OrdersAdmin = () => {
     const columns = [
         { field: 'createdAt', headerName: 'Created At', width: 150 },
         { field: 'updatedAt', headerName: 'Updated At', width: 150 },
-        { field: 'name', headerName: 'Name', width: 150 },
+        { field: 'name', headerName: 'Name', width: 120 },
         { field: 'quantity', headerName: 'Quantity', width: 100 },
         { field: 'price', headerName: 'Price (₹)', width: 80 },
         { field: 'payment', headerName: 'Payment', width: 160 },
         { field: 'status', headerName: 'Status', width: 100 },
-        { field: 'update', headerName: '', renderCell: updateButton, disableClickEventBubbling: true, width: 100 },
+        { field: 'update', headerName: '', renderCell: updateButton, disableClickEventBubbling: true, width: 50 },
     ]
     const rows = orders?.map((data) => (
         {
@@ -110,6 +117,7 @@ const OrdersAdmin = () => {
                         }}
                     />
                 </div>
+                <Hr />
             </Wrapper>
         </Container>
     )

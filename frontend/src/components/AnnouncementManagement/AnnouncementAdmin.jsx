@@ -37,14 +37,11 @@ const Button = styled.button`
     background-color: #26e090fe;
   }
 `
-const Product = styled.div`
-display: flex;
-flex-direction: row;
-`
-const Title = styled.h3`
+const Title = styled.h1`
 margin: 10px;
 text-align: center;
 color: #4b1f4cfe;
+font-weight: 500;
 `
 const AddProduct = styled.div`
   margin: 0px;
@@ -90,11 +87,11 @@ const Error = styled.span`
   color: #f16969;
 `
 const Hr = styled.div`
-    background-color: teal;
-    border: none;
-    height: 1px;
-    margin: 10px 10px;
-    ${mobile({ margin: '30px' })}
+background-color: teal;
+border: none;
+height: 1px;
+margin: 10px 10px;
+${mobile({ margin: '30px' })}
 `
 const Label = styled.label`
     font-weight: bolder;
@@ -181,7 +178,7 @@ const AnnouncementAdmin = () => {
     const columns = [
         { field: 'createdAt', headerName: 'Created At', width: 200 },
         { field: 'updatedAt', headerName: 'Updated At', width: 200 },
-        { field: 'description', headerName: 'Description', width: 500 },
+        { field: 'description', headerName: 'Description', width: 400 },
         { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 50 },
         { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 50 },
     ]
@@ -221,23 +218,22 @@ const AnnouncementAdmin = () => {
                     </Form>
                 }
             </AddProduct>
-            <Product>
-                <Hr />
-                <div style={{ height: 400, width: '100%' }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        checkboxSelection
-                        sx={{
-                            '& .MuiDataGrid-cell:hover': {
-                                color: 'teal',
-                            },
-                        }}
-                    />
-                </div>
-            </Product>
+            <Hr />
+            <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
+                <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    checkboxSelection
+                    sx={{
+                        '& .MuiDataGrid-cell:hover': {
+                            color: 'teal',
+                        },
+                    }}
+                />
+            </div>
+            <Hr />
         </Container>
     )
 }

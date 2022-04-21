@@ -10,14 +10,21 @@ import { toast } from 'react-toastify'
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 
-const Container = styled.div``
+const Container = styled.div`
+margin: 30px;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+`
 const Wrapper = styled.div`
-    padding: 20px;
+    padding: 10px;
     ${mobile({ pading: '10px' })}
 `
 const Title = styled.h1`
-    font-weight: 300;
-    text-align: center;
+text-align: center;
+color: #4b1f4cfe;
+font-weight: 500;;
 `
 const Hr = styled.div`
     background-color: teal;
@@ -93,6 +100,7 @@ const UsersAdmin = () => {
         if (result) {
             await axios.put('http://localhost:3001/api/users/status/' + id, { status: false }, { headers: { header } })
             notifyBlocked()
+            getUsers()
             setFlag(true)
         }
     }
@@ -101,6 +109,7 @@ const UsersAdmin = () => {
         if (result) {
             await axios.put('http://localhost:3001/api/users/status/' + id, { status: true }, { headers: { header } })
             notifyUnblocked()
+            getUsers()
             setFlag(false)
         }
     }
@@ -157,11 +166,10 @@ const UsersAdmin = () => {
         { field: 'createdAt', headerName: 'Created At', width: 180 },
         { field: 'updatedAt', headerName: 'Updated At', width: 180 },
         { field: 'name', headerName: 'Name', width: 100 },
-        { field: 'email', headerName: 'Email ID', width: 200 },
-        { field: 'mobile', headerName: 'Mobile', width: 120 },
-        { field: 'admin', headerName: 'Admin Status', width: 120 },
-        { field: 'block', headerName: '', renderCell: blockButton, disableClickEventBubbling: true, width: 100 },
-        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 100 },
+        { field: 'email', headerName: 'Email ID', width: 230 },
+        { field: 'admin', headerName: 'Admin', width: 80 },
+        { field: 'block', headerName: '', renderCell: blockButton, disableClickEventBubbling: true, width: 80 },
+        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 50 },
     ]
     const rows = users?.map((data) => (
         {
@@ -170,7 +178,6 @@ const UsersAdmin = () => {
             updatedAt: dateFormat(data.updatedAt, "mmmm dS, yyyy"),
             name: data.name,
             email: data.email,
-            mobile: data.mobile,
             admin: data.isAdmin,
             status: data.status
         })
@@ -184,7 +191,7 @@ const UsersAdmin = () => {
             <Wrapper>
                 <Title>All users</Title>
                 <Hr />
-                <div style={{ height: 400, width: '100%' }}>
+                <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
@@ -198,6 +205,7 @@ const UsersAdmin = () => {
                         }}
                     />
                 </div>
+                <Hr />
             </Wrapper>
         </Container>
     )

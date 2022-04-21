@@ -70,28 +70,34 @@ const EditCouponForm = ({ preloadedData }) => {
             <InputContainer>
                 <Label>Coupon code
                     <Input id="couponCode" type='text' placeholder='Coupon code' {...register('couponCode', { required: true })} />
-                    <Error>
-                        {errors.couponCode && errors.couponCode.type === "required" && <span>This is required</span>}
-                    </Error>
                 </Label>
+                <Error>
+                    {errors.couponCode && errors.couponCode.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Coupon discount
                     <Input id="discount" type='number' step='0.01' placeholder='Coupon discount' {...register('discount', { required: true })} />
-                    <Error>
-                        {errors.discount && errors.discount.type === "required" && <span>This is required</span>}
-                    </Error>
                 </Label>
+                <Error>
+                    {errors.discount && errors.discount.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Coupon maximum
                     <Input id="maximumOfffer" type='number' placeholder='Coupon maximum discount' {...register('maximumOfffer', { required: true })} />
-                    <Error>
-                        {errors.maximumOfffer && errors.maximumOfffer.type === "required" && <span>This is required</span>}
-                    </Error>
                 </Label>
+                <Error>
+                    {errors.maximumOfffer && errors.maximumOfffer.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Coupon expiry
                     <Input id="expiry" type='date' placeholder='Coupon expiry date' {...register('expiry', { required: true })} />
-                    <Error>
-                        {errors.expiry && errors.expiry.type === "required" && <span>This is required</span>}
-                    </Error>
                 </Label>
+                <Error>
+                    {errors.expiry && errors.expiry.type === "required" && <span>This is required</span>}
+                </Error>
+                <Label>Coupon minimum amount
+                    <Input id="minimumAmount" type='number' placeholder='Coupon minimum amount' {...register('minimumAmount', { required: true })} />
+                </Label>
+                <Error>
+                    {errors.minimumAmount && errors.minimumAmount.type === "required" && <span>This is required</span>}
+                </Error>
             </InputContainer>
             <ButtonContainer>
                 <ButtonSubmit type='submit'>Update</ButtonSubmit>

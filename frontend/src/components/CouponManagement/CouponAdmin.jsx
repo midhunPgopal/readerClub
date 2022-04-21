@@ -12,27 +12,21 @@ import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-const Container = styled.div``
+const Container = styled.div`
+margin: 30px;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+`
 const Wrapper = styled.div`
-    padding: 20px;
+    padding: 10px;
     ${mobile({ pading: '10px' })}
 `
 const Title = styled.h1`
-    font-weight: 300;
-    text-align: center;
-`
-const Hr = styled.div`
-    background-color: teal;
-    border: none;
-    height: 1px;
-    margin: 10px 10px;
-    ${mobile({ margin: '30px' })}
-`
-const TopButton = styled.div`
-  flex: 1;
-  display: flex;
-  aling-items: center;
-  justify-content: space-around;
+text-align: center;
+color: #4b1f4cfe;
+font-weight: 500;
 `
 const Button = styled.button`
   width: 15%;
@@ -47,6 +41,19 @@ const Button = styled.button`
   &:hover {
     background-color: #26e090fe;
   }
+  `
+const TopButton = styled.div`
+    flex: 1;
+    display: flex;
+    aling-items: center;
+    justify-content: space-around;
+  `
+const Hr = styled.div`
+    background-color: teal;
+    border: none;
+    height: 1px;
+    margin: 10px 10px;
+    ${mobile({ margin: '30px' })}
 `
 const AddCategory = styled.div`
   margin: 0px;
@@ -156,7 +163,7 @@ const CategoryAdmin = () => {
                 onClick={() => {
                     editCoupon(params.row.id)
                 }}
-            > 
+            >
                 <EditIcon />
             </ButtonEdit>
         )
@@ -177,12 +184,13 @@ const CategoryAdmin = () => {
         )
     }
     const columns = [
-        { field: 'code', headerName: 'Coupon Code', width: 200 },
-        { field: 'discount', headerName: 'Coupon discount', width: 200 },
-        { field: 'maximum', headerName: 'Maximum offer', width: 200 },
-        { field: 'expiry', headerName: 'Coupon Expiry', width: 180 },
-        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 100 },
-        { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 100 },
+        { field: 'code', headerName: 'Coupon Code', width: 150 },
+        { field: 'discount', headerName: 'Coupon discount', width: 150 },
+        { field: 'maximum', headerName: 'Maximum offer', width: 180 },
+        { field: 'expiry', headerName: 'Coupon Expiry', width: 150 },
+        { field: 'minimum', headerName: 'Minimum amount', width: 160 },
+        { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 50 },
+        { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 50 },
     ]
     const rows = coupon?.map((data) => (
         {
@@ -190,7 +198,8 @@ const CategoryAdmin = () => {
             code: data.couponCode,
             discount: data.discount,
             maximum: data.maximumOfffer,
-            expiry: dateFormat(data.expiry, "mmmm dS, yyyy")
+            expiry: dateFormat(data.expiry, "mmmm dS, yyyy"),
+            minimum: data.minimumAmount
         })
     )
 

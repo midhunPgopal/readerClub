@@ -12,19 +12,24 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import { DataGrid } from '@mui/x-data-grid';
 
 const Container = styled.div`
-  margin: 30px;
+margin: 30px;
   padding: 20px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  `
-const TopButton = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: space-around;
+`
+const Wrapper = styled.div`
+    padding: 10px;
+    ${mobile({ pading: '10px' })}
+`
+const Title = styled.h1`
+text-align: center;
+color: #4b1f4cfe;
+font-weight: 500;
 `
 const Button = styled.button`
-  width: 10%;
+  width: 15%;
+  padding: 10px;
   border: none;
   border-radius: 10px;
   background-color: teal;
@@ -35,16 +40,13 @@ const Button = styled.button`
   &:hover {
     background-color: #26e090fe;
   }
-`
-const Product = styled.div`
-display: flex;
-flex-direction: row;
-`
-const Title = styled.h3`
-margin: 10px;
-text-align: center;
-color: #4b1f4cfe;
-`
+  `
+const TopButton = styled.div`
+    flex: 1;
+    display: flex;
+    aling-items: center;
+    justify-content: space-around;
+  `
 const AddProduct = styled.div`
   margin: 0px;
 `
@@ -178,9 +180,9 @@ const BannerAdmin = () => {
         )
     }
     const columns = [
-        { field: 'title', headerName: 'Title', width: 200 },
-        { field: 'description', headerName: 'Description', width: 300 },
-        { field: 'offer', headerName: 'Offer Description', width: 400 },
+        { field: 'title', headerName: 'Title', width: 150 },
+        { field: 'description', headerName: 'Description', width: 320 },
+        { field: 'offer', headerName: 'Offer Description', width: 350 },
         { field: 'edit', headerName: '', renderCell: editButton, disableClickEventBubbling: true, width: 50 },
         { field: 'delete', headerName: '', renderCell: deleteButton, disableClickEventBubbling: true, width: 50 },
     ]
@@ -198,67 +200,67 @@ const BannerAdmin = () => {
 
     return (
         <Container>
-            <TopButton>
-                <Title>Your Banner</Title>
-                <Button onClick={getFlag}>Add Banner</Button>
-            </TopButton>
-            <AddProduct>
-                {flag &&
-                    <Form onSubmit={handleSubmit(addBanner)}>
-                        <InputContainer>
-                            <Label>Title
-                                <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
-                                <Error>
-                                    {errors.title && errors.title.type === "required" && <span>This is required</span>}
-                                </Error>
-                            </Label>
-                            <Label>Description
-                                <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
-                                <Error>
-                                    {errors.description && errors.description.type === "required" && <span>This is required</span>}
-                                </Error>
-                            </Label>
-                            <Label>Offer description
-                                <Input id="offerDescription" type='text' placeholder='Offer description' {...register('offerDescription', { required: true })} />
-                                <Error>
-                                    {errors.offerDescription && errors.offerDescription.type === "required" && <span>This is required</span>}
-                                </Error>
-                            </Label>
-                            <Label>Offer cod
-                                <Input id="offerCode" type='text' placeholder='Offer code' {...register('offerCode', { required: true })} />
-                                <Error>
-                                    {errors.offerCode && errors.offerCode.type === "required" && <span>This is required</span>}
-                                </Error>
-                                e</Label>
-                            <Label>Discount
-                                <Input id="discount" type='number' step='0.01' placeholder='discount percentage' {...register('discount', { required: true })} />
-                                <Error>
-                                    {errors.discount && errors.discount.type === "required" && <span>This is required</span>}
-                                </Error>
-                            </Label>
-                            <Label>Image source link
-                                <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                                <Error>
-                                    {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                                </Error>
-                            </Label>
-                            <Label>Background Colour
-                                <Input id="bg" type='text' placeholder='background colour' {...register('bg', { required: true })} />
-                                <Error>
-                                    {errors.bg && errors.bg.type === "required" && <span>This is required</span>}
-                                </Error>
-                            </Label>
-                        </InputContainer>
-                        <ButtonContainer>
-                            <ButtonSubmit type='submit' >Add Banner</ButtonSubmit>
-                            <ButtonClose onClick={() => setFlag(false)}>Close</ButtonClose>
-                        </ButtonContainer>
-                    </Form>
-                }
-            </AddProduct>
-            <Product>
+            <Wrapper>
+                <TopButton>
+                    <Title>Your Banner</Title>
+                    <Button onClick={getFlag}>Add Banner</Button>
+                </TopButton>
+                <AddProduct>
+                    {flag &&
+                        <Form onSubmit={handleSubmit(addBanner)}>
+                            <InputContainer>
+                                <Label>Title
+                                    <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
+                                    <Error>
+                                        {errors.title && errors.title.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                                <Label>Description
+                                    <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
+                                    <Error>
+                                        {errors.description && errors.description.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                                <Label>Offer description
+                                    <Input id="offerDescription" type='text' placeholder='Offer description' {...register('offerDescription', { required: true })} />
+                                    <Error>
+                                        {errors.offerDescription && errors.offerDescription.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                                <Label>Offer cod
+                                    <Input id="offerCode" type='text' placeholder='Offer code' {...register('offerCode', { required: true })} />
+                                    <Error>
+                                        {errors.offerCode && errors.offerCode.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                    e</Label>
+                                <Label>Discount
+                                    <Input id="discount" type='number' step='0.01' placeholder='discount percentage' {...register('discount', { required: true })} />
+                                    <Error>
+                                        {errors.discount && errors.discount.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                                <Label>Image source link
+                                    <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
+                                    <Error>
+                                        {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                                <Label>Background Colour
+                                    <Input id="bg" type='text' placeholder='background colour' {...register('bg', { required: true })} />
+                                    <Error>
+                                        {errors.bg && errors.bg.type === "required" && <span>This is required</span>}
+                                    </Error>
+                                </Label>
+                            </InputContainer>
+                            <ButtonContainer>
+                                <ButtonSubmit type='submit' >Add Banner</ButtonSubmit>
+                                <ButtonClose onClick={() => setFlag(false)}>Close</ButtonClose>
+                            </ButtonContainer>
+                        </Form>
+                    }
+                </AddProduct>
                 <Hr />
-                <div style={{ height: 400, width: '100%' }}>
+                <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
@@ -272,7 +274,8 @@ const BannerAdmin = () => {
                         }}
                     />
                 </div>
-            </Product>
+                <Hr />
+            </Wrapper>
         </Container >
     )
 }

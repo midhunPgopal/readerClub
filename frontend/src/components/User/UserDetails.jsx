@@ -145,6 +145,10 @@ const Icons = styled.div`
     display : flex;
     flex-direction: row;
 `
+const Referal = styled.div`
+margin: 10px;
+font-size: 24px;
+`
 
 toast.configure()
 function UserDetails() {
@@ -169,6 +173,7 @@ function UserDetails() {
     const [address, setAddress] = useState()
     const [userData, setUserData] = useState()
     const [userCredentials, setUserCredentials] = useState()
+    const [referal, setReferal] = useState()
 
     const notify = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
@@ -193,6 +198,14 @@ function UserDetails() {
         try {
             const res = await axios.get('http://localhost:3001/api/users/find/' + userId, { headers: { header } })
             setUserCredentials(res.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const getReferalCode = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/api/referal/find/' + userCredentials?.username)
+            setReferal(res.data)
         } catch (error) {
             console.log(error);
         }
@@ -269,6 +282,7 @@ function UserDetails() {
         getUserDetails()
         getUserCredentials()
         getAddress()
+        getReferalCode()
     }, [])
     return (
         <>
@@ -418,6 +432,7 @@ function UserDetails() {
                     <Email>Email : {userCredentials && userCredentials.email}</Email>
                     <Mobile>Mobile : {userCredentials && userCredentials.mobile}</Mobile>
                     <Wallet>Wallet Money : {userCredentials && userCredentials.wallet}</Wallet>
+                    <Referal>Referal code : <b>{referal && referal.referalCode}</b></Referal>
                 </Details>
                 <Address>
                     {address?.map(data => (
