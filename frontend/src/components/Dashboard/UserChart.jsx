@@ -10,7 +10,8 @@ const UserChart = () => {
   const header = admin.currentAdmin.accessToken
 
   const [users, setUsers] = useState()
-  const [value, setValue] = useState()
+  const [rowValue, setRowValue] = useState()
+  const columnValue = ['blocked Users', 'Active Users']
 
   const getData = async () => {
     const res = await axios.get('http://localhost:3001/api/users', { headers: { header } })
@@ -21,14 +22,14 @@ const UserChart = () => {
     let unblock = 0
     let result = []
     users?.filter((item) => {
-      if (item.status == true) {
+      if (item.status === true) {
         unblock++
       } else {
         block++
       }
     })
     result.push(block, unblock)
-    setValue(result)
+    setRowValue(result)
   }
 
   useEffect(() => {
@@ -42,11 +43,11 @@ const UserChart = () => {
     <div>
       <Doughnut
         data={{
-          labels: ['blocked Users', 'Active Users'],
+          labels: columnValue,
           datasets: [
             {
               label: 'User Status',
-              data: value,
+              data: rowValue,
               backgroundColor: ['#1490e3f0', '#5ada58f0'],
               borderColor: '#f3f6f3f0',
               borderWidth: 2,

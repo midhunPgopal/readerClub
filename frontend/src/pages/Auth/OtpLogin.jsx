@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
 import { Link } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { loginStart, loginSuccess, loginFailure } from '../../redux/userRedux'
 import { useForm } from 'react-hook-form'
 import ErrorNotice from '../../error/ErrorNotice'
@@ -84,8 +84,6 @@ toast.configure()
 const OtpLogin = () => {
     
     const dispatch = useDispatch()
-    
-    const { isFetching } = useSelector(state => state.user)
     
     const { register, handleSubmit, formState: { errors } } = useForm()
     

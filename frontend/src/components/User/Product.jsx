@@ -94,14 +94,11 @@ const Product = ({ item }) => {
         header = user.accessToken
     }
 
-    const [quantity, setQuantity] = useState(1)
-    const [chapter, setChapter] = useState(1)
     const [price, setPrice] = useState()
     const [discount, setDiscount] = useState()
     const [total, setTotal] = useState(0)
     const [productId, setProductId] = useState(0)
     const [product, setProduct] = useState(0)
-    // const total = item.price
 
     const notifySuccess = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
@@ -122,8 +119,7 @@ const Product = ({ item }) => {
         setPrice(products.price)
         setProductId(products._id)
         setProduct(products)
-        const [offer] = products.offers
-        if (offer != '') {
+        if (products.offers) {
             getOffer(products.offers)
         } else {
             setDiscount(0)
@@ -155,6 +151,8 @@ const Product = ({ item }) => {
     }, [discount])
     useEffect(() => {
         const cart = async () => {
+            const quantity = 1
+            const chapter = 1
             try {
                 const data = { userId, productId, product, quantity, chapter, total }
                 const res = await axios.post('http://localhost:3001/api/cart', data, { headers: { header, userId } })

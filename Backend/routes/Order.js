@@ -75,6 +75,28 @@ router.get('/', verifyTokenAndAdmin, async (req, res) => {
     }
 })
 
+//Sales report 
+
+router.post('/sales', verifyTokenAndAdmin, async (req, res) => {
+    try {
+        let start = new Date(req.body.start)
+        let end = new Date(req.body.end)
+        let result = []
+        const orders = await Order.find()
+        orders.filter(item => {
+            if(item.createdAt <= end && item.createdAt >= start) {
+                result.push(item)
+            }
+        })
+        if(!result[0]) {
+            return res.status(500).json({msg: 'No data found'})
+        }
+        res.status(200).json(result)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 //Get monthly income
 
 router.get('/income', verifyTokenAndAdmin, async (req, res) => {

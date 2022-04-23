@@ -74,8 +74,6 @@ const Products = ({ cat, offer, filters, sort, search }) => {
   useEffect(() => {
     setFilteredProducts(products)
   }, [products, cat, offer])
-  useEffect(() => {
-  }, [filteredProducts])
   
   useEffect(() => {
     getFilteredProducts()

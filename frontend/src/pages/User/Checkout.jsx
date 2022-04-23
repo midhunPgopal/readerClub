@@ -176,6 +176,7 @@ function loadScript(src) {
         document.body.appendChild(script)
     })
 }
+
 toast.configure()
 const Cart = () => {
 
@@ -195,11 +196,12 @@ const Cart = () => {
 
     const [totalPrice, setTotalPrice] = useState()
     const [grandTotal, setGrandTotal] = useState()
+    const [grandTotalUSD, setGrandTotalUSD] = useState()
     const [products, setProducts] = useState()
     const [discount, setDiscount] = useState(0)
     const [maxDiscount, setMaxDiscount] = useState(0)
     const [coupon, setCoupon] = useState()
-    const [buttonFlag, setButtonFlag] = useState(true) 
+    const [buttonFlag, setButtonFlag] = useState(true)
     const [errCoupon, setErrCoupon] = useState()
     const [succCoupon, setSuccCoupon] = useState()
     const [address, setAddress] = useState()
@@ -215,8 +217,12 @@ const Cart = () => {
     const [errWallet, setErrWallet] = useState()
     const [succWallet, setSuccWallet] = useState()
     const [walletFlag, setWalletFlag] = useState(true)
+    const [paypalFlag, setPaypalFlag] = useState(false)
 
     const notify = (msg) => toast.success(msg, {
+        position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
+    })
+    const notifyError = (msg) => toast.error(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
     })
 
@@ -255,16 +261,19 @@ const Cart = () => {
         const total = grandTotal
         const payment = value.payment
         const payload = { userId, products, total, deliveryAddress, payment }
+        const placeOrder = async () => {
+            const res = await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
+            if (coupon) {
+                await axios.put('http://localhost:3001/api/coupon/add/' + coupon, { userId })
+            }
+            await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
+            await axios.put('http://localhost:3001/api/users/wallet/' + userId, amount)
+            notify(res.data.msg)
+            navigate('/success')
+        }
         if (payment === 'Cash on delivery') {
             try {
-                const res = await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
-                if (coupon) {
-                    await axios.put('http://localhost:3001/api/coupon/add/' + coupon, { userId })
-                }
-                await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
-                await axios.put('http://localhost:3001/api/users/wallet/' + userId, amount)
-                notify(res.data.msg)
-                navigate('/success')
+                placeOrder()
             } catch (error) {
                 console.log(error)
                 error.response.data.status && dispatch(logOut())
@@ -286,14 +295,7 @@ const Cart = () => {
                     description: 'Place your order',
                     image: 'https://st2.depositphotos.com/1364916/6359/v/600/depositphotos_63590137-stock-illustration-blue-book-logo-vector.jpg',
                     handler: async () => {
-                        const res = await axios.post('http://localhost:3001/api/orders/', payload, { headers: { header, userId } })
-                        if (coupon) {
-                            await axios.put('http://localhost:3001/api/coupon/add/' + coupon, { userId })
-                        }
-                        await axios.delete('http://localhost:3001/api/cart/' + userId, { headers: { header, userId } })
-                        await axios.put('http://localhost:3001/api/users/wallet/' + userId, amount)
-                        notify(res.data.msg)
-                        navigate('/success')
+                        placeOrder()
                     },
                     prefill: {
                         name: name,
@@ -307,30 +309,44 @@ const Cart = () => {
                 console.log(error)
             }
         } else if (payment === 'Paypal') {
+            setPaypalFlag(true)
             window.paypal.Buttons({
                 createOrder: (data, actions, err) => {
                     return actions.order.create({
                         intent: "CAPTURE",
                         purchase_units: [
                             {
-                                //description: "Cool looking table",
+                                description: "Reader Club",
                                 amount: {
                                     currency_code: "USD",
-                                    value: (total/71)
+                                    value: grandTotalUSD,
                                 },
+
                             },
                         ],
                     });
                 },
                 onApprove: async (data, actions) => {
-                    const order = await actions.order.capture();
-                    console.log('success : '+order);
+                    await actions.order.capture();
+                    placeOrder()
                 },
+                onCancel: async (data) => {
+                    navigate('/cart');
+                    notifyError('Payment Cancelled');
+                },
+
                 onError: (err) => {
-                    console.log(err);
+                    notifyError('Something Wrong');
+                    navigate("/cart");
                 },
+                style: {
+                    layout: 'vertical',
+                    color: 'gold',
+                    shape: 'pill',
+                    label: 'pay'
+                }
             })
-                .render(paypal.current)
+                .render(paypal.current);
         }
     }
     const checkCoupon = async (e) => {
@@ -355,7 +371,7 @@ const Cart = () => {
     }
     const checkWallet = async (e) => {
         e.preventDefault()
-        if(wallet < money) {
+        if (wallet < money) {
             setErrWallet('Not enough money in wallet')
         } else {
             setGrandTotal(totalPrice - money)
@@ -391,6 +407,10 @@ const Cart = () => {
             setGrandTotal(totalPrice - maxDiscount)
         }
     }, [discount, maxDiscount])
+    useEffect(() => {
+        const USD = Math.round(grandTotal / 72)
+        setGrandTotalUSD(USD)
+    }, [grandTotal])
 
     return (
         <Container>
@@ -413,12 +433,12 @@ const Cart = () => {
                                 <Label>Coupon code
                                     <InputCoupon type='text' placeholder='Copon code' onChange={(e) => setCoupon(e.target.value)} />
                                 </Label>
-                                    <Error>
-                                        {errCoupon && <ErrorNotice message={errCoupon} />}
-                                    </Error>
-                                    <Success>
-                                        {succCoupon && <SuccessNotice message={succCoupon} />}
-                                    </Success>
+                                <Error>
+                                    {errCoupon && <ErrorNotice message={errCoupon} />}
+                                </Error>
+                                <Success>
+                                    {succCoupon && <SuccessNotice message={succCoupon} />}
+                                </Success>
                                 {buttonFlag ?
                                     <ButtonCheck onClick={checkCoupon} >Check</ButtonCheck> :
                                     <ButtonCheck style={{ backgroundColor: 'red', padding: 'px' }} onClick={removeCoupon} >Remove Coupon</ButtonCheck>
@@ -430,12 +450,12 @@ const Cart = () => {
                                 <Label>Wallte money
                                     <InputCoupon type='number' placeholder='amount tobe added' onChange={(e) => setMoney(e.target.value)} />
                                 </Label>
-                                    <Error>
-                                        {errWallet && <ErrorNotice message={errWallet} />}
-                                    </Error>
-                                    <Success>
-                                        {succWallet && <SuccessNotice message={succWallet} />}
-                                    </Success>
+                                <Error>
+                                    {errWallet && <ErrorNotice message={errWallet} />}
+                                </Error>
+                                <Success>
+                                    {succWallet && <SuccessNotice message={succWallet} />}
+                                </Success>
                                 {walletFlag ?
                                     <ButtonCheck onClick={checkWallet} >Add</ButtonCheck> :
                                     <ButtonCheck style={{ backgroundColor: 'red', padding: 'px' }} onClick={removeWallet} >Remove wallet Money</ButtonCheck>
@@ -475,7 +495,11 @@ const Cart = () => {
                                 <Button type='submit'>Complete your Order</Button>
                             </InputContainer>
                         </Form>
-                        <div ref={paypal}></div>
+                        {paypalFlag &&
+                            <div>
+                                <div ref={paypal}></div>
+                            </div>
+                        }
                     </End>
                 </Content>
             </Wrapper>

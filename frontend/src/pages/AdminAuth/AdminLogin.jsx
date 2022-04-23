@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { mobile } from '../../responsive'
@@ -85,7 +85,6 @@ const Label = styled.label`
 toast.configure()
 const AdminLogin = () => {
     const dispatch = useDispatch()
-    const { isFetching } = useSelector(state => state.admin)
     
     const { register, handleSubmit, formState: { errors } } = useForm()
     

@@ -211,6 +211,7 @@ const Product = () => {
     const [flag, setFlag] = useState(false)
     const [offer, setoffer] = useState()
     const [discount, setDiscount] = useState()
+    const [final, setFinal] = useState()
 
     const notify = (msg) => toast.success(msg, {
         position: "top-center", autoClose: 500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
@@ -227,9 +228,9 @@ const Product = () => {
         try {
             const amount = price * quantity
             let total = 0
-            if(discount) {
-                total = amount - (amount*discount)
-            } else { 
+            if (discount) {
+                total = amount - (amount * discount)
+            } else {
                 total = amount
             }
             const productId = product._id
@@ -248,7 +249,8 @@ const Product = () => {
             const res = await axios.get('http://localhost:3001/api/products/find/' + id)
             setProduct(res.data)
             setPrice(res.data.price)
-            if (res.data.offers) {
+            const [offerArray] = res.data.offers
+            if (offerArray !== '') {
                 setoffer(res.data.offers)
             }
         } catch (error) {
@@ -293,7 +295,11 @@ const Product = () => {
     }, [product])
     useEffect(() => {
         getOffer()
+        setFinal(price - (price * discount))
     }, [offer])
+    useEffect(() => {
+        setFinal(price - (price * discount))
+    }, [discount])
 
     return (
         <Container>
@@ -309,13 +315,13 @@ const Product = () => {
                     <Description>Author : <b>{product.author}</b></Description>
                     <Description>Category : <b>{product.categories?.map(category => category + ' ,')}</b></Description>
                     <Description>Published by <b>{product.publisher}</b> on {dateFormat(product.publishedAt, "mmmm dS, yyyy")}</Description>
-                    {!product.offers &&
-                            <Price>₹ {product.price}</Price>
+                    {!offer &&
+                        <Price>₹ {product.price}</Price>
                     }
-                    {product.offers &&
+                    {offer &&
                         <>
-                            <Price style={{textDecoration: 'line-through'}}>₹ {product.price}</Price>
-                            <Price style={{ color: 'green' }}>₹ {product.price - (product.price * discount)}</Price>
+                            <Price style={{ textDecoration: 'line-through' }}>₹ {price}</Price>
+                            <Price style={{ color: 'green' }}>₹ {final}</Price>
                         </>
                     }
                     <FilterContainer>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import UserChart from '../Dashboard/UserChart'
 import OrderChart from '../Dashboard/OrderChart'
+import RevenueChart from '../Dashboard/RevenueChart'
 import OrderBarGraph from '../Dashboard/OrderBarGraph'
 import styled from 'styled-components'
 import { mobile } from '../../responsive'
@@ -36,7 +37,7 @@ const TopButton = styled.div`
 `
 const Charts = styled.div`
   height: 500px;
-  width: 80%;
+  width: 100%;
   display: felx;
   flex-direction: row;
   justify-content: space-between;
@@ -57,6 +58,7 @@ function Dashboard() {
           <Charts >
             <UserChart />
             <OrderChart />
+            <RevenueChart />
           </Charts> :
           <OrderBarGraph />
         }
