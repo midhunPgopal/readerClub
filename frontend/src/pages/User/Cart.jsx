@@ -149,7 +149,7 @@ const Cart = () => {
     const [productQuantity, setProductQuantity] = useState()
     const [cartId, setCartId] = useState()
     const [productPrice, setProductPrice] = useState()
-    const shipping = 99
+    const [shipping, setShipping] = useState(99)
     
 
     const notify = (msg) => toast(msg, {
@@ -257,6 +257,9 @@ const Cart = () => {
     useEffect(() => {
         let total = resData?.reduce((acc, data) => acc + data.total, 0)
         setSubTotal(total)
+        if(total > 499) {
+            setShipping(0)
+        }
     }, [resData])
     useEffect(() => {
         setGrandTotal(subTotal + shipping)

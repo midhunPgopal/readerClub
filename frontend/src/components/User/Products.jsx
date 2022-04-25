@@ -2,7 +2,7 @@ import styled from "styled-components"
 import Product from "./Product"
 import { useEffect, useState } from "react"
 import axios from 'axios'
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 const Main = styled.div`
   display: flex;
@@ -37,19 +37,21 @@ const Products = ({ cat, offer, filters, sort, search }) => {
 
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
-  
+  const location = useLocation()
+  const value = location.pathname.split('/')[2]
+
   const getproducts = async () => {
     try {
-      if(offer && !cat && !search) {
-        const ress = await axios.get(`http://localhost:3001/api/products/offer?offer=${offer}`)
-        setProducts(ress.data)
+      if (offer && !cat) {
+        const res = await axios.get(`http://localhost:3001/api/products/offer?offer=${offer}`)
+        setProducts(res.data)
       }
-       else if(!offer && !cat && search) {
-        const resss = await axios.get( `http://localhost:3001/api/products/search?search=${search}`)
-        setProducts(resss.data)
+      else if (!offer && cat) {
+        const res = await axios.get(`http://localhost:3001/api/products/cat?category=${cat}`)
+        setProducts(res.data)
       }
       else {
-        const res = await axios.get(cat ? `http://localhost:3001/api/products/cat?category=${cat}` : `http://localhost:3001/api/products`)
+        const res = await axios.get( value ? `http://localhost:3001/api/products` : `http://localhost:3001/api/products/latest`)
         setProducts(res.data)
       }
     } catch (error) {
@@ -64,21 +66,29 @@ const Products = ({ cat, offer, filters, sort, search }) => {
       console.log(error)
     }
   }
-  useEffect(()=>{
+  const getSearchProducts = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3001/api/products/search?search=${search}`)
+      setFilteredProducts(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
     getproducts()
   }, [])
   useEffect(() => {
     getproducts()
-  }, [cat, search]) 
-
+  }, [cat, offer])
   useEffect(() => {
     setFilteredProducts(products)
-  }, [products, cat, offer])
-  
+  }, [products])
   useEffect(() => {
     getFilteredProducts()
-  }, [filters]);
-
+  }, [filters])
+  useEffect(() => {
+    getSearchProducts()
+  }, [search])
   useEffect(() => {
     if (sort === 'newest') {
       setFilteredProducts(prev => [...prev].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt)))
@@ -99,7 +109,7 @@ const Products = ({ cat, offer, filters, sort, search }) => {
         ))}
       </Container>
       {!cat && !filters && <ButtonContainer>
-        <Link to='/products' style={{ textDecoration: 'none' }}>
+        <Link to='/products/all' style={{ textDecoration: 'none' }}>
           <Button>View All Books</Button>
         </Link>
       </ButtonContainer>}

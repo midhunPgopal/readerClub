@@ -173,6 +173,7 @@ function UserDetails() {
     const [address, setAddress] = useState()
     const [userData, setUserData] = useState()
     const [userCredentials, setUserCredentials] = useState()
+    const [username, setUsername] = useState()
     const [referal, setReferal] = useState()
 
     const notify = (msg) => toast.success(msg, {
@@ -198,13 +199,14 @@ function UserDetails() {
         try {
             const res = await axios.get('http://localhost:3001/api/users/find/' + userId, { headers: { header } })
             setUserCredentials(res.data)
+            setUsername(res.data.username)
         } catch (error) {
             console.log(error);
         }
     }
     const getReferalCode = async () => {
         try {
-            const res = await axios.get('http://localhost:3001/api/referal/find/' + userCredentials?.username)
+            const res = await axios.get('http://localhost:3001/api/referal/find/' + username)
             setReferal(res.data)
         } catch (error) {
             console.log(error);
@@ -282,8 +284,10 @@ function UserDetails() {
         getUserDetails()
         getUserCredentials()
         getAddress()
-        getReferalCode()
     }, [])
+    useEffect(() => {
+        getReferalCode()
+    }, [username])
     return (
         <>
             <TopBar>

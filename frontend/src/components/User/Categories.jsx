@@ -5,12 +5,17 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 const Container = styled.div`
-    display: flex;
-    padding: 20px;
-    flex-direction: row;
-    ${mobile({ padding: '0px', flexDirection: 'column' })}
+  padding: 10px;  
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  ${mobile({ padding: '0px', flexDirection: 'column' })}
 `
-
+const Wrapper = styled.div`
+display: inline-flex;
+flex-direction: row;
+`
 const Categories = () => {
 
   const [category, setCategory] = useState()
@@ -30,9 +35,11 @@ const Categories = () => {
 
   return (
     <Container>
-      {category?.map(item => (
-        <CategoryItems item={item} key={item.id} />
-      ))}
+      <Wrapper>
+        {category?.map(item => (
+          <CategoryItems item={item} key={item.id} />
+        ))}
+      </Wrapper>
     </Container>
   )
 }

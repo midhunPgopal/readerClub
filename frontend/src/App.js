@@ -11,6 +11,7 @@ import Checkout from './pages/User/Checkout'
 import Wishlist from './pages/User/Wishlist'
 import UserAccount from "./pages/User/UserAccount";
 import EditAddress from './pages/User/EditAddress'
+import TermsOfUse from "./pages/User/TermsOfUse";
 
 import AdminHome from "./pages/Admin/AdminHome";
 import AdminProduct from "./pages/Admin/AdminProduct";
@@ -39,6 +40,7 @@ function App() {
         <Route path="/otplogin" element={user ? <Navigate to='/' /> : <OtpLogin />} />
         <Route exact path="/" element={ <Home />} />
         <Route path="/products" element={<ProductList />} />
+        <Route path="/products/all" element={<ProductList />} />
         <Route path="/products/cat/:value" element={<ProductList />}/>
         <Route path="/products/offer/:value" element={<ProductList />}/>
         <Route path="/products/search/:value" element={<ProductList />}/>
@@ -50,6 +52,7 @@ function App() {
         <Route path='/wishlist' element={user ? <Wishlist /> : <Navigate to='/login' />} />
         <Route path='/account' element={user ? <UserAccount /> : <Navigate to='/login' />} />
         <Route path='/editaddress/:id' element={user ? <EditAddress /> : <Navigate to='/login' />} />
+        <Route path='/terms' element={<TermsOfUse /> } />
 
         {/* Admin routes */}
 

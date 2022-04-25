@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import EditAddressForm from '../../components/AddressManagement/EditAddressForm'
-import AdminNavbar from '../../components/Admin/AdminNavbar'
+import NavBar from '../../components/User/Navbar'
 import AdminFooter from '../../components/Admin/AdminFooter'
 import styled from 'styled-components'
 
@@ -42,7 +42,7 @@ const EditAddress = () => {
 
   return (
     <> 
-      <AdminNavbar />
+      <NavBar />
       <Container>
         <Title>Update Address</Title>
         <FormContainer>

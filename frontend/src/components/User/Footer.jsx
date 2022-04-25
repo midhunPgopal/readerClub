@@ -105,8 +105,7 @@ const Footer = () => {
                     <ListItem><Link to='/orders' style={{ textDecoration: 'none' }}>Order tracking</Link></ListItem>
                     <ListItem><Link to='/account' style={{ textDecoration: 'none' }}>My Account</Link></ListItem>
                     <ListItem><Link to='/wishlist' style={{ textDecoration: 'none' }}>Wishlist</Link></ListItem>
-                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Categories</Link></ListItem>
-                    <ListItem><Link to='/' style={{ textDecoration: 'none' }}>Terms and Conditions</Link></ListItem>
+                    <ListItem><Link to='/terms' style={{ textDecoration: 'none' }}>Terms of Use</Link></ListItem>
                 </List>
             </Center>
             <Right>

@@ -68,6 +68,17 @@ router.get('/', async (req, res) => {
         res.status(500).json(error)
     }
 })
+
+//get latest products
+router.get('/latest', async (req, res) => {
+    try {
+        const products = await Product.find().sort({createdAt: -1}).limit(2)
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 router.get('/cat', async (req, res) => {
     const qCategory = req.query.category
     try {
