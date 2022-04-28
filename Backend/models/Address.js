@@ -5,7 +5,7 @@ const AddressSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    address: {
+    fullAddress: {
         type: Object,
         required: true
     },

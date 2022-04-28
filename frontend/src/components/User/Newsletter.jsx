@@ -9,40 +9,36 @@ import { useState } from 'react';
 import ErrorNotice from '../../error/ErrorNotice';
 
 const Container = styled.div`
-    height: 60vh;
+    height: 30vw;
     background-color: #e6bfe681;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 `
-
 const Title = styled.h1`
-    font-size: 70px;
-    margin-bottom: 20px;
+    font-size: 4.5vw;
+    margin-bottom: 1vw;
 `
-
 const Description = styled.div`
-    font-size: 24px;
+    font-size: 1.8vw;
     font-weight: 300;
-    margin-bottom: 20px;
-    ${mobile({ textAlign: 'center' })}
+    margin-bottom: 2vw;
 `
-
 const Form = styled.form`
     width: 50%;
-    height: 40px;
+    height: 2vw;
     background-color: white;
     display: flex;
     justify-content: space-between;
-    border: 1 px solid lightgray;
+    border: 1px solid lightgray;
 `
 const Input = styled.input`
     border: none;
     flex: 8;
-    padding-left: 20px;
+    padding-left: 1.5vw;
+    font-size: 1.4vw;
 `
-
 const Button = styled.button`
     flex: 1;
     border: none;
@@ -54,11 +50,11 @@ const Button = styled.button`
     cursor: pointer;
 `
 const Error = styled.span`
-    font-size: 14px;
-    padding: 5px;
+    font-size: 1vw;
+    font-weight: 700;
+    padding: 0.2vw;
     color: #f16969;
 `
-
 toast.configure()
 const Newsletter = () => {
 
@@ -96,7 +92,7 @@ const Newsletter = () => {
                     {err && <ErrorNotice message={err} />}
                 </Error>
                 <Button type='submit'>
-                    <SendOutlinedIcon />
+                    <SendOutlinedIcon style={{fontSize: '1.4vw' }}/>
                 </Button>
             </Form>
         </Container>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import EditAddressForm from '../../components/AddressManagement/EditAddressForm'
 import NavBar from '../../components/User/Navbar'
-import AdminFooter from '../../components/Admin/AdminFooter'
+import Footer from '../../components/User/Footer'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -12,14 +12,15 @@ const Container = styled.div`
   background-size: cover;
 `
 const Title = styled.h1`
-  margin: 50px 0px 0px 50px;
+  margin: 1.5vw 0vw 0vw 1.5vw;
+  font-size: 3vw;
   text-align: left;
   font-weight: 600;
   color: #30163efe;
 `
 const FormContainer = styled.div`
-  margin: 10px;
-  padding: 10px;
+  margin: 1vw;
+  padding: 1vw;
 `
 
 const EditAddress = () => {
@@ -49,7 +50,7 @@ const EditAddress = () => {
           {address ? <EditAddressForm preloadedData={address} /> : <h1 style={{ textAlign: 'center' }}>Loading..</h1>}
         </FormContainer>
       </Container>
-      <AdminFooter />
+      <Footer />
     </>
   )
 }

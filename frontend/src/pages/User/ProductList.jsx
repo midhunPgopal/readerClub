@@ -14,40 +14,47 @@ const Container = styled.div`
 
 `
 const Title = styled.h1`
-    margin: 20px;
+    margin: 1.2vw;
     text-transform: capitalize;
+    font-size: 3vw;
 `
 const FilterContainer = styled.div`
     display: flex;
     justify-content: space-between;
+    width: 100vw;
 `
 const Filter = styled.div`
-    margin: 20px;
-    ${mobile({ width: '0px 20px', display: 'flex', flexDirection: 'column' })}
+    margin: 1.2vw;
+    width: 30vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 `
 const FilterText = styled.span`
-    font-size: 20px;
-    font-weight: 600;
-    margin-right: 20px;
-    ${mobile({ marginRight: '0px' })}
+    font-size: 1.4vw;
+    font-weight: 300;
+    margin-right: 1.2vw;
 `
 const Select = styled.select`
-    padding: 10px;
-    margin-right: 20px;
-    ${mobile({ margin: '10px 0px' })}
+    padding: 1vw;
+    margin-right: 1.2vw;
+    width: 15vw;
+    height: 4vw;
 `
-const Option = styled.option``
+const Option = styled.option`
+    font-size: 1.4vw;
+`
 const SearchContainer = styled.div`
     display: flex;
     align-items: center;
-    margin-right: 25px;
-    height: 45px;
+    margin-right: 1.5vw;
+    height: 2vw;
 `
-
 const Input = styled.input`
-border: 1px solid lightgrey;
-
-    ${mobile({ width: '50px' })}
+    border: 0.1px solid lightgrey;
+    width: 20vw;
+    font-size: 1.4vw;
 `
 
 const ProductList = () => {
@@ -107,10 +114,8 @@ const ProductList = () => {
                     </Select>
                 </Filter>
                 <SearchContainer>
-
                     <Input placeholder='search' onChange={(e) => setSearch(e.target.value)}/>
-                    <SearchRoundedIcon  />
-
+                    <SearchRoundedIcon style={{fontSize: '1.4vw'}} />
                 </SearchContainer>
             </FilterContainer>
             <Products cat={cat} offer={offer} filters={filters} sort={sort} search={search}/>

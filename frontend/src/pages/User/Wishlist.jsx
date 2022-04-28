@@ -14,32 +14,37 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 
 const Wrapper = styled.div`
-    padding: 40px;
-    margin: 20px;
-    ${mobile({ pading: '10px' })}
+    padding: 3vw;
+    margin: 1.2vw;
 `
 const Top = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 5vw;
 `
 const TopButton = styled.button`
-    padding: 10px;
+    padding: 1vw;
+    font-size: 1.2vw;
     font-weight: 600;
     cursor: pointer;
-    border: ${props => props.type === 'filled' && 'none'};
-    background-color: ${props => props.type === 'filled' ? 'black' : 'transperant'};
-    color: ${props => props.type === 'filled' && 'white'};
+    border: 0.1px solid teal;
+    background-color: white;
+    color: teal;
+    &:hover {
+        color: white;
+        background-color: teal;
+    }
 `
 const MainTitle = styled.h1`
     font-weight: 300;
     text-align: center;
+    font-size: 3vw;
 `
 const Bottom = styled.div`
-    padding: 20px;
+    padding: 1.2vw;
     display: flex;
     flex-direction: row;
-    ${mobile({ flexDirection: 'column' })}
 `
 const Info = styled.div`
     opacity: 0;
@@ -56,45 +61,37 @@ const Info = styled.div`
     transition: all 0.5s ease;
 `
 const Container = styled.div`
-    margin: 5px;
-    width: 280px;
-    height: 350px;
+    margin: 1.5vw;
+    width: 20vw;
+    height: 25vw;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-
     &:hover ${Info}{
         opacity: 1;
     }
-`
-const Circle = styled.div`
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background-color: white;
-    position: absolute;
 `
 const Card = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 1vw;
 `
 const Image = styled.img`
-    margin: 10px;
+    margin: 1vw;
     height: 70%;
     width: 70%;
     z-index: 2;
     object-fit: cover;
 `
 const Title = styled.h1`
-    font-size: 20px;
+    font-size: 1.5vw;
     color: teal;
 `
 const Icon = styled.div`
-    width: 40px;
-    height: 40px;
+    width: 3vw;
+    height: 3vw;
     border-radius: 50%;
     background-color: white;
     display: flex;
@@ -104,7 +101,6 @@ const Icon = styled.div`
     transition: all 0.1s ease;
     cursor: pointer;
     text-decoration: none;
-
     &:hover{
         transform: scale(1.6);
     }
@@ -169,7 +165,7 @@ const Wishlist = () => {
     const addToCart = async (product) => {
         const total = product.price
         const productId = product._id
-        const payload = { userId, productId, product, total } 
+        const payload = { userId, productId, product, total }
         const id = product._id
         try {
             await axios.post('http://localhost:3001/api/cart/', payload, { headers: { header, userId } })
@@ -193,13 +189,12 @@ const Wishlist = () => {
             <Wrapper>
                 <MainTitle>Your WISHLIST</MainTitle>
                 <Top>
-                    <TopButton><Link to='/cart' style={{ textDecoration: 'none' }}>Your Cart</Link></TopButton>
+                    <Link to='/cart' style={{ textDecoration: 'none' }}><TopButton>Your Cart</TopButton></Link>
                     <TopButton onClick={emptyWishlist}>Empty Wishlist</TopButton>
                 </Top>
                 <Bottom >
                     {resData?.map(data => (
                         <Container>
-                            <Circle />
                             <Card>
                                 <Image src={data.product.img} />
                                 <Title>{data.product.title}</Title>
@@ -207,13 +202,13 @@ const Wishlist = () => {
                             <Info>
                                 <Icon>
                                     <AddShoppingCartIcon
-                                        style={{ cursor: 'pointer', color: 'teal' }}
+                                        style={{ cursor: 'pointer', color: 'teal', fontSize: '1.8vw' }}
                                         onClick={() => addToCart(data.product)}
                                     />
                                 </Icon>
                                 <Icon>
                                     <DeleteForeverIcon
-                                        style={{ cursor: 'pointer', color: 'red' }}
+                                        style={{ cursor: 'pointer', color: 'red', fontSize: '1.8vw' }}
                                         onClick={() => handleDelete(data.productId)}
                                     />
                                 </Icon>

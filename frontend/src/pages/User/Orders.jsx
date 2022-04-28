@@ -11,34 +11,32 @@ import { confirm } from 'react-confirm-box'
 import { toast } from 'react-toastify'
 import { logOut } from '../../redux/userRedux'
 import { DataGrid } from '@mui/x-data-grid';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
 const Container = styled.div``
 const Wrapper = styled.div`
-    padding: 20px;
-    ${mobile({ pading: '10px' })}
+    padding: 1.2vw;
+    disaply: flex;
 `
 const Title = styled.h1`
     font-weight: 300;
     text-align: center;
+    font-size: 3vw;
 `
 const Hr = styled.div`
     background-color: teal;
     border: none;
-    height: 1px;
-    margin: 10px 10px;
-    ${mobile({ margin: '30px' })}
+    height: 0.1vw;
+    margin: 1vw 1vw;
 `
 const Button = styled.button`
-   padding: 5px;
-   background-color: #ef4242fe;
-   color: white;
-   text-align: center;
+   padding: 0.5vw;
    cursor: pointer;
-   border-radius: 20px;
    border: none;
+   background-color: transperant;
 
    &:hover {
-    background-color: #f52626fe;
+    background-color: lightgrey;
    }
    &:disabled {
        cursor: not-allowed;
@@ -95,16 +93,16 @@ const Orders = () => {
                     cancelOrder(params.row.id)
                 }}
             >
-                Cancel
+                <DeleteForeverOutlinedIcon />
             </Button>
         )
     }
     const columns = [
-        { field: 'date', headerName: 'Date', width: 200 },
+        { field: 'date', headerName: 'Date', width: 250 },
         { field: 'name', headerName: 'Full Name', width: 200 },
         { field: 'quantity', headerName: 'Quantity', width: 150 },
         { field: 'price', headerName: 'Price', width: 150 },
-        { field: 'payment', headerName: 'Payment', width: 200 },
+        { field: 'payment', headerName: 'Payment', width: 250 },
         { field: 'status', headerName: 'Status', width: 150 },
         { field: 'cancel', headerName: '', width: 100, renderCell: cancelButton, disableClickEventBubbling: true, },
     ]
@@ -131,19 +129,21 @@ const Orders = () => {
             <Wrapper>
                 <Title>Your Orders</Title>
                 <Hr />
-                <div style={{ height: 400, width: '90%', margin: '50px', padding: '20px' }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        checkboxSelection
-                        sx={{
-                            '& .MuiDataGrid-cell:hover': {
-                                color: 'primary.main',
-                            },
-                        }}
-                    />
+                <div style={{flexGrow: 1}}>
+                    <div style={{ height: '30vw', width: '90vw', margin: '3vw', padding: '1vw' }}>
+                        <DataGrid
+                            rows={rows}
+                            columns={columns}
+                            pageSize={5}
+                            rowsPerPageOptions={[5]}
+                            checkboxSelection
+                            sx={{
+                                '& .MuiDataGrid-cell:hover': {
+                                    color: 'primary.main'
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </Wrapper>
             <Footer />

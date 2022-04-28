@@ -133,13 +133,11 @@ const AdminProduct = () => {
     const res = await axios.get('http://localhost:3001/api/products/')
     setProduct(res.data)
   }
-  const getFlag = () => {
-    setFlag(true)
-  }
   const addProduct = async (data) => {
     const res = await axios.post('http://localhost:3001/api/products/', data, { headers: { header } })
     getProducts()
     notify(res.data.msg)
+    setFlag(false)
   }
   const viewProduct = (id) => {
     navigate(`/viewproduct/${id}`)
@@ -230,7 +228,7 @@ const AdminProduct = () => {
       <Wrapper>
         <TopButton>
           <Title>Your Products</Title>
-          <Button onClick={getFlag}>Add Product</Button>
+          <Button onClick={() => setFlag(true)}>Add Product</Button>
         </TopButton>
         <AddProduct>
           {flag &&
@@ -238,58 +236,58 @@ const AdminProduct = () => {
               <InputContainer>
                 <Label>Title
                   <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
-                  <Error>
-                    {errors.title && errors.title.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.title && errors.title.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Description
                   <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
-                  <Error>
-                    {errors.description && errors.description.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.description && errors.description.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Author
                   <Input id="author" type='text' placeholder='Author' {...register('author', { required: true })} />
-                  <Error>
-                    {errors.author && errors.author.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.author && errors.author.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Publisher
                   <Input id="publisher" type='text' placeholder='Publisher' {...register('publisher', { required: true })} />
-                  <Error>
-                    {errors.publisher && errors.publisher.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.publisher && errors.publisher.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Published on
                   <Input id="publishedAt" type='date' placeholder='Published on' {...register('publishedAt', { required: true })} />
-                  <Error>
-                    {errors.publishedAt && errors.publishedAt.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.publishedAt && errors.publishedAt.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Image source Link
                   <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                  <Error>
-                    {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Category
                   <Input id="category" type='text' placeholder='Separate the categories by a coma' {...register('category', { required: true })} />
-                  <Error>
-                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Chapters
                   <Input id="chapter" type='text' placeholder='Separate the chapters by a coma' {...register('chapter', { required: true })} />
-                  <Error>
-                    {errors.chapter && errors.chapter.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.chapter && errors.chapter.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Price
                   <Input id="price" type='number' placeholder='Selling Price' {...register('price', { required: true })} />
-                  <Error>
-                    {errors.price && errors.price.type === "required" && <span>This is required</span>}
-                  </Error>
                 </Label>
+                <Error>
+                  {errors.price && errors.price.type === "required" && <span>This is required</span>}
+                </Error>
                 <Label>Offers
                   <Input id="offer" type='text' placeholder='Offers' {...register('offer', { required: false })} />
                 </Label>

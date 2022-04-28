@@ -21,6 +21,7 @@ const SideBarDiv = styled.div`
   height: 100%;
   margin: 20px;
   padding: 20px;
+  text-align: left;
 `
 const Content = styled.div`
   flex: 5;
@@ -35,12 +36,20 @@ const Container = styled.div`
 const List = styled.ul`
     margin: 10px;
     padding: 10px;
+    border: 2px solid white;
     list-style: none;
+    
 `
 const ListItem = styled.div`
-    width: 50%;
+    width: 100%;
+    padding: 10px 0px 10px 0px;
     margin-bottom: 10px;
     cursor: pointer;
+    &:hover {
+      font-weight: bold;
+      font-size: 21px;
+      color: teal;
+    }
 `
 
 

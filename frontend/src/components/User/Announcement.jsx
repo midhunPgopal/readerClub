@@ -4,13 +4,13 @@ import { mobile } from '../../responsive';
 import axios from 'axios';
 
 const Container = styled.div`
-    height: 30px;
+    height: 2.6vw;
     background-color: teal;
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 1.1vw;
     font weight: 500;
 `
 

@@ -8,7 +8,7 @@ router.post('/', verifyTokenAndAdmin, async (req, res) => {
     let { title, description, author, publisher, publishedAt, img, category, chapter, price, offer } = req.body
     const chapters = chapter.split(',')
     const categories = category.split(',')
-    const offers = offer.split(',')
+    const offers = offer
     const newProduct = new Product({ title, description, author, publisher, publishedAt, img, categories, chapters, price, offers })
     try {
         await newProduct.save()
@@ -24,7 +24,7 @@ router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
     let { title, description, author, publisher, publishedAt, img, category, chapter, price, offer } = req.body
     const chapters = chapter.split(',')
     const categories = category.split(',')
-    const offers = offer.split(',')
+    const offers = offer
     const newProduct = { title, description, author, publisher, publishedAt, img, categories, chapters, price, offers }
     try {
         await Product.findByIdAndUpdate(req.params.id, {
@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
 //get latest products
 router.get('/latest', async (req, res) => {
     try {
-        const products = await Product.find().sort({createdAt: -1}).limit(2)
+        const products = await Product.find().sort({createdAt: -1}).limit(3)
         res.status(200).json(products)
     } catch (error) {
         res.status(500).json(error)

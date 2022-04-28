@@ -10,98 +10,76 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirm } from "react-confirm-box"
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 
 const Container = styled.div`
-    height: 80px;
-    ${mobile({ height: '50px' })}
+    height: 6vw;
 `
-
 const Wrapper = styled.div`
-    padding: 10px 20px;
+    padding: 0.9vw 1.9vw 0vw 0.9vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    ${mobile({ padding: '10px 0px' })}
 `
-
 const Left = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
 `
-
 const Language = styled.span`
-    font-size:14px;
+    font-size: 1.1vw;
     cursor: pointer;
-    ${mobile({ display: 'none' })}
 `
-
 const Right = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    ${mobile({ flex: '2', justifyContent: 'center' })}
 `
-
 const MenuItem = styled.div`
-    font-size: 18px;
+    font-size: 1.3vw;
     cursor: pointer;
-    margin-left: 25px;
-    ${mobile({ fontSize: '12px', marginLeft: '10px' })}
+    margin-left: 2vw;
 `
 const Title = styled.div`
-    font-size: 18px;
-    margin-left: 25px;
-    ${mobile({ fontSize: '12px', marginLeft: '10px' })}
+    font-size: 1.3vw;
+    margin-left: 2vw;
 `
-
 const Center = styled.div`
     flex: 1;
     text-align: center;
 `
-
 const Logo = styled.h1`
     font-weight: bold;
-    ${mobile({ fontSize: '20px' })}
+    font-size: 2.8vw;
 `
-
 toast.configure()
 const Navbar = () => {
 
     const dispatch = useDispatch()
-
     const user = useSelector((state) => state.user.currentUser)
     const cart = useSelector((state) => state.cart.currentCart)
-
     let userId = null
     let header = null
-
-    const [quantity, setQuantity] = useState()
-
     if (user) { 
         userId = user.user._id
         header = user.accessToken
     }
-
     const notify = () => {
         toast('Come back soon', {
             position: "top-right", autoClose: 1000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined,
         });
     }
-
     const getCartItems = async () => {
         try {
             const res = await axios.get('http://localhost:3001/api/cart/find/' + userId, { headers: {header, userId} })
-            setQuantity(res.data.length)
-            dispatch(previousCart(res.data.length))
+            const data = res.data.length
+            dispatch(previousCart(data))
         } catch (error) {
             console.log(error)
         }
     }
-
     const handleClick = async () => {
         const logout = (dispatch) => {
             dispatch(logOut())
@@ -126,7 +104,7 @@ const Navbar = () => {
                         <Language>EN</Language>
                     </Left>
                     <Center>
-                        <Link to='/' style={{ textDecoration: 'none' }}>
+                        <Link to='/' style={{textDecoration: 'none'}} >
                             <Logo>Reader Club©</Logo>
                         </Link>
                     </Center>
@@ -134,10 +112,13 @@ const Navbar = () => {
                         {user ? <>
                             <Title >Welcome <b style={{ textTransform: 'uppercase', color: 'teal' }}>{user.user.name}</b></Title>
                             <MenuItem onClick={handleClick}>LOGOUT</MenuItem>
-                            <Link to='/cart'>
+                            <Link to='/cart' style={{textDecoration: 'none'}}>
                                 <MenuItem>
-                                    <Badge badgeContent={cart} color="secondary">
-                                        <ShoppingCartOutlinedIcon />
+                                    <Badge 
+                                        badgeContent={cart} 
+                                        sx={{ "& .MuiBadge-badge": { fontSize: '1vw', color: 'red', fontWeight: 'bold' } }}
+                                    >
+                                        <ShoppingCartOutlinedIcon style={{ fontSize: '2.3vw' }} color="action" />
                                     </Badge>
                                 </MenuItem>
                             </Link>

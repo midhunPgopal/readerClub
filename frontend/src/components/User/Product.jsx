@@ -26,9 +26,9 @@ const Info = styled.div`
 `
 const Container = styled.div`
     flex: 1;
-    margin: 5px;
-    min-width: 280px;
-    height: 350px;
+    margin: 1vw;
+    min-width: 25vw;
+    height: 35vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,8 +39,8 @@ const Container = styled.div`
     }
 `
 const Circle = styled.div`
-    width: 200px;
-    height: 200px;
+    width: 18vw;
+    height: 18vw;
     border-radius: 50%;
     background-color: white;
     position: absolute;
@@ -49,32 +49,36 @@ const Card = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 280px;
-    height: 350px;
+    width: 22vw;
+    height: 30vw;
 `
 const Image = styled.img`
-    margin: 10px;
+    margin: 1vw;
     height: 80%;
     width: 80%;
     z-index: 2;
 `
-const Title = styled.h1`
-    font-size: 20px;
+const Title = styled.span`
+    font-size: 1.5vw;
+    font-weight: 500;
+    color: teal;
+`
+const Price = styled.span`
+    font-size: 1.4vw;
     color: teal;
 `
 const Icon = styled.div`
-    width: 40px;
-    height: 40px;
+    width: 3vw;
+    height: 3vw;
     border-radius: 50%;
     background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 10px;
+    margin: 1vw;
     transition: all 0.1s ease;
     cursor: pointer;
     text-decoration: none;
-
     &:hover{
         transform: scale(1.5);
     }
@@ -175,20 +179,21 @@ const Product = ({ item }) => {
             <Card>
                 <Image src={item.img} />
                 <Title>{item.title}</Title>
+                <Price>₹<b>{item.price}</b></Price>
             </Card>
             <Info>
                 {user &&
                     <Icon>
-                        <ShoppingCartRoundedIcon onClick={() => addToCart(item)} />
+                        <ShoppingCartRoundedIcon style={{fontSize: '2vw'}} onClick={() => addToCart(item)} />
                     </Icon>}
                 <Icon>
-                    <Link to={`/product/${item._id}`}>
-                        <SearchRoundedIcon />
+                    <Link to={`/product/${item._id}`} style={{textDecoration: 'none'}}>
+                        <SearchRoundedIcon style={{fontSize: '2vw'}} />
                     </Link>
                 </Icon>
                 {user &&
                     <Icon>
-                        <FavoriteRoundedIcon onClick={() => addToWishlist(item)} />
+                        <FavoriteRoundedIcon style={{fontSize: '2vw'}} onClick={() => addToWishlist(item)} />
                     </Icon>}
             </Info>
         </Container>

@@ -11,32 +11,32 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { confirm } from 'react-confirm-box'
 import dateFormat from 'dateformat'
+import Tooltip from '@mui/material/Tooltip';
 
 const Button = styled.button`
-margin: 20px;
-padding: 10px;
+margin: 1.2vw;
+padding: 1vw;
 border: none;
 background-color: teal;
 color: white;
 cursor: pointer;
-
+font-size: 1.4vw;
 &:hover {
   background-color: #26e090fe;
 }
-
 `
 const Form = styled.form`
-    margin-left: 50px;
+    margin-left: 3.5vw;
 `
 const Input = styled.input`
-    width: 300px;
-    margin: 10px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+    width: 25vw;
+    margin: 1vw;
+    padding: 1vw;
+    font-size: 1.3vw;
 `
 const Error = styled.span`
-    font-size: 14px;
-    padding: 5px;
+    font-size: 1.2vw;
+    padding: 0.8vw;
     color: #f16969;
 `
 const InputContainer = styled.div`
@@ -44,7 +44,7 @@ const InputContainer = styled.div`
     flex-direction: column;
 `
 const ButtonContainer = styled.div`
-    margin: 20px;
+    margin: 1.2vw;
 `
 const ButtonSubmit = styled.button`
   width: 10%;
@@ -52,11 +52,13 @@ const ButtonSubmit = styled.button`
   background-color: #dc3d92fe;
   color: white;
   cursor: pointer;
+  font-size: 1.4vw;
 `
 const ButtonClose = styled.button`
   width: 10%;
   border: none;
-  margin-left: 20px;
+  margin-left: 1.2vw;
+  font-size: 1.4vw;
   background-color: #f43b3bfe;
   color: white;
   cursor: pointer;
@@ -64,30 +66,31 @@ const ButtonClose = styled.button`
 const Label = styled.label`
     font-weight: bolder;
     color: #1517165b;
+    font-size: 1.4vw;
 `
 const TopBar = styled.div`
-    margin: 20px;
+    margin: 1.2vw;
     display: flex;
     justify-content: space-around;
 `
 const Content = styled.div`
     display: flex;
     flex-direction: row;
-    margin: 25px;
-    padding: 10px;
+    margin: 2vw;
+    padding: 1vw;
 `
 const ImageContainer = styled.div`
-    margin: 50px;
-    padding: 10px;
+    margin: 3.5vw;
+    padding: 1vw;
 `
 const Image = styled.img`
-    width: 250px;
-    height: 250px;
+    width: 20vw;
+    height: 20vw;
     object-fit: cover;
 `
 const Name = styled.span`
-font-size: 22px;
-margin: 10px;
+font-size: 1.4vw;
+margin: 1vw;
 `
 const Details = styled.div`
     flex: 1;
@@ -95,26 +98,24 @@ const Details = styled.div`
     flex-direction:  column;
 `
 const Gender = styled.span`
-    font-size: 22px;
-margin: 10px;
-
+    font-size: 1.4vw;
+    margin: 1vw;
 `
 const Proffession = styled.span`
-font-size: 22px;
-margin: 10px;
-
+    font-size: 1.4vw;
+    margin: 1vw;
 `
 const Dob = styled.span`
-margin: 10px;
-font-size: 22px;
+    font-size: 1.4vw;
+    margin: 1vw;
 `
 const Email = styled.div`
-margin: 10px;
-font-size: 22px;
+font-size: 1.4vw;
+margin: 1vw;
 `
 const Mobile = styled.span`
-margin: 10px;
-font-size: 22px;
+font-size: 1.4vw;
+margin: 1vw;
 `
 const Address = styled.div`
     display: flex;
@@ -122,32 +123,36 @@ const Address = styled.div`
     flex: 1;
 `
 const Wallet = styled.span`
-margin: 10px;
-font-size: 22px;
+font-size: 1.4vw;
+margin: 1vw;
 `
 const FullAddress = styled.span`
-margin: 10px;
-font-size: 22px;
+font-size: 1.4vw;
+margin: 1vw;
 `
 const Pincode = styled.div`
-margin: 10px;
-font-size: 22px;
+font-size: 1.4vw;
+margin: 1vw;
 `
 const Landmark = styled.span`
-margin: 10px;
-font-size: 22px;
+font-size: 1.4vw;
+margin: 1vw;
 `
 const Container = styled.div`
     display: flex;
     flex-direction: column;
+    border: 0.1px solid lightgrey;
 `
 const Icons = styled.div`
     display : flex;
     flex-direction: row;
+    height: 4vw;
+    justify-content: center;
+    align-items: center;
 `
 const Referal = styled.div`
-margin: 10px;
-font-size: 24px;
+font-size: 1.5vw;
+margin: 1vw;
 `
 
 toast.configure()
@@ -332,9 +337,9 @@ function UserDetails() {
                 <Form onSubmit={handleSubmit(addAddress)}>
                     <InputContainer>
                         <Label>Address
-                            <Input id="address" type='text' placeholder='Full address' {...register('address', { required: true })} />
+                            <Input id="fullAddress" type='text' placeholder='Full address' {...register('fullAddress', { required: true })} />
                             <Error>
-                                {errors.address && errors.address.type === "required" && <span>This is required</span>}
+                                {errors.fullAddress && errors.fullAddress.type === "required" && <span>This is required</span>}
                             </Error>
                         </Label>
                         <Label>Pincode
@@ -406,7 +411,7 @@ function UserDetails() {
                             </Error>
                         </Label>
                         <Label>Date of birth
-                            <Input id="dob" type='date' placeholder='Your date of birth' {...register('dob', { required: true, value: userData.dob.slice(0,10) })} />
+                            <Input id="dob" type='date' placeholder='Your date of birth' {...register('dob', { required: true, value: userData.dob.slice(0, 10) })} />
                             <Error>
                                 {errors.dob && errors.dob.type === "required" && <span>This is required</span>}
                             </Error>
@@ -441,17 +446,23 @@ function UserDetails() {
                 <Address>
                     {address?.map(data => (
                         <Container key={data._id}>
-                            <FullAddress>Address : {data.address}</FullAddress>
+                            <FullAddress>Address : {data.fullAddress}</FullAddress>
                             <Pincode>Pincode : {data.pincode}</Pincode>
                             <Landmark>Landmark : {data.landmark}</Landmark>
                             <Icons>
-                                <Link to={`/editaddress/${data._id}`} style={{ textDecoration: 'none' }}>
-                                    <EditIcon style={{ margin: '10px' }} />
+                                <Link to={`/editaddress/${data._id}`}>
+                                    <Tooltip title='Edit address'>
+                                        <EditIcon
+                                            style={{ margin: '1vw', fontSize: '2vw' }}
+                                        />
+                                    </Tooltip>
                                 </Link>
-                                <DeleteForeverOutlinedIcon
-                                    onClick={() => deleteAddress(data._id)}
-                                    style={{ margin: '10px' }}
-                                />
+                                <Tooltip title='Delete'>
+                                    <DeleteForeverOutlinedIcon
+                                        onClick={() => deleteAddress(data._id)}
+                                        style={{ margin: '1vw', fontSize: '2vw', cursor: 'pointer' }}
+                                    />
+                                </Tooltip>
                             </Icons>
                         </Container>
                     ))}

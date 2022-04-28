@@ -9,7 +9,7 @@ const Main = styled.div`
   flex-direction: column;
 `
 const Container = styled.div`
-  padding: 20px;
+  padding: 1.5vw;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -18,12 +18,13 @@ const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 20px; 
+  margin-bottom: 1.5vw; 
 `
 const Button = styled.button`
-  margin: 20px;
-  padding: 10px;
+  margin: 1.5vw;
+  padding: 1vw;
   border: none;
+  font-size: 1.2vw;
   background-color: teal;
   color: white;
   cursor: pointer;

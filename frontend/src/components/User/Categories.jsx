@@ -5,12 +5,11 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 const Container = styled.div`
-  padding: 10px;  
+  padding: 1vw;  
   overflow: scroll;
   &::-webkit-scrollbar {
     display: none;
   }
-  ${mobile({ padding: '0px', flexDirection: 'column' })}
 `
 const Wrapper = styled.div`
 display: inline-flex;

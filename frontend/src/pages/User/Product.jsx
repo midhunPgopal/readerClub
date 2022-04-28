@@ -5,7 +5,6 @@ import Navbar from '../../components/User/Navbar'
 import Newsletter from '../../components/User/Newsletter'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
-
 import { mobile } from '../../responsive'
 import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -20,119 +19,118 @@ import { useForm } from 'react-hook-form'
 
 const Container = styled.div``
 const Wrapper = styled.div`
-    margin: 20px 20px;
-    padding: 50px;
+    margin: 1.2vw 1.2vw;
+    padding: 3vw;
     display: flex;
-    ${mobile({ padding: '10px', flexDirection: 'column' })}
 `
 const ImageContainer = styled.div`
     flex: 1;
 `
 const Image = styled.img`
-    margin-left: 40px;
+    margin-left: 1.5vw;
     width: 70%;
-    height: 90vh;
+    height: 40vw;
     object-fit: cover;
-    ${mobile({ height: '40vh' })}
 `
 const InfoContainer = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 0px 50px;
-    ${mobile({ padding: '10px' })}
+    padding: 0px 1.5px;
 `
 const Title = styled.h1`
     font-weight: 200;
-    font-size: 45px;
+    font-size: 3vw;
 `
 const Description = styled.p`
-    margin: 20px 0px;
-    font-size: 25px;
+    margin: 1.2vw 0vw;
+    font-size: 1.5vw;
 `
 const Price = styled.span`
     font-weight: 100;
-    font-size: 40px;
+    font-size: 2.5vw;
 `
 const FilterContainer = styled.div`
     width: 50%;
-    margin: 30px 0px;
+    margin: 1.3vw 0vw;
     display: flex;
     justify-content: space-between;
-    ${mobile({ width: '100%' })}
 `
 const Filter = styled.div`
     display: flex;
     align-items: center;
 `
 const FilterTitle = styled.span`
-    font-size: 20px;
+    font-size: 1.2vw;
     font-weight: 200;
 `
 const FilterSize = styled.select`
-    margin-left: 10px;
-    padding: 5px;
+    margin-left: 1vw;
+    padding: 0.5vw;
+    height: 3vw;
+    width: 6vw;
+    font-size: 1.4vw;
 `
-const FilterSizeOption = styled.option``
+const FilterSizeOption = styled.option`
+    font-size: 1.4vw;
+`
 const AddContainer = styled.div`
     width: 50%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    ${mobile({ width: '100%' })}
 `
 const AmountContainer = styled.div`
     display: flex;
     align-items: center;
     font-weight: 700;
-
 `
 const Button = styled.button`
-    padding: 15px;
-    border: 2px solid teal;
-    border-radius: 10%;
+    padding: 1vw;
+    border: 1px solid teal;
     background-color: white;
     cursor: pointer;
     font-weight: 500;
-
+    font-size: 1.4vw;
     &:hover {
-        background-color: #accfddf3;
+        background-color: teal;
+        color: white;
     }
 `
 const Amount = styled.span`
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
+    width: 1.7vw;
+    height: 1.7vw;
+    font-size: 1.4vw;
+    border-radius: 1vw;
     border: 1px solid teal;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0px 5px;
+    margin: 0px 0.5vw;
 `
 const InputContainer = styled.div`
-flex: 1;
+    flex: 1;
 `
 const Form = styled.form`
-display: flex;
+    display: flex;
   flex-direction: column;
   flex-wrap: wrap;
 `
 const Input = styled.input`
-  width: 300px;
-  margin: 10px;
-  padding: 10px;
-  ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+  width: 25vw;
+  margin: 1vw;
+  padding: 1vw;
   `
 const Error = styled.span`
-  font-size: 14px;
-  padding: 5px;
+  font-size: 1.5vw;
+  padding: 0.5vw;
   color: #f16969;
   `
 const ButtonContainer = styled.div`
-flex: 1;
-margin: 20px;
-display: flex;
-justify-content: flex-start;
+    flex: 1;
+    margin: 1.2vw;
+    display: flex;
+    justify-content: flex-start;
 `
 const ButtonSubmit = styled.button`
   width: 10%;
@@ -140,48 +138,53 @@ const ButtonSubmit = styled.button`
   background-color: #dc3d92fe;
   color: white;
   cursor: pointer;
+  font-size: 1.4vw;
   `
 const ButtonClose = styled.button`
   width: 10%;
   border: none;
-  margin-left: 20px;
+  margin-left: 1.2vw;
   background-color: #f43b3bfe;
   color: white;
   cursor: pointer;
+  font-size: 1.4vw;
 `
 const ReviewWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    margin: 20px 50px 20px 50px;
-    padding: 10px;
+    margin: 0vw 1.8vw 0vw 1.8vw;
+    padding: 1vw;
 `
 const ButtonReview = styled.button`
     width: 10%;
-    padding: 10px;
+    padding: 1vw;
     border: none;
     background-color: #94150cf0;
     color : white;
     cursor: pointer;
-    border-radius: 20px;
-    
+    font-size: 1.4vw;
     &:hover {
-        background-color: #f53022f0;
+        background-color: white;
+        color: #f53022f0;
+        border: 0.1px solid #f53022f0;
     }
     `
 const Review = styled.div`
     display: flex;
     flex-direction: column;
-    margin: 20px 0px 0px 0px;
+    margin: 1.2vw 0vw 0vw 0vw;
+    font-size: 1.4vw;
 `
 const UserName = styled.span`
-    margin-right: 15px;
+    margin-right: 1.8vw;
 `
 const Rating = styled.span`
-margin-right: 15px;
+    margin-right: 1.8vw;
 `
 const Details = styled.span`
-margin-right: 15px;
+    margin-right: 1.8vw;
+    font-size: 1.3vw;
 `
 toast.configure()
 const Product = () => {
@@ -337,9 +340,9 @@ const Product = () => {
                     {user &&
                         <AddContainer>
                             <AmountContainer>
-                                <RemoveIcon onClick={() => handleQuantity('dec')} />
+                                <RemoveIcon onClick={() => handleQuantity('dec')} style={{fontSize: '1.4vw', cursor: 'pointer'}} />
                                 <Amount>{quantity}</Amount>
-                                <AddIcon onClick={() => handleQuantity('inc')} />
+                                <AddIcon onClick={() => handleQuantity('inc')} style={{fontSize: '1.4vw', cursor: 'pointer'}} />
                             </AmountContainer>
                             <Button onClick={() => handleClick(product)} >Add to Cart</Button>
                         </AddContainer>
@@ -347,12 +350,12 @@ const Product = () => {
                 </InfoContainer>
             </Wrapper>
             {user &&
-                <ButtonContainer style={{ padding: '20px' }}>
+                <ButtonContainer style={{ padding: '1vw' }}>
                     <ButtonReview onClick={() => setFlag(true)}>Add review</ButtonReview>
                 </ButtonContainer>
             }
             {flag &&
-                <Form onSubmit={handleSubmit(addReview)} style={{ marginLeft: '20px' }}>
+                <Form onSubmit={handleSubmit(addReview)} style={{ marginLeft: '1vw' }}>
                     <InputContainer>
                         <Input id="rating" type='number' step="0.01" placeholder='Your rating out of 10' {...register('rating', { required: true })} />
                         <Error>

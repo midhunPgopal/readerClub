@@ -16,12 +16,12 @@ import SuccessNotice from '../../success/SuccessNotice'
 
 const Container = styled.div``
 const Wrapper = styled.div`
-    padding: 20px;
-    ${mobile({ pading: '10px' })}
+    padding: 1.2vw;
 `
 const Title = styled.h1`
     font-weight: 300;
     text-align: center;
+    font-size: 3vw;
 `
 const Top = styled.div`
     display: flex;
@@ -29,131 +29,157 @@ const Top = styled.div`
     justify-content: space-between;
 `
 const TopButton = styled.button`
-    padding: 10px;
-    margin: 20px ;
+    padding: 1vw;
     font-weight: 600;
     cursor: pointer;
-    border: ${props => props.type === 'filled' && 'none'};
-    background-color: ${props => props.type === 'filled' ? 'black' : 'transperant'};
-    color: ${props => props.type === 'filled' && 'white'};
+    font-size: 1.2vw;
+    border: 0.1px solid teal;
+    background-color: transparent;
+    color: teal;
+    &:hover {
+        background-color: teal;
+        color: white;
+    }
 `
 const Content = styled.div`
     display: flex;
     flex-direction: row;
-    margin: 20px;
-    padding: 10px;
+    margin: 1.2vw;
+    padding: 1vw;
 `
 const End = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    margin: 20px;
+    margin: 1.2vw;
     border: 0.5px solid lightgray;
-    border-radius: 10px;
-    padding: 20px;
-    ${mobile({ flexDirection: 'column' })}
+    border-radius: 1vw;
+    padding: 1.2vw;
 `
 const Middle = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    margin: 20px;
+    margin: 1.2vw;
     border: 0.5px solid lightgray;
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 1vw;
+    padding: 1.2vw;
     ${mobile({ flexDirection: 'column' })}
 `
 const Address = styled.div`
     display: flex;
     flex-direction: column;
-    margin: 20px;
+    margin: 1.2vw;
     border: 0.5px solid lightgray;
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 1vw;
+    padding: 1.2vw;
+    height: 10vw;
 `
 const Summary = styled.div`
     flex: 1;
-    margin: 20px;
+    margin: 1.2vw;
     border: 0.5px solid lightgray;
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 1vw;
+    padding: 1.2vw;
 `
 const SummaryTitle = styled.h2`
     font-weight: 220;
+    font-size: 2.5vw;
 `
 const SummaryItem = styled.div`
-    margin: 30px 0px;
+    margin: 1.3vw 0vw;
     display: flex;
     justify-content: space-between;
-    font-weight: ${props => props.type === 'totalPrice' && '500'}
-    font-size: ${props => props.type === 'totalPrice' && '24px'}
+    font-weight: 500;
+    font-size: 1.4vw;
 `
-const SummaryItemText = styled.span``
-const SummaryItemPrice = styled.span``
+const SummaryItemText = styled.span`
+    font-size: 1.4vw;
+`
+const SummaryItemPrice = styled.span`
+    font-size: 1.4vw;
+`
 const Button = styled.button`
-    width: 100%;
-    padding: 10px;
-    background-color: black;
-    color: white;
+    width: 90%;
+    margin: 1vw;
+    font-size: 1.4vw;
+    padding: 1vw;
+    background-color: transperant;
+    color: black;
     font-weight: 600;
-    cursor: pointer
+    cursor: pointer;
+    border: 0.1px solid black;
+    &:hover {
+        background-color: black;
+        color: white;
+    }
 `
 const Form = styled.form`
     width: 100%;
     flex: 1;
-
-    ${mobile({ flexDirection: 'column' })}
 `
 const InputContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    font-size: 1.4vw;
 `
 const Input = styled.input`
     flex: 1;
-    min-width: 40%;
-    margin: 10px 10px 0px 0px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+    min-width: 4vw;
+    margin: 1vw 1vw 0vw 0vw;
+    padding: 1vw;
+    font-size: 1.4vw;
+    border: 0.1px solid black;
 `
 const InputRadio = styled.input`
     flex: 1;
-    min-width: 10%;
-    margin: 10px 10px 0px 0px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+    width: 1vw;
+    height: 1vw;
+    margin: 1vw 0vw 1vw 0vw;
+    border: 0.1px solid black;
 `
 const Error = styled.span`
-    font-size: 14px;
-    padding: 5px;
+    font-size: 1.1vw;
+    padding: 0.5vw;
     color: red;
 `
 const Success = styled.span`
-    font-size: 14px;
-    padding: 5px;
+    font-size: 1.1vw;
+    padding: 0.5vw;
     color: green;
 `
 const Label = styled.label`
     font-weight: bolder;
     color: #1517165b;
+    font-size: 1.4vw;
 `
 const RadioLabel = styled.p`
+    font-size: 1.4vw;
 `
-const FormCoupon = styled.form``
+const FormCoupon = styled.form`
+    font-size: 1.4vw;
+`
 const InputCoupon = styled.input`
-    width: 300px;
-    margin: 10px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+    width: 25vw;
+    margin: 1vw;
+    padding: 1vw;
+    font-size: 1.4vw;
+    border: 0.1px solid black;
 `
 const ButtonCheck = styled.button`
-    width: 30%;
-    padding: 10px;
+    width: 6vw;
+    font-size: 1.2vw;
+    padding: 0.3vw;
     background-color: teal;
     color: white;
-    font-weight: 600;
     cursor: pointer;
     border: none;
+    &:hover{
+        background-color: white;
+        color: teal;
+        border: 0.5px solid teal;
+    }
 `
 const CouponContainer = styled.div`
     display: flex;
@@ -246,6 +272,15 @@ const Cart = () => {
             setWallet(res.data.wallet)
         } catch (error) {
             console.log(error);
+        }
+    }
+    const addAddress = async () => {
+        try {
+            const payload = { fullAddress, pincode, landmark, userId }
+            const res = await axios.post('http://localhost:3001/api/address/', payload, { headers: { userId } })
+            notify(res.data.msg)
+        } catch (error) {
+            console.log(error)
         }
     }
     const getAddress = async () => {
@@ -419,7 +454,7 @@ const Cart = () => {
             <Wrapper>
                 <Title>Payment Page</Title>
                 <Top>
-                    <TopButton><Link to='/cart' style={{ textDecoration: 'none' }}>Back to your Cart</Link></TopButton>
+                    <Link to='/cart' style={{ textDecoration: 'none' }}><TopButton>Back to your Cart</TopButton></Link>
                 </Top>
                 <Content>
                     <Summary>
@@ -474,24 +509,32 @@ const Cart = () => {
                                 <SummaryItemText>Address: {data.address}</SummaryItemText>
                                 <SummaryItemText>Pincode: {data.pincode}</SummaryItemText>
                                 <SummaryItemText>Landmark: {data.landmark}</SummaryItemText>
-                                <ButtonCheck style={{ padding: '10px' }} onClick={() => choose(data)} >Choose</ButtonCheck>
+                                <ButtonCheck onClick={() => choose(data)} >Choose</ButtonCheck>
                             </Address>
                         ))}
                     </Middle>
                     <End>
                         <SummaryTitle>Delivery Address</SummaryTitle>
-                        <Input type='text' placeholder='Name' onChange={(e) => setName(e.target.value)} required value={name} />
-                        <Input type='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} required value={email} />
-                        <Input type='number' placeholder='Mobile' onChange={(e) => setMobile(e.target.value)} required value={mobile} />
-                        <Input type='text' placeholder='Full address' onChange={(e) => setFullAddress(e.target.value)} required value={fullAddress} />
-                        <Input type='number' placeholder='Pincode' onChange={(e) => setPincode(e.target.value)} required value={pincode} />
-                        <Input type='text' placeholder='Landmark (optional)' onChange={(e) => setLandmark(e.target.value)} required value={landmark} />
+                        <Input type='text' placeholder='Name' onChange={(e) => setName(e.target.value)} value={name} required />
+                        <Input type='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} value={email} />
+                        <Input type='number' placeholder='Mobile' onChange={(e) => setMobile(e.target.value)} value={mobile} />
+                        <Input type='text' placeholder='Full address' onChange={(e) => setFullAddress(e.target.value)} value={fullAddress} />
+                        <Input type='number' placeholder='Pincode' onChange={(e) => setPincode(e.target.value)} value={pincode} />
+                        <Input type='text' placeholder='Landmark (optional)' onChange={(e) => setLandmark(e.target.value)} value={landmark} />
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1vw' }}>
+                            <ButtonCheck
+                                style={{fontSize: '0.8vw'}}
+                                onClick={() => addAddress()}
+                            >
+                                Add this address
+                            </ButtonCheck>
+                        </div>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <InputContainer>
                                 <Label>Payment method</Label>
-                                <RadioLabel><InputRadio type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} />Cash on Delivery</RadioLabel>
-                                <RadioLabel><InputRadio type="radio" value="Razorpay" id="Razorpay" {...register("payment")} />Domestic transaction with razorpay</RadioLabel>
-                                <RadioLabel><InputRadio type="radio" value="Paypal" id="Paypal" {...register("payment")} />International transaction with paypal</RadioLabel>
+                                <RadioLabel><InputRadio type="radio" value="Cash on delivery" id="Cash on delivery" {...register("payment")} /> Cash on Delivery</RadioLabel>
+                                <RadioLabel><InputRadio type="radio" value="Razorpay" id="Razorpay" {...register("payment")} /> Domestic transaction with razorpay</RadioLabel>
+                                <RadioLabel><InputRadio type="radio" value="Paypal" id="Paypal" {...register("payment")} /> International transaction with paypal</RadioLabel>
                                 <Button type='submit'>Complete your Order</Button>
                             </InputContainer>
                         </Form>

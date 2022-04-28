@@ -3,14 +3,14 @@ import Announcement from '../../components/User/Announcement'
 import Footer from '../../components/User/Footer'
 import Navbar from '../../components/User/Navbar'
 import Newsletter from '../../components/User/Newsletter'
-import PaymentForm from '../../components/User/PaymentForm'
+import OrderSuccess from '../../components/User/OrderSuccess'
 
 const Success = () => {
     return (
         <>
             <Announcement />
             <Navbar />
-            <PaymentForm />
+            <OrderSuccess />
             <Newsletter />
             <Footer />
         </>

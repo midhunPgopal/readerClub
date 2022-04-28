@@ -2,21 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 
 const Container = styled.div`
-margin: 10px 40px 10px 40px;
-padding: 20px;
+    margin: 3vw;
+    padding: 1.2vw;
+    width: 90vw;
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: 2vw;
 `
-const Title = styled.h2`
-
+const Title = styled.h1`
+    font-size: 2.3vw;
+    margin: 1vw 0vw 1vw 0vw;
 `
-const SubTitle = styled.h3``
-const Content = styled.span``
-
+const SubTitle = styled.h2`
+    font-size: 1.8vw;
+    margin: 1vw 0vw 1vw 0vw;
+`
+const Content = styled.span`
+    font-size: 1.4vw;
+`
 
 const Terms = () => {
     return (
         <Container >
             <Title>Terms of Use</Title>
-            <Content>You are welcome to Bookswagon.com. You can avail the services offered here or through its affiliates,
+            <Content>You are welcome to Reader Club©. You can avail the services offered here or through its affiliates,
                 but prior to that you need to agree to the terms and conditions.
                 If you browse our site or visit our shop, you have to accept these conditions.
                 Make sure that you have read the terms and conditions properly.

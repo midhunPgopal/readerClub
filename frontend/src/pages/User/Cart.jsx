@@ -15,15 +15,16 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import axios from 'axios'
 import { confirm } from "react-confirm-box"
+import Tooltip from '@mui/material/Tooltip'
 
 const Container = styled.div``
 const Wrapper = styled.div`
-    padding: 20px;
-    ${mobile({ pading: '10px' })}
+    padding: 1vw;
 `
 const Title = styled.h1`
     font-weight: 300;
     text-align: center;
+    font-size: 3vw;
 `
 const Top = styled.div`
     display: flex;
@@ -31,18 +32,22 @@ const Top = styled.div`
     justify-content: space-between;
 `
 const TopButton = styled.button`
-    padding: 10px;
+    padding: 1vw;
     font-weight: 600;
     cursor: pointer;
-    border: ${props => props.type === 'filled' && 'none'};
-    background-color: ${props => props.type === 'filled' ? 'black' : 'transperant'};
-    color: ${props => props.type === 'filled' && 'white'};
+    font-size: 1.2vw;
+    border: 0.1px solid teal;
+    background-color: transparent;
+    color: teal;
+    &:hover {
+        background-color: teal;
+        color: white;
+    }
 `
 const Bottom = styled.div`
     display: flex;
     justify-content: space-between;
-    margin: 20px 30px;
-    ${mobile({ flexDirection: 'column' })}
+    margin: 1vw 1.2vw;
 `
 const Info = styled.div`
     flex: 3;
@@ -50,18 +55,17 @@ const Info = styled.div`
 const Product = styled.div`
     display: flex;
     justify-content: space-between;
-    ${mobile({ flexDirection: 'column' })}
 `
 const ProductDetails = styled.div`
     flex: 2;
     display: flex;
-    ${mobile({ margin: '20px' })}
 `
 const Image = styled.img`
-    height: 200px;
+    height: 18vw;
 `
 const Details = styled.div`
-    padding: 20px;
+    padding: 1.2vw;
+    font-size: 1.4vw;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -71,7 +75,7 @@ const ProductId = styled.span``
 const ProductSize = styled.span``
 const PriceDetails = styled.div`
     flex: 1;
-    margin: 20px;
+    margin: 1.2vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -80,58 +84,66 @@ const PriceDetails = styled.div`
 const ProductAmountContainer = styled.div`
     display: flex;
     align-items: center;
-    ${mobile({ marginBottom: '5px' })}
 `
 const ProductAmount = styled.div`
-    font-size: 24px;
-    margin: 5px;
-    ${mobile({ margin: '5px 15px' })}
+    font-size: 1.5vw;
+    margin: 0.5vw;
 `
 const ProductPrize = styled.div`
-    font-size: 30px;
+    font-size: 1.5vw;
     font-weight: 200;
 `
 const Hr = styled.div`
     background-color: teal;
     border: none;
-    height: 1px;
-    margin: 10px 10px;
-    ${mobile({ margin: '30px' })}
+    height: 0.1vw;
+    margin: 1vw 1vw;
 `
 const Box = styled.div`
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     border: 0.5px solid lightgray;
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 1vw;
+    padding: 1.2vw;
 `
 const Summary = styled.div`
     border: 0.5px solid lightgray;
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 1vw;
+    padding: 1.2vw;
 `
 const SummaryTitle = styled.h1`
     font-weight: 220;
+    font-size: 2.5vw;
 `
 const SummaryItem = styled.div`
-    margin: 30px 0px;
+    margin: 1.3vw 0vw;
     display: flex;
+    font-size: 1.5vw;
     justify-content: space-between;
-    font-weight: ${props => props.type === 'total' && '500'}
-    font-size: ${props => props.type === 'total' && '24px'}
+    font-weight: 500;
+    font-size: 1.2vw;
 `
 const SummaryItemText = styled.div``
 const SummaryItemPrice = styled.div``
 const Button = styled.button`
     width: 100%;
-    padding: 10px;
-    background-color: black;
-    color: white;
+    padding: 1vw;
+    font-size: 1.2vw;
+    background-color: white;
+    color: black;
     font-weight: 600;
     cursor: pointer
+    border: 0.1px solid black;
+    &:hover {
+        background-color: black;
+        color: white;
+    }
 `
 const Icons = styled.div`
     display: flex;
-    flex-direction: row;
+    align-items: center;
 `
 toast.configure()
 const Cart = () => {
@@ -150,7 +162,7 @@ const Cart = () => {
     const [cartId, setCartId] = useState()
     const [productPrice, setProductPrice] = useState()
     const [shipping, setShipping] = useState(99)
-    
+
 
     const notify = (msg) => toast(msg, {
         position: "top-center", autoClose: 1500, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined
@@ -257,7 +269,7 @@ const Cart = () => {
     useEffect(() => {
         let total = resData?.reduce((acc, data) => acc + data.total, 0)
         setSubTotal(total)
-        if(total > 499) {
+        if (total > 499) {
             setShipping(0)
         }
     }, [resData])
@@ -272,8 +284,8 @@ const Cart = () => {
             <Wrapper>
                 <Title>Your CART</Title>
                 <Top>
-                    <TopButton><Link to='/wishlist' style={{ textDecoration: 'none' }}>Your Wishlist</Link></TopButton>
-                    <TopButton><Link to='/products' style={{ textDecoration: 'none' }}>Continue Shopping</Link></TopButton>
+                    <Link to='/wishlist' style={{ textDecoration: 'none' }}><TopButton>Your Wishlist</TopButton></Link>
+                    <Link to='/products' style={{ textDecoration: 'none' }}><TopButton>Continue Shopping</TopButton></Link>
                 </Top>
                 <Bottom>
                     <Info>
@@ -293,24 +305,28 @@ const Cart = () => {
                                     <PriceDetails>
                                         <ProductAmountContainer>
                                             <RemoveIcon
-                                                style={{ cursor: 'pointer', color: 'rgb(103, 88, 219)' }}
+                                                style={{ cursor: 'pointer', color: 'rgb(103, 88, 219)', fontSize: '1.4vw' }}
                                                 onClick={() => handleQuantity(data._id, data.quantity, data.total, 'dec')}
                                             />
                                             <ProductAmount>{data.quantity}</ProductAmount>
                                             <AddIcon
-                                                style={{ cursor: 'pointer', color: 'rgba(18, 231, 36, 0.981)' }}
+                                                style={{ cursor: 'pointer', color: 'rgba(18, 231, 36, 0.981)', fontSize: '1.4vw' }}
                                                 onClick={() => handleQuantity(data._id, data.quantity, data.total, 'inc')}
                                             />
                                         </ProductAmountContainer>
                                         <Icons>
-                                            <DeleteForeverIcon
-                                                style={{ cursor: 'pointer', margin: '10px' }}
-                                                onClick={() => handleDelete(data._id)}
-                                            />
-                                            <FavoriteRoundedIcon
-                                                style={{ cursor: 'pointer', color: 'red', margin: '10px' }}
-                                                onClick={() => addToWishlist(data)}
-                                            />
+                                            <Tooltip title='Remove'>
+                                                <DeleteForeverIcon
+                                                    style={{ cursor: 'pointer', margin: '10px', fontSize: '1.8vw' }}
+                                                    onClick={() => handleDelete(data._id)}
+                                                />
+                                            </Tooltip>
+                                            <Tooltip title='Move to wihslist'>
+                                                <FavoriteRoundedIcon
+                                                    style={{ cursor: 'pointer', color: 'red', margin: '10px', fontSize: '1.8vw' }}
+                                                    onClick={() => addToWishlist(data)}
+                                                />
+                                            </Tooltip>
                                         </Icons>
                                         <ProductPrize>₹ {data.total}</ProductPrize>
                                     </PriceDetails>
@@ -330,9 +346,9 @@ const Cart = () => {
                                 <SummaryItemText>Estimated Shipping</SummaryItemText>
                                 <SummaryItemPrice>₹{shipping}</SummaryItemPrice>
                             </SummaryItem>
-                            <SummaryItem type='total'>
-                                <SummaryItemText>Total</SummaryItemText>
-                                <SummaryItemPrice>₹ {grandTotal}</SummaryItemPrice>
+                            <SummaryItem >
+                                <SummaryItemText><b>Total</b></SummaryItemText>
+                                <SummaryItemPrice>₹ <b>{grandTotal}</b></SummaryItemPrice>
                             </SummaryItem>
                         </Summary>
                         <Button onClick={preOrder}>Proceed to Checkout</Button>

@@ -8,17 +8,18 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 const Form = styled.form`
-    margin-left: 50px;
+    margin-left: 1.5vw;
 `
 const Input = styled.input`
-    width: 300px;
-    margin: 10px;
-    padding: 10px;
-    ${mobile({ padding: '2px', margin: '5px 8px 0px 0px', fontSize: '10px' })}
+    width: 25vw;
+    margin: 1vw;
+    padding: 1vw;
+    font-size: 1.3vw;
+    border: 0.1px solid black;
 `
 const Error = styled.span`
-    font-size: 14px;
-    padding: 5px;
+    font-size: 1.2vw;
+    padding: .5vw;
     color: #f16969;
 `
 const InputContainer = styled.div`
@@ -26,18 +27,25 @@ const InputContainer = styled.div`
     flex-direction: column;
 `
 const ButtonContainer = styled.div`
-    margin: 20px;
+    margin: 1.2vw;
 `
 const ButtonSubmit = styled.button`
   width: 10%;
   border: none;
-  background-color: #dc3d92fe;
-  color: white;
+  background-color: white;
+  color: teal;
   cursor: pointer;
+  font-size: 1.3vw;
+  border: 0.1px solid teal;
+  &:hover {
+    background-color: teal;
+    color: white;
+  }
 `
 const Label = styled.label`
-    font-weight: bolder;
-    color: #1517165b;
+    font-weight: 700;
+    color: lightgrey;
+    font-size: 1.2vw;
 `
 toast.configure()
 const EditCategoryForm = ({ preloadedData }) => {
