@@ -113,7 +113,7 @@ const Product = ({ item }) => {
 
     const getOffer = async (data) => {
         try {
-            const res = await axios.get('http://localhost:3001/api/banner/get/' + data)
+            const res = await axios.get('/api/banner/get/' + data)
             setDiscount(res.data.discount)
         } catch (error) {
             console.log(error);
@@ -133,7 +133,7 @@ const Product = ({ item }) => {
         const productId = product._id
         const payload = { userId, productId, product }
         try {
-            const res = await axios.post('http://localhost:3001/api/wishlist/', payload, { headers: { header, userId } })
+            const res = await axios.post('/api/wishlist/', payload, { headers: { header, userId } })
             notifySuccess(res.data.msg)
         } catch (error) {
             console.log(error)

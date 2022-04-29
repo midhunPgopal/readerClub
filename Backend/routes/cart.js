@@ -1,7 +1,7 @@
 const router = require('express').Router()
-const {  verifyTokenAndAdmin } = require('./verifyToken')
+const {  verifyTokenAndAdmin } = require('../middleware/verifyToken')
 const Cart = require('../models/Cart')
-const verifyStatus = require('./verifyStatus')
+const verifyStatus = require('../middleware/verifyStatus')
 
 //Creating
 

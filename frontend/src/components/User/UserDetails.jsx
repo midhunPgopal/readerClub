@@ -63,11 +63,6 @@ const ButtonClose = styled.button`
   color: white;
   cursor: pointer;
 `
-const Label = styled.label`
-    font-weight: bolder;
-    color: #1517165b;
-    font-size: 1.4vw;
-`
 const TopBar = styled.div`
     margin: 1.2vw;
     display: flex;
@@ -192,6 +187,7 @@ function UserDetails() {
         try {
             const res = await axios.get('http://localhost:3001/api/userDetails/' + userId, { headers: { header } })
             const [userDetail] = res.data
+            console.log(userDetail);
             setUserData(userDetail)
             if (res.data.length > 0) {
                 setCheck(true)
@@ -226,10 +222,16 @@ function UserDetails() {
         }
     }
     const addUserDetails = async (data) => {
+        const formData = new FormData()
+        formData.append('image', data.picture[0])
+        formData.append('userId', userId)
+        formData.append('gender', data.gender)
+        formData.append('proffession', data.proffession)
+        formData.append('dob', data.dob)
         try {
-            const payload = { ...data, userId }
-            const res = await axios.post('http://localhost:3001/api/userdetails/', payload, { headers: { header, userId } })
+            const res = await axios.post('http://localhost:3001/api/userdetails/', formData, { headers: { header, userId } })
             setFlag(false)
+            getUserDetails()
             notify(res.data.msg)
         } catch (error) {
             console.log(error)
@@ -276,8 +278,14 @@ function UserDetails() {
         }
     }
     const updateDetails = async (data) => {
+        const formData = new FormData()
+        formData.append('img', data.picture[0])
+        formData.append('userId', userId)
+        formData.append('gender', data.gender)
+        formData.append('proffession', data.proffession)
+        formData.append('dob', data.dob)
         try {
-            const res = await axios.put('http://localhost:3001/api/userdetails/' + userId, data, { headers: { header } })
+            const res = await axios.put('http://localhost:3001/api/userdetails/' + userId, formData, { headers: { header } })
             getUserDetails()
             notify(res.data.msg)
             setDetailsFlag(false)
@@ -308,24 +316,19 @@ function UserDetails() {
             {flag &&
                 <Form onSubmit={handleSubmit(addUserDetails)}>
                     <InputContainer>
-                        <Label>Gender
-                            <Input id="gender" type='text' placeholder='Gender if you wish to save' {...register('gender')} />
-                        </Label>
-                        <Label>Proffession
-                            <Input id="pincode" type='text' placeholder='Your pincode' {...register('pincode', { required: true })} />
-                            <Error>
-                                {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Date of Birth
-                            <Input id="dob" type='date' placeholder='Your date of birth' {...register('dob', { required: true })} />
-                            <Error>
-                                {errors.dob && errors.dob.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Image source link
-                            <Input id="landmark" type='text' placeholder='Image source link' {...register('landmark')} />
-                        </Label>
+                        <Input id="gender" type='text' placeholder='Gender if you wish to save' {...register('gender')} />
+                        <Input id="proffession" type='text' placeholder='Your proffession' {...register('proffession', { required: true })} />
+                        <Error>
+                            {errors.proffession && errors.proffession.type === "required" && <span>This is required</span>}
+                        </Error>
+                        <Input id="dob" type='date' placeholder='Your date of birth' {...register('dob', { required: true })} />
+                        <Error>
+                            {errors.dob && errors.dob.type === "required" && <span>This is required</span>}
+                        </Error>
+                        <Input id="picture" type='file' {...register('picture', { required: true })} />
+                        <Error>
+                            {errors.picture && errors.picture.type === "required" && <span>This is required</span>}
+                        </Error>
                     </InputContainer>
                     <ButtonContainer>
                         <ButtonSubmit type='submit'>Add</ButtonSubmit>
@@ -336,23 +339,17 @@ function UserDetails() {
             {data &&
                 <Form onSubmit={handleSubmit(addAddress)}>
                     <InputContainer>
-                        <Label>Address
-                            <Input id="fullAddress" type='text' placeholder='Full address' {...register('fullAddress', { required: true })} />
-                            <Error>
-                                {errors.fullAddress && errors.fullAddress.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Pincode
-                            <Input id="pincode" type='number' placeholder='pincode code' {...register('pincode', { required: true, minLength: 6, maxLength: 6 })} />
-                            <Error>
-                                {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
-                                {errors.pincode && errors.pincode.type === "maxLength" && <span>Max length exceeded</span>}
-                                {errors.pincode && errors.pincode.type === "minLength" && <span>Min length of 6 required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Landmark
-                            <Input id="landmark" type='text' placeholder='Landmark(optional)' {...register('landmark')} />
-                        </Label>
+                        <Input id="fullAddress" type='text' placeholder='Full address' {...register('fullAddress', { required: true })} />
+                        <Error>
+                            {errors.fullAddress && errors.fullAddress.type === "required" && <span>This is required</span>}
+                        </Error>
+                        <Input id="pincode" type='number' placeholder='pincode code' {...register('pincode', { required: true, minLength: 6, maxLength: 6 })} />
+                        <Error>
+                            {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
+                            {errors.pincode && errors.pincode.type === "maxLength" && <span>Max length exceeded</span>}
+                            {errors.pincode && errors.pincode.type === "minLength" && <span>Min length of 6 required</span>}
+                        </Error>
+                        <Input id="landmark" type='text' placeholder='Landmark(optional)' {...register('landmark')} />
                     </InputContainer>
                     <ButtonContainer>
                         <ButtonSubmit type='submit'>Add</ButtonSubmit>
@@ -363,31 +360,25 @@ function UserDetails() {
             {credentialsFlag &&
                 <Form onSubmit={handleSubmit(updateCredentials)}>
                     <InputContainer>
-                        <Label>Name
-                            <Input id="name" type='text' placeholder='Your name' {...register('name', { required: true, value: userCredentials.name })} />
-                            <Error>
-                                {errors.address && errors.address.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Mobile
-                            <Input id="mobile" type='number' placeholder='mobile number' {...register('mobile', { required: true, minLength: 10, maxLength: 10, value: userCredentials.mobile })} />
-                            <Error>
-                                {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
-                                {errors.pincode && errors.pincode.type === "maxLength" && <span>Max length exceeded</span>}
-                                {errors.pincode && errors.pincode.type === "minLength" && <span>Min length of 10 required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Email
-                            <Input id="email" placeholder='Email' {...register('email', {
-                                required: true,
-                                value: userCredentials.email,
-                                pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                            })} />
-                            <Error>
-                                {errors.email && errors.email.type === "required" && <span>This is required</span>}
-                                {errors.email && errors.email.type === "pattern" && <span>Invalid email</span>}
-                            </Error>
-                        </Label>
+                        <Input id="name" type='text' placeholder='Your name' {...register('name', { required: true, value: userCredentials.name })} />
+                        <Error>
+                            {errors.address && errors.address.type === "required" && <span>This is required</span>}
+                        </Error>
+                        <Input id="mobile" type='number' placeholder='mobile number' {...register('mobile', { required: true, minLength: 10, maxLength: 10, value: userCredentials.mobile })} />
+                        <Error>
+                            {errors.pincode && errors.pincode.type === "required" && <span>This is required</span>}
+                            {errors.pincode && errors.pincode.type === "maxLength" && <span>Max length exceeded</span>}
+                            {errors.pincode && errors.pincode.type === "minLength" && <span>Min length of 10 required</span>}
+                        </Error>
+                        <Input id="email" placeholder='Email' {...register('email', {
+                            required: true,
+                            value: userCredentials.email,
+                            pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                        })} />
+                        <Error>
+                            {errors.email && errors.email.type === "required" && <span>This is required</span>}
+                            {errors.email && errors.email.type === "pattern" && <span>Invalid email</span>}
+                        </Error>
                     </InputContainer>
                     <ButtonContainer>
                         <ButtonSubmit type='submit'>Update</ButtonSubmit>
@@ -398,30 +389,19 @@ function UserDetails() {
             {detailsFlag &&
                 <Form onSubmit={handleSubmit(updateDetails)}>
                     <InputContainer>
-                        <Label>Name
-                            <Input id="gender" type='text' placeholder='Your gender' {...register('gender', { required: true, value: userData.gender })} />
-                            <Error>
-                                {errors.address && errors.address.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Proffession
-                            <Input id="proffession" type='text' placeholder='Your proffession' {...register('proffession', { required: true, value: userData.proffession })} />
-                            <Error>
-                                {errors.proffession && errors.proffession.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Date of birth
-                            <Input id="dob" type='date' placeholder='Your date of birth' {...register('dob', { required: true, value: userData.dob.slice(0, 10) })} />
-                            <Error>
-                                {errors.dob && errors.dob.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
-                        <Label>Image
-                            <Input id="image" type='text' placeholder='Display picture' {...register('image', { required: true, value: userData.image })} />
-                            <Error>
-                                {errors.image && errors.image.type === "required" && <span>This is required</span>}
-                            </Error>
-                        </Label>
+                        <Input id="gender" type='text' placeholder='Your gender' {...register('gender', { required: true, value: userData.gender })} />
+                        <Error>
+                            {errors.address && errors.address.type === "required" && <span>This is required</span>}
+                        </Error>
+                        <Input id="proffession" type='text' placeholder='Your proffession' {...register('proffession', { required: true, value: userData.proffession })} />
+                        <Error>
+                            {errors.proffession && errors.proffession.type === "required" && <span>This is required</span>}
+                        </Error>
+                        <Input id="dob" type='date' placeholder='Your date of birth' {...register('dob', { required: true, value: userData.dob.slice(0, 10) })} />
+                        <Error>
+                            {errors.dob && errors.dob.type === "required" && <span>This is required</span>}
+                        </Error>
+                        <Input id="picture" type='file' {...register('picture')} />
                     </InputContainer>
                     <ButtonContainer>
                         <ButtonSubmit type='submit'>Update</ButtonSubmit>

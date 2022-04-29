@@ -35,10 +35,6 @@ const ButtonSubmit = styled.button`
   color: white;
   cursor: pointer;
 `
-const Label = styled.label`
-    font-weight: bolder;
-    color: #1517165b;
-`
 toast.configure()
 const EditCategoryForm = ({ preloadedData }) => {
 
@@ -60,7 +56,11 @@ const EditCategoryForm = ({ preloadedData }) => {
     }
 
     const updateCategory = async (data) => {
-        await axios.put('http://localhost:3001/api/categories/' + id, data, { headers: { header } })
+        const formData = new FormData()
+        formData.append('img', data.picture[0])
+        formData.append('category', data.category)
+
+        await axios.put('http://localhost:3001/api/categories/' + id, formData, { headers: { header } })
         notify()
         navigate('/admin')
     }
@@ -68,18 +68,11 @@ const EditCategoryForm = ({ preloadedData }) => {
     return (
         <Form onSubmit={handleSubmit(updateCategory)}>
             <InputContainer>
-                <Label>Category Name
-                    <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
-                    <Error>
-                        {errors.category && errors.category.type === "required" && <span>This is required</span>}
-                    </Error>
-                </Label>
-                <Label>Image source link
-                    <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                    <Error>
-                        {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                    </Error>
-                </Label>
+                <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+                <Error>
+                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                </Error>
+                <Input id="picture" type='file' {...register('picture')} />
             </InputContainer>
             <ButtonContainer>
                 <ButtonSubmit type='submit'>Update</ButtonSubmit>

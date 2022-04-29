@@ -1,7 +1,7 @@
 const router = require('express').Router()
-const { verifyTokenAndAdmin} = require('./verifyToken')
+const { verifyTokenAndAdmin} = require('../middleware/verifyToken')
 const Order = require('../models/Order')
-const verifyStatus = require('./verifyStatus')
+const verifyStatus = require('../middleware/verifyStatus')
 const Razorpay = require('razorpay')
 const shortid = require('shortid')
 

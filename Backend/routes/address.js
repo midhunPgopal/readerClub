@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Address = require('../models/Address')
-const verifyStatus = require('./verifyStatus')
+const verifyStatus = require('../middleware/verifyStatus')
 
 router.get('/:id', async (req, res) => {
     try {

@@ -1,7 +1,7 @@
 const router = require('express').Router()
-const {verifyTokenAndAdmin} = require('./verifyToken')
+const {verifyTokenAndAdmin} = require('../middleware/verifyToken')
 const Announcement = require('../models/Announcement')
-const verifyStatus = require('./verifyStatus')
+const verifyStatus = require('../middleware/verifyStatus')
 
 router.get('/', verifyStatus, async (req, res) => {
     try {

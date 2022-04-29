@@ -1,11 +1,15 @@
 const router = require('express').Router()
-const { verifyTokenAndAdmin, verifyTokenAuth } = require('../routes/verifyToken')
+const { verifyTokenAndAdmin, verifyTokenAuth } = require('../middleware/verifyToken')
 const User = require('../models/User')
 
 //update userdetails
 
 router.put('/:id', verifyTokenAuth, async (req, res) => {
     try {
+        const exist = User.find({email: re.body.email})
+        if(exist[0]) {
+            return res.status(200).json({msg:'Email already used'})
+        }
         await User.findByIdAndUpdate(req.params.id, {
             $set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
         })

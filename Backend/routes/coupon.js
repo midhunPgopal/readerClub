@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Coupon = require('../models/Coupon')
-const {verifyTokenAndAdmin} = require('../routes/verifyToken')
+const {verifyTokenAndAdmin} = require('../middleware/verifyToken')
 
 router.post('/', verifyTokenAndAdmin, async (req, res) => {
     const coupon = new Coupon(req.body)

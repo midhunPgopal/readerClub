@@ -41,6 +41,7 @@ const Select = styled.select`
     margin-right: 1.2vw;
     width: 15vw;
     height: 4vw;
+    font-size: 1.2vw;
 `
 const Option = styled.option`
     font-size: 1.4vw;

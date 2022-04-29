@@ -97,10 +97,6 @@ const Error = styled.span`
   padding: 5px;
   color: #f16969;
 `
-const Label = styled.label`
-    font-weight: bolder;
-    color: #1517165b;
-`
 const ButtonEdit = styled.button`
     border: none;
     cursor: pointer;
@@ -139,7 +135,11 @@ const CategoryAdmin = () => {
         setCategories(res.data)
     }
     const addCategory = async (data) => {
-        await axios.post('http://localhost:3001/api/categories/', data, { headers: { header } })
+        const formData = new FormData()
+        formData.append('img', data.picture[0])
+        formData.append('category', data.category)
+
+        await axios.post('http://localhost:3001/api/categories/', formData, { headers: { header } })
         notifyCategory()
         getCategories()
         setCheck(false)
@@ -212,18 +212,14 @@ const CategoryAdmin = () => {
                     {check &&
                         <Form onSubmit={handleSubmit(addCategory)}>
                             <InputContainer>
-                                <Label>Category
-                                    <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
-                                    <Error>
-                                        {errors.category && errors.category.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
-                                <Label>Image source link
-                                    <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                                    <Error>
-                                        {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
+                                <Input id="category" type='text' placeholder='Category' {...register('category', { required: true })} />
+                                <Error>
+                                    {errors.category && errors.category.type === "required" && <span>This is required</span>}
+                                </Error>
+                                <Input id="picture" type='file' {...register('picture', { required: true })} />
+                                <Error>
+                                    {errors.picture && errors.picture.type === "required" && <span>This is required</span>}
+                                </Error>
                             </InputContainer>
                             <ButtonContainer>
                                 <ButtonSubmit type='submit' >Add Category</ButtonSubmit>

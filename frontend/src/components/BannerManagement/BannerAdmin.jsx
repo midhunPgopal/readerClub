@@ -97,10 +97,6 @@ const Hr = styled.div`
     margin: 10px 10px;
     ${mobile({ margin: '30px' })}
 `
-const Label = styled.label`
-    font-weight: bolder;
-    color: #1517165b;
-`
 const ButtonEdit = styled.button`
     border: none;
     cursor: pointer;
@@ -133,7 +129,16 @@ const BannerAdmin = () => {
         setFlag(true)
     }
     const addBanner = async (data) => {
-        const res = await axios.post('http://localhost:3001/api/banner/', data, { headers: { header } })
+        const formData = new FormData()
+        formData.append('img', data.picture[0])
+        formData.append('title', data.title)
+        formData.append('description', data.description)
+        formData.append('offerDescription', data.offerDescription)
+        formData.append('offerCode', data.offerCode)
+        formData.append('discount', data.discount)
+        formData.append('bg', data.bg)
+
+        const res = await axios.post('http://localhost:3001/api/banner/', formData, { headers: { header } })
         notify(res.data.msg)
         getBanner()
         setFlag(false)
@@ -209,48 +214,34 @@ const BannerAdmin = () => {
                     {flag &&
                         <Form onSubmit={handleSubmit(addBanner)}>
                             <InputContainer>
-                                <Label>Title
-                                    <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
-                                    <Error>
-                                        {errors.title && errors.title.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
-                                <Label>Description
-                                    <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
-                                    <Error>
-                                        {errors.description && errors.description.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
-                                <Label>Offer description
-                                    <Input id="offerDescription" type='text' placeholder='Offer description' {...register('offerDescription', { required: true })} />
-                                    <Error>
-                                        {errors.offerDescription && errors.offerDescription.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
-                                <Label>Offer cod
-                                    <Input id="offerCode" type='text' placeholder='Offer code' {...register('offerCode', { required: true })} />
-                                    <Error>
-                                        {errors.offerCode && errors.offerCode.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                    e</Label>
-                                <Label>Discount
-                                    <Input id="discount" type='number' step='0.01' placeholder='discount percentage' {...register('discount', { required: true })} />
-                                    <Error>
-                                        {errors.discount && errors.discount.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
-                                <Label>Image source link
-                                    <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                                    <Error>
-                                        {errors.img && errors.img.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
-                                <Label>Background Colour
-                                    <Input id="bg" type='text' placeholder='background colour' {...register('bg', { required: true })} />
-                                    <Error>
-                                        {errors.bg && errors.bg.type === "required" && <span>This is required</span>}
-                                    </Error>
-                                </Label>
+                                <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
+                                <Error>
+                                    {errors.title && errors.title.type === "required" && <span>This is required</span>}
+                                </Error>
+                                <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
+                                <Error>
+                                    {errors.description && errors.description.type === "required" && <span>This is required</span>}
+                                </Error>
+                                <Input id="offerDescription" type='text' placeholder='Offer description' {...register('offerDescription', { required: true })} />
+                                <Error>
+                                    {errors.offerDescription && errors.offerDescription.type === "required" && <span>This is required</span>}
+                                </Error>
+                                <Input id="offerCode" type='text' placeholder='Offer code' {...register('offerCode', { required: true })} />
+                                <Error>
+                                    {errors.offerCode && errors.offerCode.type === "required" && <span>This is required</span>}
+                                </Error>
+                                <Input id="discount" type='number' step='0.01' placeholder='discount percentage' {...register('discount', { required: true })} />
+                                <Error>
+                                    {errors.discount && errors.discount.type === "required" && <span>This is required</span>}
+                                </Error>
+                                <Input id="picture" type='file' {...register('picture', { required: true })} />
+                                <Error>
+                                    {errors.picture && errors.picture.type === "required" && <span>This is required</span>}
+                                </Error>
+                                <Input id="bg" type='text' placeholder='background colour' {...register('bg', { required: true })} />
+                                <Error>
+                                    {errors.bg && errors.bg.type === "required" && <span>This is required</span>}
+                                </Error>
                             </InputContainer>
                             <ButtonContainer>
                                 <ButtonSubmit type='submit' >Add Banner</ButtonSubmit>

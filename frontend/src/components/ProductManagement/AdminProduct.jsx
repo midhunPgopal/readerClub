@@ -100,10 +100,6 @@ const Hr = styled.div`
     margin: 10px 10px;
     ${mobile({ margin: '30px' })}
 `
-const Label = styled.label`
-    font-weight: bolder;
-    color: #1517165b;
-`
 const ButtonEdit = styled.button`
     border: none;
     cursor: pointer;
@@ -134,7 +130,19 @@ const AdminProduct = () => {
     setProduct(res.data)
   }
   const addProduct = async (data) => {
-    const res = await axios.post('http://localhost:3001/api/products/', data, { headers: { header } })
+    const formData = new FormData()
+    formData.append('img', data.picture[0])
+    formData.append('title', data.title)
+    formData.append('description', data.description)
+    formData.append('author', data.author)
+    formData.append('publisher', data.publisher)
+    formData.append('publishedAt', data.publishedAt)
+    formData.append('category', data.category)
+    formData.append('chapter', data.chapter)
+    formData.append('price', data.price)
+    formData.append('offer', data.offer)
+
+    const res = await axios.post('http://localhost:3001/api/products/', formData, { headers: { header, 'content-type': 'multipart/form-data' } })
     getProducts()
     notify(res.data.msg)
     setFlag(false)
@@ -234,63 +242,43 @@ const AdminProduct = () => {
           {flag &&
             <Form onSubmit={handleSubmit(addProduct)}>
               <InputContainer>
-                <Label>Title
-                  <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
-                </Label>
+                <Input id="title" type='text' placeholder='Title' {...register('title', { required: true })} />
                 <Error>
                   {errors.title && errors.title.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Description
-                  <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
-                </Label>
+                <Input id="description" type='text' placeholder='About the book' {...register('description', { required: true })} />
                 <Error>
                   {errors.description && errors.description.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Author
-                  <Input id="author" type='text' placeholder='Author' {...register('author', { required: true })} />
-                </Label>
+                <Input id="author" type='text' placeholder='Author' {...register('author', { required: true })} />
                 <Error>
                   {errors.author && errors.author.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Publisher
-                  <Input id="publisher" type='text' placeholder='Publisher' {...register('publisher', { required: true })} />
-                </Label>
+                <Input id="publisher" type='text' placeholder='Publisher' {...register('publisher', { required: true })} />
                 <Error>
                   {errors.publisher && errors.publisher.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Published on
-                  <Input id="publishedAt" type='date' placeholder='Published on' {...register('publishedAt', { required: true })} />
-                </Label>
+                <Input id="publishedAt" type='date' placeholder='Published on' {...register('publishedAt', { required: true })} />
                 <Error>
                   {errors.publishedAt && errors.publishedAt.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Image source Link
-                  <Input id="img" type='text' placeholder='Image source link' {...register('img', { required: true })} />
-                </Label>
+                <Input id="picture" type='file' {...register('picture', { required: true })} />
                 <Error>
-                  {errors.img && errors.img.type === "required" && <span>This is required</span>}
+                  {errors.picture && errors.picture.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Category
-                  <Input id="category" type='text' placeholder='Separate the categories by a coma' {...register('category', { required: true })} />
-                </Label>
+                <Input id="category" type='text' placeholder='Separate the categories by a coma' {...register('category', { required: true })} />
                 <Error>
                   {errors.category && errors.category.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Chapters
-                  <Input id="chapter" type='text' placeholder='Separate the chapters by a coma' {...register('chapter', { required: true })} />
-                </Label>
+                <Input id="chapter" type='text' placeholder='Separate the chapters by a coma' {...register('chapter', { required: true })} />
                 <Error>
                   {errors.chapter && errors.chapter.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Price
-                  <Input id="price" type='number' placeholder='Selling Price' {...register('price', { required: true })} />
-                </Label>
+                <Input id="price" type='number' placeholder='Selling Price' {...register('price', { required: true })} />
                 <Error>
                   {errors.price && errors.price.type === "required" && <span>This is required</span>}
                 </Error>
-                <Label>Offers
-                  <Input id="offer" type='text' placeholder='Offers' {...register('offer', { required: false })} />
-                </Label>
+                <Input id="offer" type='text' placeholder='Offers' {...register('offer', { required: false })} />
               </InputContainer>
               <ButtonContainer>
                 <ButtonSubmit type='submit' >Add Book</ButtonSubmit>

@@ -1,16 +1,32 @@
 const router = require('express').Router()
-const { verifyTokenAndAdmin } = require('../routes/verifyToken')
+const { verifyTokenAndAdmin } = require('../middleware/verifyToken')
 const Product = require('../models/Product')
+const cloudinary = require('../middleware/cloudinary')
+const { CloudinaryStorage } = require('multer-storage-cloudinary')
+const multer = require('multer')
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: '/uploads'
+    }
+})
+const upload = multer({ storage: storage })
 
 //Creating
 
-router.post('/', verifyTokenAndAdmin, async (req, res) => {
-    let { title, description, author, publisher, publishedAt, img, category, chapter, price, offer } = req.body
+router.post('/', verifyTokenAndAdmin, upload.single('img'), async (req, res) => {
+    let { title, description, author, publisher, publishedAt, category, chapter, price, offer } = req.body
     const chapters = chapter.split(',')
     const categories = category.split(',')
     const offers = offer
+    const img = req.file.path
     const newProduct = new Product({ title, description, author, publisher, publishedAt, img, categories, chapters, price, offers })
     try {
+        const existProduct = await Product.find({ title })
+        if (existProduct[0]) {
+            return res.status(200).json({ msg: 'Product already exist' })
+        }
         await newProduct.save()
         res.status(200).json({ msg: 'Product added' })
     } catch (error) {
@@ -20,12 +36,38 @@ router.post('/', verifyTokenAndAdmin, async (req, res) => {
 
 //Update product
 
-router.put('/:id', verifyTokenAndAdmin, async (req, res) => {
-    let { title, description, author, publisher, publishedAt, img, category, chapter, price, offer } = req.body
+router.put('/:id', verifyTokenAndAdmin, upload.single('img'), async (req, res) => {
+    let { title, description, author, publisher, publishedAt, category, chapter, price, offer } = req.body
     const chapters = chapter.split(',')
     const categories = category.split(',')
     const offers = offer
-    const newProduct = { title, description, author, publisher, publishedAt, img, categories, chapters, price, offers }
+    let newProduct = null
+    if (req.file) {
+        newProduct = {
+            title,
+            description,
+            author,
+            publisher,
+            publishedAt,
+            img: req.file.path,
+            categories,
+            chapters,
+            price,
+            offers
+        }
+    } else {
+        newProduct = {
+            title,
+            description,
+            author,
+            publisher,
+            publishedAt,
+            categories,
+            chapters,
+            price,
+            offers
+        }
+    }
     try {
         await Product.findByIdAndUpdate(req.params.id, {
             $set: newProduct
@@ -72,7 +114,7 @@ router.get('/', async (req, res) => {
 //get latest products
 router.get('/latest', async (req, res) => {
     try {
-        const products = await Product.find().sort({createdAt: -1}).limit(3)
+        const products = await Product.find().sort({ createdAt: -1 }).limit(3)
         res.status(200).json(products)
     } catch (error) {
         res.status(500).json(error)
@@ -112,7 +154,7 @@ router.get('/search', async (req, res) => {
     try {
         let product = null
         if (qSearch) {
-            product = await Product.find({ $or: [ { title: { $regex: qSearch, $options: "i" } } ] })
+            product = await Product.find({ $or: [{ title: { $regex: qSearch, $options: "i" } }] })
         } else {
             product = await Product.find()
         }

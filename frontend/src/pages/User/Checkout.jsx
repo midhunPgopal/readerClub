@@ -277,6 +277,7 @@ const Cart = () => {
     const addAddress = async () => {
         try {
             const payload = { fullAddress, pincode, landmark, userId }
+
             const res = await axios.post('http://localhost:3001/api/address/', payload, { headers: { userId } })
             notify(res.data.msg)
         } catch (error) {
