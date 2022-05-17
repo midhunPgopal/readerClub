@@ -32,7 +32,7 @@ router.post('/', verifyStatus, async (req, res) => {
 router.put('/:id', verifyStatus, async (req, res) => {
     try {
         await Address.findByIdAndUpdate(req.params.id, {
-            $set: { 'address': req.body.address, 'pincode': req.body.pinode, 'landmark': req.body.landmark}
+            $set: req.body
         })
         res.status(200).json({msg: 'Address updated'})
     } catch (error) {

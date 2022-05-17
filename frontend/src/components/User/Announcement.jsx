@@ -21,8 +21,7 @@ const Announcement = () => {
   const getAnnouncement = async () => {
     try {
       const res = await axios.get('http://localhost:3001/api/announcement')
-      const [data] = res.data
-      setAnnouncement(data)
+      setAnnouncement(res.data.Data)
     } catch (error) {
       console.log(error);
     }
@@ -33,7 +32,7 @@ const Announcement = () => {
   
 
   return (
-    <Container>{announcement?.announcement}</Container>
+    <Container>{announcement ? announcement[0].announcement : null }</Container>
   )
 }
 

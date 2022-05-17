@@ -6,12 +6,13 @@ const User = require('../models/User')
 
 router.put('/:id', verifyTokenAuth, async (req, res) => {
     try {
-        const exist = User.find({email: re.body.email})
+        const exist = User.find({email: req.body.email})
         if(exist[0]) {
             return res.status(200).json({msg:'Email already used'})
         }
         await User.findByIdAndUpdate(req.params.id, {
-            $set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
+            //$set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
+            $set: req.body
         })
         res.status(200).json({msg:'User updated'})
     } catch (error) {

@@ -78,9 +78,9 @@ const EditCategoryForm = ({ preloadedData }) => {
         <Form onSubmit={handleSubmit(updateAddress)}>
             <InputContainer>
                 <Label>Address
-                    <Input id="address" type='text' placeholder='Full address' {...register('address', { required: true })} />
+                    <Input id="fullAddress" type='text' placeholder='Full address' {...register('fullAddress', { required: true })} />
                     <Error>
-                        {errors.address && errors.address.type === "required" && <span>This is required</span>}
+                        {errors.fullAddress && errors.fullAddress.type === "required" && <span>This is required</span>}
                     </Error>
                 </Label>
                 <Label>Pincode

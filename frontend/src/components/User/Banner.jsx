@@ -88,7 +88,7 @@ const Button = styled.button`
 const Slider = () => {
 
     const [slideIndex, setSlideIndex] = useState(0)
-    const [banner, setBanner] = useState()
+    const [banner, setBanner] = useState([])
 
     const handleClick = (direction) => {
         if (direction === 'left') {
