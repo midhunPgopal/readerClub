@@ -11,7 +11,6 @@ router.put('/:id', verifyTokenAuth, async (req, res) => {
             return res.status(200).json({msg:'Email already used'})
         }
         await User.findByIdAndUpdate(req.params.id, {
-            //$set: {'name': req.body.name, 'email': req.body.email, 'mobile': req.body.mobile}
             $set: req.body
         })
         res.status(200).json({msg:'User updated'})
